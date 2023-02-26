@@ -11,32 +11,32 @@ Scene::~Scene() = default;
 
 void Scene::Add(std::shared_ptr<GameObject> object)
 {
-	m_objects.emplace_back(std::move(object));
+	m_pObjects.emplace_back(std::move(object));
 }
 
 void Scene::Remove(std::shared_ptr<GameObject> object)
 {
-	m_objects.erase(std::remove(m_objects.begin(), m_objects.end(), object), m_objects.end());
+	m_pObjects.erase(std::remove(m_pObjects.begin(), m_pObjects.end(), object), m_pObjects.end());
 }
 
 void Scene::RemoveAll()
 {
-	m_objects.clear();
+	m_pObjects.clear();
 }
 
 void Scene::Update()
 {
-	for(auto& object : m_objects)
+	for(auto& pObject : m_pObjects)
 	{
-		object->Update();
+		pObject->Update();
 	}
 }
 
 void Scene::Render() const
 {
-	for (const auto& object : m_objects)
+	for (const auto& pObject : m_pObjects)
 	{
-		object->Render();
+		pObject->Render();
 	}
 }
 

@@ -1,36 +1,42 @@
-#include <string>
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
 #include <iostream>
 
-dae::GameObject::~GameObject() = default;
+	dae::GameObject::~GameObject() = default;
 
-void dae::GameObject::Update()
-{
-	for (Component* pComponent : m_pComponents)
+	void dae::GameObject::Update()
 	{
-		pComponent->Update();
+		for (auto& pComponent : m_pComponents)
+		{
+			pComponent->Update(this);
+		}
 	}
-}
 
-void dae::GameObject::Render() const
-{
-	const auto& pos = m_transform.GetPosition();
-	Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
-}
+	void dae::GameObject::Render() const
+	{
+		for (auto& pComponent : m_pComponents)
+		{
+			pComponent->Render(this);
+		}
+	}
 
-void dae::GameObject::AddComponent(Component* pComponent)
-{
-	m_pComponents.push_back(pComponent);
-}
+	void dae::GameObject::AddComponent(Component* pComponent)
+	{
+		m_pComponents.push_back(pComponent);
+	}
 
-void dae::GameObject::SetTexture(const std::string& filename)
-{
-	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
-}
+	dae::Transform dae::GameObject::GetTransform() const
+	{
+		return m_transform;
+	}
 
-void dae::GameObject::SetPosition(float x, float y)
-{
-	m_transform.SetPosition(x, y, 0.0f);
-}
+	glm::vec3 dae::GameObject::GetPosition() const
+	{
+		return m_transform.GetPosition();
+	}
+
+	void dae::GameObject::SetPosition(float x, float y)
+	{
+		m_transform.SetPosition(x, y, 0.f);
+	}
