@@ -9,6 +9,7 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include <chrono>
 
 SDL_Window* g_window{};
 
@@ -83,12 +84,36 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 
-	// todo: this update loop could use some work.
+	//Update loop
+	constexpr float fixedTimeStep{ 0.02f };
+	constexpr float maximumAllowedFrameTime{ 0.1f };
+
+	auto lastTime{ std::chrono::high_resolution_clock::now() };
 	bool doContinue = true;
+
+	float timeLag{};
+
 	while (doContinue)
 	{
+		//Update time
+		const auto currentTime{ std::chrono::high_resolution_clock::now() };
+		const float elapsedTime{ std::chrono::duration<float>(currentTime - lastTime).count() };
+		lastTime = currentTime;
+
+		timeLag += (std::min)(elapsedTime, maximumAllowedFrameTime);
+
+		//Check input
 		doContinue = input.ProcessInput();
-		sceneManager.Update();
+
+		//Update scenes
+		while (timeLag >= fixedTimeStep)
+		{
+			sceneManager.Update();
+			timeLag -= fixedTimeStep;	
+		}
+		
+		//If there is visible stuttering -> extrapolate between the current and the next frame
+		//-> pass this percentage: timeLag / fixedTimeStep
 		renderer.Render();
 	}
 }
