@@ -22,9 +22,12 @@ void dae::Component::AddToGameObject(GameObject* pGameObject)
 	m_pGameObject = pGameObject;
 }
 
-void dae::Component::RemoveFromGameObject()
+void dae::Component::RemoveFromGameObject(GameObject* pGameObject)
 {
-	m_pGameObject = nullptr;
+	if (m_pGameObject == pGameObject)
+	{
+		m_pGameObject = nullptr;
+	}
 }
 
 void dae::Component::Update()

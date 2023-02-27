@@ -52,6 +52,8 @@ dae::GameObject::~GameObject() = default;
 
 	void dae::GameObject::RemoveComponent(std::shared_ptr<Component> pComponent)
 	{
+		pComponent->RemoveFromGameObject(this);
+
 		m_pComponents.erase
 		(
 			std::remove_if(m_pComponents.begin(), m_pComponents.end(),

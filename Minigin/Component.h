@@ -23,7 +23,7 @@ namespace dae
 		int GetPriority() const;
 
 		void AddToGameObject(GameObject* pGameObject);
-		void RemoveFromGameObject();
+		void RemoveFromGameObject(GameObject* pGameObject);
 	
 	protected:
 		GameObject* m_pGameObject{ nullptr };
