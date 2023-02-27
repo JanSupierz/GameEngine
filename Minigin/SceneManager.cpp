@@ -1,11 +1,23 @@
 #include "SceneManager.h"
 #include "Scene.h"
 
-void dae::SceneManager::Update()
+void dae::SceneManager::Update(float deltaTime)
 {
+	m_DeltaTime = deltaTime;
+
 	for(auto& scene : m_scenes)
 	{
 		scene->Update();
+	}
+}
+
+void dae::SceneManager::FixedUpdate(float fixedTimeStep)
+{
+	m_FixedTimeStep = fixedTimeStep;
+
+	for (auto& scene : m_scenes)
+	{
+		scene->FixedUpdate();
 	}
 }
 
@@ -15,6 +27,16 @@ void dae::SceneManager::Render()
 	{
 		scene->Render();
 	}
+}
+
+float dae::SceneManager::GetDeltaTime() const
+{
+	return m_DeltaTime;
+}
+
+float dae::SceneManager::GetFixedTimeStep() const
+{
+	return m_FixedTimeStep;
 }
 
 dae::Scene& dae::SceneManager::CreateScene(const std::string& name)

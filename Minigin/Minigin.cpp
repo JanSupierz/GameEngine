@@ -97,18 +97,20 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	{
 		//Update time
 		const auto currentTime{ std::chrono::high_resolution_clock::now() };
-		const float elapsedTime{ std::chrono::duration<float>(currentTime - lastTime).count() };
+		const float deltaTime{ std::chrono::duration<float>(currentTime - lastTime).count() };
 		lastTime = currentTime;
 
-		timeLag += (std::min)(elapsedTime, maximumAllowedFrameTime);
+		timeLag += (std::min)(deltaTime, maximumAllowedFrameTime);
 
 		//Check input
 		doContinue = input.ProcessInput();
 
 		//Update scenes
+		sceneManager.Update(deltaTime);
+
 		while (timeLag >= fixedTimeStep)
 		{
-			sceneManager.Update();
+			sceneManager.FixedUpdate(fixedTimeStep);
 			timeLag -= fixedTimeStep;	
 		}
 		

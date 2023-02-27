@@ -6,15 +6,30 @@ namespace dae
 	class Component
 	{
 	public:
-		virtual void Update(GameObject* const pGameObject) = 0;
-		virtual void Render(const GameObject* const pGameObject) = 0;
+		virtual void Update();
+		virtual void FixedUpdate();
+		virtual void Render();
 
-		Component() = default;
+		Component(int priority = 0);
 		virtual ~Component() = default;
-		Component(const Component& other) = delete;
-		Component(Component&& other) = delete;
-		Component& operator=(const Component& other) = delete;
-		Component& operator=(Component&& other) = delete;
+		Component(const Component& other) = default;
+		Component(Component&& other) = default;
+		Component& operator=(const Component& other) = default;
+		Component& operator=(Component&& other) = default;
+
+		bool operator<(const Component& other) const;
+
+		void SetPriority(int priority);
+		int GetPriority() const;
+
+		void AddToGameObject(GameObject* pGameObject);
+		void RemoveFromGameObject();
+	
+	protected:
+		GameObject* m_pGameObject{ nullptr };
+
+	private:
+		int m_Priority{ 0 };
 	};
 }
 

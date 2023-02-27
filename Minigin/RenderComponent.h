@@ -8,31 +8,25 @@ namespace dae
 {
 	class GameObject;
 	class Texture2D;
+	class Font;
 
-	class RenderComponent final : Component
+	class RenderComponent final: public Component
 	{
 	public:
-		virtual void Update(GameObject* const pGameObject) override;
-		virtual void Render(const GameObject* const pGameObject);
+		virtual void Render() override;
 
 		void SetTexture(const std::string& filename);
-		//void SetText(const std::string& text);
+		void SetTexture(std::shared_ptr<Texture2D> pTexture);
 
-		RenderComponent() = default;
+		RenderComponent(int priority = -2);
 		virtual ~RenderComponent() = default;
-		RenderComponent(const RenderComponent& other) = delete;
-		RenderComponent(RenderComponent&& other) = delete;
-		RenderComponent& operator=(const RenderComponent& other) = delete;
-		RenderComponent& operator=(RenderComponent&& other) = delete;
+		RenderComponent(const RenderComponent& other) = default;
+		RenderComponent(RenderComponent&& other) = default;
+		RenderComponent& operator=(const RenderComponent& other) = default;
+		RenderComponent& operator=(RenderComponent&& other) = default;
 
 	private:
-		std::shared_ptr<Texture2D> m_texture{};
-
-		//bool m_needsUpdate;
-		//std::string m_text;
-		//Transform m_transform{};
-		//std::shared_ptr<Font> m_font;
-		//std::shared_ptr<Texture2D> m_textTexture;
+		std::shared_ptr<Texture2D> m_pTexture{};
 	};
 }
 

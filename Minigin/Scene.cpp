@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "GameObject.h"
+#include <algorithm>
 
 using namespace dae;
 
@@ -12,6 +13,14 @@ Scene::~Scene() = default;
 void Scene::Add(std::shared_ptr<GameObject> object)
 {
 	m_pObjects.emplace_back(std::move(object));
+
+	//Sort the components based on priority
+	auto compareFunction = [&](const std::shared_ptr<GameObject>& lhs, const std::shared_ptr<GameObject>& rhs)
+	{
+		return rhs->GetPriority() < lhs->GetPriority();
+	};
+
+	std::sort(m_pObjects.begin(), m_pObjects.end(), compareFunction);
 }
 
 void Scene::Remove(std::shared_ptr<GameObject> object)
@@ -29,6 +38,14 @@ void Scene::Update()
 	for(auto& pObject : m_pObjects)
 	{
 		pObject->Update();
+	}
+}
+
+void dae::Scene::FixedUpdate()
+{
+	for (auto& pObject : m_pObjects)
+	{
+		pObject->FixedUpdate();
 	}
 }
 

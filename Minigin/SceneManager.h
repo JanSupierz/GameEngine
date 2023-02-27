@@ -12,11 +12,19 @@ namespace dae
 	public:
 		Scene& CreateScene(const std::string& name);
 
-		void Update();
+		void Update(float deltaTime);
+		void FixedUpdate(float fixedTimeStep);
 		void Render();
+
+		float GetDeltaTime() const;
+		float GetFixedTimeStep() const;
+
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;
 		std::vector<std::shared_ptr<Scene>> m_scenes;
+
+		float m_DeltaTime{};
+		float m_FixedTimeStep{};
 	};
 }
