@@ -118,9 +118,8 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		//Update scenes
 		sceneManager.Update(deltaTime);
 		
-		//If there is visible stuttering -> extrapolate between the current and the next frame
-		//-> pass this percentage: timeLag / fixedTimeStep
-		renderer.Render();
+		//Render
+		renderer.Render(timeLag / fixedTimeStep);
 		
 		//Count sleep time
 		const auto sleepTime{ currentTime + std::chrono::milliseconds(maxWaitingTimeMs) - std::chrono::high_resolution_clock::now() };

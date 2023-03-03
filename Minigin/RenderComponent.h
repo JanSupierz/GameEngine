@@ -2,7 +2,7 @@
 #include "Component.h"
 #include <string>
 #include <memory>
-
+#include <glm/glm.hpp>
 
 namespace dae
 {
@@ -27,6 +27,7 @@ namespace dae
 
 	private:
 		std::shared_ptr<Texture2D> m_pTexture{};
+		glm::vec3 m_LastPosition{};
 	};
 }
 

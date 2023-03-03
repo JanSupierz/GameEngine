@@ -2,6 +2,7 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 #include "Texture2D.h"
+#include "SceneManager.h"
 
 #include "GameObject.h"
 
@@ -9,8 +10,16 @@ void dae::RenderComponent::Render()
 {
 	if (m_pTexture)
 	{
-		const auto& pos{ GetOwner()->GetWorldPosition() };
-		Renderer::GetInstance().RenderTexture(*m_pTexture, pos.x, pos.y);
+		const float framePercentage{ SceneManager::GetInstance().GetFramePercentage() };
+
+		const auto position{ GetOwner()->GetWorldPosition() };
+		const auto currentVelocity{ position - m_LastPosition };
+
+		const auto extrapolatedPosition{ position - currentVelocity * framePercentage };
+
+		m_LastPosition = position;
+
+		Renderer::GetInstance().RenderTexture(*m_pTexture, extrapolatedPosition.x, extrapolatedPosition.y);
 	}
 }
 

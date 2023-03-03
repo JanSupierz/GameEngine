@@ -14,10 +14,11 @@ namespace dae
 
 		void Update(float deltaTime);
 		void FixedUpdate(float fixedTimeStep);
-		void Render();
+		void Render(float framePercentage);
 
 		float GetDeltaTime() const;
 		float GetFixedTimeStep() const;
+		float GetFramePercentage() const;
 
 	private:
 		friend class Singleton<SceneManager>;
@@ -26,5 +27,6 @@ namespace dae
 
 		float m_DeltaTime{};
 		float m_FixedTimeStep{};
+		float m_FramePercentage{};
 	};
 }
