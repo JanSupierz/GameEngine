@@ -5,6 +5,8 @@
 #include "Texture2D.h"
 #include <iostream>
 
+class FontError{};
+
 dae::TextComponent::TextComponent(std::shared_ptr<RenderComponent> pRenderComponent, std::shared_ptr<Font> pFont, int priority)
 	:Component(priority), m_pRenderComponent{ pRenderComponent }, m_pFont{ pFont }
 {
@@ -33,7 +35,7 @@ void dae::TextComponent::SetTextToTexture(const std::string& text)
 	}
 	else
 	{
-		std::cout << "Text Component: No font selected!\n";
+		throw FontError{};
 	}
 }
 

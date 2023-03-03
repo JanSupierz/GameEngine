@@ -9,7 +9,7 @@ void dae::RenderComponent::Render()
 {
 	if (m_pTexture)
 	{
-		const auto& pos{ m_pGameObject->GetPosition() };
+		const auto& pos{ GetOwner()->GetWorldPosition() };
 		Renderer::GetInstance().RenderTexture(*m_pTexture, pos.x, pos.y);
 	}
 }

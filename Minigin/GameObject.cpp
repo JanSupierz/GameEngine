@@ -37,7 +37,7 @@ dae::GameObject::~GameObject() = default;
 
 	void dae::GameObject::AddComponent(std::shared_ptr<Component> pComponent)
 	{
-		pComponent->AddToGameObject(this);
+		pComponent->SetOwner(this);
 
 		m_pComponents.push_back(pComponent);
 		
@@ -50,30 +50,128 @@ dae::GameObject::~GameObject() = default;
 		std::sort(m_pComponents.begin(), m_pComponents.end(), compareFunction);
 	}
 
-	void dae::GameObject::RemoveComponent(std::shared_ptr<Component> pComponent)
+	void dae::GameObject::SetParent(GameObject* pGameObject, bool keepWorldPosition)
 	{
-		pComponent->RemoveFromGameObject(this);
-
-		m_pComponents.erase
-		(
-			std::remove_if(m_pComponents.begin(), m_pComponents.end(),
-
-			[pComponent](const std::shared_ptr<Component>& ptr) 
+		if (pGameObject)
+		{
+			if (!pGameObject->CanBeParentOf(this))
 			{
-				return ptr == pComponent;
+				return;
 			}
+		}
 
-		), m_pComponents.end());
+		auto sharedThis{ std::shared_ptr<GameObject>(this) };
+
+		//Remove itself as a child from the previous parent
+		if (m_pParent)
+		{
+			m_pParent->RemoveChild(sharedThis);
+		}
+
+		//Set the given parent on itself
+		m_pParent = pGameObject;
+
+		//Add itself as a child to the given parent
+		if (m_pParent)
+		{
+			m_pParent->m_pChildren.push_back(sharedThis);
+		}
+		
+		//Update position
+		if (pGameObject == nullptr)
+		{
+			const auto position{ m_Transform.GetWorldPosition() };
+			SetPosition(position.x, position.y);
+		}
+		else
+		{
+			m_pParent = pGameObject;
+
+			if (keepWorldPosition)
+			{
+				const auto position{ m_Transform.GetLocalPosition() - m_pParent->GetWorldPosition() };
+				SetPosition(position.x, position.y);
+			}
+		}
 	}
 
-	dae::Transform dae::GameObject::GetTransform() const
+
+	void dae::GameObject::AddChild(std::shared_ptr<GameObject> pGameObject, bool keepWorldPosition)
 	{
-		return m_transform;
+		if (!this->CanBeParentOf(pGameObject.get())) return;
+
+		//Remove from the old parent
+		const auto pOldParent{ pGameObject->m_pParent };
+
+		if (pOldParent)
+		{
+			pOldParent->m_pChildren.erase(std::remove(m_pChildren.begin(), m_pChildren.end(), pGameObject));
+		}
+
+		//Set itself as parent of the child
+		pGameObject->m_pParent = this;
+
+		//Add the child to its children list
+		m_pChildren.push_back(pGameObject);
+
+		//Update position
+		if (keepWorldPosition)
+		{
+			const auto position{ pGameObject->GetLocalPosition() - m_Transform.GetWorldPosition() };
+			SetPosition(position.x, position.y);
+		}
 	}
 
-	glm::vec3 dae::GameObject::GetPosition() const
+	void dae::GameObject::RemoveChild(std::shared_ptr<GameObject> pGameObject)
 	{
-		return m_transform.GetPosition();
+		//Remove the given child from the children list
+		m_pChildren.erase(std::remove(m_pChildren.begin(), m_pChildren.end(), pGameObject));
+
+		//Remove itself as a parent of the child.
+		pGameObject->m_pParent = nullptr;
+
+		//Update position, rotation and scale
+		const auto position{ m_Transform.GetWorldPosition() };
+		SetPosition(position.x, position.y);
+	}
+
+	bool dae::GameObject::CanBeParentOf(GameObject* pChild)
+	{
+		if (m_pParent)
+		{
+			return CanBeParentOf(pChild);
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	glm::vec3 dae::GameObject::GetWorldPosition()
+	{
+		if (m_IsTransformDirty)
+		{
+			m_IsTransformDirty = false;
+			if (m_pParent)
+			{
+				m_Transform.UpdateWorldPosition(m_Transform.GetLocalPosition() + m_pParent->GetWorldPosition());
+				return m_Transform.GetWorldPosition();
+			}
+			else
+			{
+				m_Transform.UpdateWorldPosition(m_Transform.GetLocalPosition());
+				return m_Transform.GetWorldPosition();
+			}
+		}
+		else
+		{
+			return m_Transform.GetWorldPosition();
+		}
+	}
+
+	glm::vec3 dae::GameObject::GetLocalPosition() const
+	{
+		return m_Transform.GetLocalPosition();
 	}
 
 	int dae::GameObject::GetPriority() const
@@ -81,7 +179,18 @@ dae::GameObject::~GameObject() = default;
 		return m_Priority;
 	}
 
+	void dae::GameObject::SetTransformDirty()
+	{
+		m_IsTransformDirty = true;
+
+		for (auto& pChild : m_pChildren)
+		{
+			pChild->SetTransformDirty();
+		}
+	}
+
 	void dae::GameObject::SetPosition(float x, float y)
 	{
-		m_transform.SetPosition(x, y, 0.f);
+		SetTransformDirty();
+		m_Transform.SetPosition(x, y, 0.f);
 	}

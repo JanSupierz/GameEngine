@@ -10,7 +10,6 @@ namespace dae
 		virtual void FixedUpdate();
 		virtual void Render();
 
-		Component(int priority = 0);
 		virtual ~Component() = default;
 		Component(const Component& other) = default;
 		Component(Component&& other) = default;
@@ -19,16 +18,18 @@ namespace dae
 
 		bool operator<(const Component& other) const;
 
+		void SetOwner(GameObject* pGameObject);
+
 		void SetPriority(int priority);
 		int GetPriority() const;
-
-		void AddToGameObject(GameObject* pGameObject);
-		void RemoveFromGameObject(GameObject* pGameObject);
 	
 	protected:
-		GameObject* m_pGameObject{ nullptr };
+		explicit Component(int priority = 0);
+		GameObject* GetOwner() const;
 
 	private:
+		GameObject* m_pOwner{ nullptr };
+
 		int m_Priority{ 0 };
 	};
 }

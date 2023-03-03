@@ -25,8 +25,13 @@ namespace dae
 		GameObject& operator=(GameObject&& other) = default;
 
 		void AddComponent(std::shared_ptr<Component> pComponent);
-		void RemoveComponent(std::shared_ptr<Component> pComponent);
-		
+
+		void SetParent(GameObject* pGameObject, bool keepWorldPosition = true);
+
+		void AddChild(std::shared_ptr<GameObject> pGameObject, bool keepWorldPosition = true);
+		void RemoveChild(std::shared_ptr<GameObject> pGameObject);
+
+
 		template<typename ComponentType>
 		std::shared_ptr<ComponentType> GetComponent()
 		{
@@ -53,14 +58,22 @@ namespace dae
 			return false;
 		}
 
-		Transform GetTransform() const;
-		glm::vec3 GetPosition() const;
+		glm::vec3 GetWorldPosition();
+		glm::vec3 GetLocalPosition() const;
 
 		int GetPriority() const;
-	private:
-		Transform m_transform{};
-		std::vector<std::shared_ptr<Component>> m_pComponents{};
 
+	private:
+		bool CanBeParentOf(GameObject* pChild);
+		void SetTransformDirty();
+
+		std::vector<std::shared_ptr<GameObject>> m_pChildren{};
+		std::vector<std::shared_ptr<Component>> m_pComponents{};
+		GameObject* m_pParent{};
+
+		Transform m_Transform{};
+
+		bool m_IsTransformDirty{ true };
 		const int m_Priority{ 0 };
 	};
 

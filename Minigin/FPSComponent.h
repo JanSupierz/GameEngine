@@ -22,5 +22,7 @@ namespace dae
 		std::shared_ptr<TextComponent> m_pTextComponent;
 		float m_RefreshTime;
 		float m_ElapsedTime{ 0.f };
+		int m_NrFrames{};
+		int m_FrameRate{};
 	};
 }

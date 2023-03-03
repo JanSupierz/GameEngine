@@ -6,25 +6,31 @@
 
 void dae::FPSComponent::Update()
 {
-	float deltaTime{ SceneManager::GetInstance().GetDeltaTime() };
+	const float deltaTime{ SceneManager::GetInstance().GetDeltaTime() };
 
+	//frameRate = frames/elapsedTime
+	++m_NrFrames;
 	m_ElapsedTime += deltaTime;
 
 	if (m_ElapsedTime >= m_RefreshTime)
 	{
-		m_ElapsedTime = 0.f;
-		const std::string frameRateString{ std::to_string(static_cast<int>(1.f / deltaTime)) + " FPS"};
+		const int currentFrameRate{ static_cast<int>(m_NrFrames / m_ElapsedTime) };
 
-		if (m_pTextComponent)
+		//Dirty flag
+		if (currentFrameRate != m_FrameRate)
 		{
-			//Output to render component
-			m_pTextComponent->SetTextToTexture(frameRateString);
+			m_FrameRate = currentFrameRate;
+			const std::string frameRateString{ std::to_string(m_FrameRate) + " FPS" };
+
+			if (m_pTextComponent)
+			{
+				//Output to render component
+				m_pTextComponent->SetTextToTexture(frameRateString);
+			}
 		}
-		else
-		{
-			//Output to console
-			std::cout << frameRateString << '\n';
-		}
+
+		m_NrFrames = 0;
+		m_ElapsedTime = 0.f;
 	}
 }
 
