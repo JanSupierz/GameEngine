@@ -7,7 +7,7 @@ void dae::SineMovementComponent::FixedUpdate()
 	const float deltaTime{ SceneManager::GetInstance().GetFixedTimeStep() };
 	
 	m_Angle += m_CycleSpeed * deltaTime;
-
+	
 	const float posX{ m_Origin.x + m_Length * cos(m_Angle) };
 	const float posY{ m_Origin.y + m_Length * sin(m_Angle) };
 
