@@ -15,7 +15,7 @@ void dae::RenderComponent::Render()
 		const auto position{ GetOwner()->GetWorldPosition() };
 		const auto currentVelocity{ position - m_LastPosition };
 
-		const auto extrapolatedPosition{ position - currentVelocity * framePercentage };
+		const auto extrapolatedPosition{ position + currentVelocity * framePercentage };
 
 		m_LastPosition = position;
 

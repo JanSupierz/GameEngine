@@ -35,10 +35,15 @@ void Scene::RemoveAll()
 
 void Scene::Update()
 {
-	for(auto& pObject : m_pObjects)
+	for(const auto& pObject : m_pObjects)
 	{
-		pObject->Update();
+		if (!pObject->IsDestroyed())
+		{
+			pObject->Update();
+		}
 	}
+
+	m_pObjects.erase(std::remove_if(m_pObjects.begin(), m_pObjects.end(), [&](std::shared_ptr<GameObject> pGameObject) {return pGameObject->IsDestroyed(); }), m_pObjects.end());
 }
 
 void dae::Scene::FixedUpdate()

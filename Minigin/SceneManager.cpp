@@ -5,7 +5,7 @@ void dae::SceneManager::Update(float deltaTime)
 {
 	m_DeltaTime = deltaTime;
 
-	for(auto& scene : m_scenes)
+	for(auto& scene : m_pScenes)
 	{
 		scene->Update();
 	}
@@ -15,7 +15,7 @@ void dae::SceneManager::FixedUpdate(float fixedTimeStep)
 {
 	m_FixedTimeStep = fixedTimeStep;
 
-	for (auto& scene : m_scenes)
+	for (auto& scene : m_pScenes)
 	{
 		scene->FixedUpdate();
 	}
@@ -25,7 +25,7 @@ void dae::SceneManager::Render(float framePercentage)
 {
 	m_FramePercentage = framePercentage;
 
-	for (const auto& scene : m_scenes)
+	for (const auto& scene : m_pScenes)
 	{
 		scene->Render();
 	}
@@ -49,6 +49,6 @@ float dae::SceneManager::GetFramePercentage() const
 dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
 {
 	const auto& scene = std::shared_ptr<Scene>(new Scene(name));
-	m_scenes.push_back(scene);
+	m_pScenes.push_back(scene);
 	return *scene;
 }

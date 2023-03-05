@@ -60,12 +60,10 @@ dae::GameObject::~GameObject() = default;
 			}
 		}
 
-		auto sharedThis{ std::shared_ptr<GameObject>(this) };
-
 		//Remove itself as a child from the previous parent
 		if (m_pParent)
 		{
-			m_pParent->RemoveChild(sharedThis);
+			m_pParent->RemoveChild(this);
 		}
 
 		//Set the given parent on itself
@@ -74,7 +72,7 @@ dae::GameObject::~GameObject() = default;
 		//Add itself as a child to the given parent
 		if (m_pParent)
 		{
-			m_pParent->m_pChildren.push_back(sharedThis);
+			m_pParent->m_pChildren.push_back(this);
 		}
 		
 		//Update position
@@ -96,9 +94,9 @@ dae::GameObject::~GameObject() = default;
 	}
 
 
-	void dae::GameObject::AddChild(std::shared_ptr<GameObject> pGameObject, bool keepWorldPosition)
+	void dae::GameObject::AddChild(GameObject* pGameObject, bool keepWorldPosition)
 	{
-		if (!this->CanBeParentOf(pGameObject.get())) return;
+		if (!this->CanBeParentOf(pGameObject)) return;
 
 		//Remove from the old parent
 		const auto pOldParent{ pGameObject->m_pParent };
@@ -122,7 +120,7 @@ dae::GameObject::~GameObject() = default;
 		}
 	}
 
-	void dae::GameObject::RemoveChild(std::shared_ptr<GameObject> pGameObject)
+	void dae::GameObject::RemoveChild(GameObject* pGameObject)
 	{
 		//Remove the given child from the children list
 		m_pChildren.erase(std::remove(m_pChildren.begin(), m_pChildren.end(), pGameObject));
@@ -135,16 +133,48 @@ dae::GameObject::~GameObject() = default;
 		SetPosition(position.x, position.y);
 	}
 
-	bool dae::GameObject::CanBeParentOf(GameObject* pChild)
+	bool dae::GameObject::CanBeParentOf(GameObject* pChild) const
 	{
+		//Parent of the possible new parent is not null
 		if (m_pParent)
 		{
-			return CanBeParentOf(pChild);
+			//Child is the parent of current game object
+			if (m_pParent == pChild)
+			{
+				return false;
+			}
+			else
+			{
+				//Going up in the family tree
+				return m_pParent->CanBeParentOf(pChild);
+			}
 		}
 		else
 		{
 			return true;
 		}
+	}
+
+	void dae::GameObject::Destroy()
+	{
+		m_IsDestroyed = true;
+
+		//Destroy all children
+		for (const auto& pChild : m_pChildren)
+		{
+			pChild->Destroy();
+		}
+
+		//Remove yourself from the parent
+		if (m_pParent)
+		{
+			m_pParent->RemoveChild(this);
+		}
+	}
+
+	bool dae::GameObject::IsDestroyed() const
+	{
+		return m_IsDestroyed;
 	}
 
 	glm::vec3 dae::GameObject::GetWorldPosition()
@@ -183,7 +213,7 @@ dae::GameObject::~GameObject() = default;
 	{
 		m_IsTransformDirty = true;
 
-		for (auto& pChild : m_pChildren)
+		for (const auto& pChild : m_pChildren)
 		{
 			pChild->SetTransformDirty();
 		}

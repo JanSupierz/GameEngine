@@ -28,8 +28,8 @@ namespace dae
 
 		void SetParent(GameObject* pGameObject, bool keepWorldPosition = true);
 
-		void AddChild(std::shared_ptr<GameObject> pGameObject, bool keepWorldPosition = true);
-		void RemoveChild(std::shared_ptr<GameObject> pGameObject);
+		void AddChild(GameObject* pGameObject, bool keepWorldPosition = true);
+		void RemoveChild(GameObject* pGameObject);
 
 
 		template<typename ComponentType>
@@ -63,17 +63,22 @@ namespace dae
 
 		int GetPriority() const;
 
+		bool CanBeParentOf(GameObject* pChild) const;
+
+		void Destroy();
+		bool IsDestroyed() const;
 	private:
-		bool CanBeParentOf(GameObject* pChild);
 		void SetTransformDirty();
 
-		std::vector<std::shared_ptr<GameObject>> m_pChildren{};
+		std::vector<GameObject*> m_pChildren{};
 		std::vector<std::shared_ptr<Component>> m_pComponents{};
 		GameObject* m_pParent{};
 
 		Transform m_Transform{};
-
 		bool m_IsTransformDirty{ true };
+
+		bool m_IsDestroyed{ false };
+
 		const int m_Priority{ 0 };
 	};
 

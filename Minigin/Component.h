@@ -29,7 +29,6 @@ namespace dae
 
 	private:
 		GameObject* m_pOwner{ nullptr };
-
 		int m_Priority{ 0 };
 	};
 }
