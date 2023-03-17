@@ -99,7 +99,10 @@
     <ClInclude Include="imgui_plot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TrashTheCasheComponent.h">
+    <ClInclude Include="GraphComponent.h">
+      <Filter>Game Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CombinedGraphComponent.h">
       <Filter>Game Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -176,7 +179,10 @@
     <ClCompile Include="imgui_plot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TrashTheCasheComponent.cpp">
+    <ClCompile Include="GraphComponent.cpp">
+      <Filter>Game Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CombinedGraphComponent.cpp">
       <Filter>Game Files\Components</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,6 +1,11 @@
 // dear imgui, v1.89.4
 // (demo code)
 
+#pragma warning(push)
+#pragma warning(disable : 4505)
+#pragma warning(disable : 28182)
+#pragma warning(disable : 6387)
+
 // Help:
 // - Read FAQ at http://dearimgui.org/faq
 // - Newcomers, read 'Programmer guide' in imgui.cpp for notes on how to setup Dear ImGui in your codebase.
@@ -8043,3 +8048,5 @@ void ImGui::ShowStyleEditor(ImGuiStyle*) {}
 #endif
 
 #endif // #ifndef IMGUI_DISABLE
+
+#pragma warning(pop)

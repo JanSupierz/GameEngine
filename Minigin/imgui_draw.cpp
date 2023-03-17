@@ -1,6 +1,12 @@
 // dear imgui, v1.89.4
 // (drawing and font code)
 
+#pragma warning(push)
+#pragma warning(disable : 4505)
+#pragma warning(disable : 28182)
+#pragma warning(disable : 6387)
+#pragma warning(disable : 6011)
+#pragma warning(disable : 6239)
 /*
 
 Index of this file:
@@ -4172,3 +4178,5 @@ static const char* GetDefaultCompressedFontDataTTFBase85()
 }
 
 #endif // #ifndef IMGUI_DISABLE
+
+#pragma warning(pop)

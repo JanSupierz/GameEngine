@@ -1,6 +1,11 @@
 // dear imgui, v1.89.4
 // (main code and documentation)
 
+#pragma warning(push)
+#pragma warning(disable : 4505)
+#pragma warning(disable : 28182)
+#pragma warning(disable : 6387)
+
 // Help:
 // - Read FAQ at http://dearimgui.org/faq
 // - Newcomers, read 'Programmer guide' below for notes on how to setup Dear ImGui in your codebase.
@@ -14625,3 +14630,5 @@ void ImGui::UpdateDebugToolStackQueries() {}
 //-----------------------------------------------------------------------------
 
 #endif // #ifndef IMGUI_DISABLE
+
+#pragma warning(pop)
