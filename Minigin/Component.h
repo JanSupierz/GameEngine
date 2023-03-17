@@ -16,16 +16,18 @@ namespace dae
 		Component& operator=(const Component& other) = default;
 		Component& operator=(Component&& other) = default;
 
-		bool operator<(const Component& other) const;
-
+		//Owner
+		GameObject* GetOwner() const;
 		void SetOwner(GameObject* pGameObject);
+
+		//Priority
+		bool operator<(const Component& other) const;
 
 		void SetPriority(int priority);
 		int GetPriority() const;
 	
 	protected:
 		explicit Component(int priority = 0);
-		GameObject* GetOwner() const;
 
 	private:
 		GameObject* m_pOwner{ nullptr };

@@ -6,16 +6,12 @@
 
 namespace dae
 {
-	class Texture2D;
-
-	class GameObject final
+	class GameObject final : public std::enable_shared_from_this<GameObject>
 	{
 	public:
 		void Update();
 		void FixedUpdate();
 		void Render() const;
-
-		void SetPosition(float x, float y);
 
 		GameObject(int priority = 0);
 		virtual ~GameObject();
@@ -24,13 +20,16 @@ namespace dae
 		GameObject& operator=(const GameObject& other) = default;
 		GameObject& operator=(GameObject&& other) = default;
 
-		void AddComponent(std::shared_ptr<Component> pComponent);
-
+		//Adding child/parent
 		void SetParent(GameObject* pGameObject, bool keepWorldPosition = true);
+		void AddChild(std::shared_ptr<GameObject> pGameObject, bool keepWorldPosition = true);
+		void RemoveChild(std::shared_ptr<GameObject> pGameObject);
 
-		void AddChild(GameObject* pGameObject, bool keepWorldPosition = true);
-		void RemoveChild(GameObject* pGameObject);
+		GameObject* GetParent() const;
+		bool CanBeParentOf(GameObject* pChild) const;
 
+		//Adding components
+		void AddComponent(std::shared_ptr<Component> pComponent);
 
 		template<typename ComponentType>
 		std::shared_ptr<ComponentType> GetComponent()
@@ -58,28 +57,38 @@ namespace dae
 			return false;
 		}
 
+		//Transform
+		void SetPosition(float x, float y);
 		glm::vec3 GetWorldPosition();
 		glm::vec3 GetLocalPosition() const;
 
+		//Priority
 		int GetPriority() const;
 
-		bool CanBeParentOf(GameObject* pChild) const;
-
+		//Destruction
 		void Destroy();
 		bool IsDestroyed() const;
-	private:
-		void SetTransformDirty();
 
-		std::vector<GameObject*> m_pChildren{};
-		std::vector<std::shared_ptr<Component>> m_pComponents{};
+	private:
+		//Child/parent
+		std::vector<std::shared_ptr<GameObject>> m_pChildren{};
 		GameObject* m_pParent{};
+		void SortChildren();
+
+		//Components
+		std::vector<std::shared_ptr<Component>> m_pComponents{};
+		
+		//Transform
+		void SetTransformDirty();
 
 		Transform m_Transform{};
 		bool m_IsTransformDirty{ true };
 
-		bool m_IsDestroyed{ false };
-
+		//Priority
 		const int m_Priority{ 0 };
+
+		//Destruction
+		bool m_IsDestroyed{ false };
 	};
 
 }

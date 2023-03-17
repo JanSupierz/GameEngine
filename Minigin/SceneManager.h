@@ -20,10 +20,13 @@ namespace dae
 		float GetFixedTimeStep() const;
 		float GetFramePercentage() const;
 
+		Scene* GetCurrentScene() const;
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;
 		std::vector<std::shared_ptr<Scene>> m_pScenes;
+
+		Scene* m_CurrentScene{};
 
 		float m_DeltaTime{};
 		float m_FixedTimeStep{};

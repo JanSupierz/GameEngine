@@ -10,14 +10,26 @@ Scene::Scene(const std::string& name) : m_name(name) {}
 
 Scene::~Scene() = default;
 
+class GameObjectAlreadyHasParentException {};
+
 void Scene::Add(std::shared_ptr<GameObject> object)
 {
+	if (object->GetParent())
+	{
+		throw GameObjectAlreadyHasParentException{};
+	}
+
+	if (std::find(m_pObjects.begin(), m_pObjects.end(), object) != m_pObjects.end())
+	{
+		throw GameObjectAlreadyHasParentException{};
+	}
+
 	m_pObjects.emplace_back(std::move(object));
 
 	//Sort the components based on priority
-	auto compareFunction = [&](const std::shared_ptr<GameObject>& lhs, const std::shared_ptr<GameObject>& rhs)
+	auto compareFunction = [&](const std::shared_ptr<GameObject>& pLhs, const std::shared_ptr<GameObject>& pRhs)
 	{
-		return rhs->GetPriority() < lhs->GetPriority();
+		return pRhs->GetPriority() < pLhs->GetPriority();
 	};
 
 	std::sort(m_pObjects.begin(), m_pObjects.end(), compareFunction);
@@ -35,7 +47,7 @@ void Scene::RemoveAll()
 
 void Scene::Update()
 {
-	for(const auto& pObject : m_pObjects)
+	for(auto& pObject : m_pObjects)
 	{
 		if (!pObject->IsDestroyed())
 		{

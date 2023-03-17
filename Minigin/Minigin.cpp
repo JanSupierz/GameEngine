@@ -86,15 +86,16 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& input = InputManager::GetInstance();
 
 	//Update loop
-	constexpr float fixedTimeStep{ 0.02f };
+	constexpr float fixedTimeStep{ 0.016f };
 	constexpr float maximumAllowedFrameTime{ 0.1f };
-	constexpr float desiredFPS{ 144.f };
+	constexpr float desiredFPS{ 170.f };
 	constexpr int maxWaitingTimeMs{ static_cast<int>(1000 / desiredFPS) };
 
 	auto lastTime{ std::chrono::high_resolution_clock::now() };
 	bool doContinue = true;
 
-	float timeLag{};
+	//Make sure to run the fixed update before the first render
+	float timeLag{ fixedTimeStep };
 
 	while (doContinue)
 	{

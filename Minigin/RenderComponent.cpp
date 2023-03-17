@@ -3,7 +3,6 @@
 #include "Renderer.h"
 #include "Texture2D.h"
 #include "SceneManager.h"
-
 #include "GameObject.h"
 
 void dae::RenderComponent::Render()
@@ -12,10 +11,9 @@ void dae::RenderComponent::Render()
 	{
 		const float framePercentage{ SceneManager::GetInstance().GetFramePercentage() };
 
-		const auto position{ GetOwner()->GetWorldPosition() };
-		const auto currentVelocity{ position - m_LastPosition };
-
-		const auto extrapolatedPosition{ position + currentVelocity * framePercentage };
+		const glm::vec3 position{ GetOwner()->GetWorldPosition() };
+		const glm::vec3 currentVelocity{ position - m_LastPosition };
+		const glm::vec3 extrapolatedPosition{ position + currentVelocity * framePercentage };
 
 		m_LastPosition = position;
 

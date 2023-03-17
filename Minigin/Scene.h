@@ -11,6 +11,7 @@ namespace dae
 		void Add(std::shared_ptr<GameObject> object);
 		void Remove(std::shared_ptr<GameObject> object);
 		void RemoveAll();
+		void CheckParentException(std::shared_ptr<GameObject> object) const;
 
 		void Update();
 		void FixedUpdate();
