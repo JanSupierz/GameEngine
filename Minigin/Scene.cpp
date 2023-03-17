@@ -73,4 +73,3 @@ void Scene::Render() const
 		pObject->Render();
 	}
 }
-
