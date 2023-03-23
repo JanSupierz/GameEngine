@@ -19,12 +19,16 @@ namespace dae
 	private:
 		void UpdatePlotConfig_02();
 		void UpdatePlotConfig_03();
+
 		std::function<void(std::vector<float>& xValues, std::vector<float>& yValues, int nrTests, int nrTestValues)> f_SecondTestFunction;
+
 		ImGui::PlotConfig m_PlotConfig_02{};
 		ImGui::PlotConfig m_PlotConfig_03{};
+
 		std::vector<float> m_XValues_02{};
 		std::vector<float> m_YValues_02{};
-		std::vector<float*> m_ValueList{};
+		std::vector<const float*> m_ValueList{};
+
 		bool m_ShouldRecalculateValues_02{ true };
 	};
 }

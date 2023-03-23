@@ -60,9 +60,13 @@ void dae::CombinedGraphComponent::Render()
 
     ImGui::Spacing();
 
-    //Load correct data
-    static const float* y_data[] = { m_YValues.data(),m_YValues_02.data() };
-    m_PlotConfig_03.values.ys_list = y_data;
+    m_PlotConfig_03.values.count = static_cast<int>(std::min(m_XValues.size(), m_XValues_02.size()));
+    m_PlotConfig_03.scale.max = std::max(m_PlotConfig.scale.max, m_PlotConfig_02.scale.max);
+
+    m_ValueList[0] = m_YValues.data();
+    m_ValueList[1] = m_YValues_02.data();
+
+    m_PlotConfig_03.values.ys_list = m_ValueList.data();
 
     ImGui::Plot("Graph_03", m_PlotConfig_03);
 
@@ -73,6 +77,7 @@ dae::CombinedGraphComponent::CombinedGraphComponent(const std::function<void(std
     const std::function<void(std::vector<float>& xValues, std::vector<float>& yValues, int nrTests, int nrTestValues)>& secondTestFunction, const std::string& title, int priority)
     :GraphComponent(testFunction, title, priority), f_SecondTestFunction{ secondTestFunction }
 {
+    //Init the 2nd graph
     ImU32 graphColor{ ImColor(50, 132, 129) };
 
     m_PlotConfig_02.values.color = graphColor;
@@ -84,6 +89,7 @@ dae::CombinedGraphComponent::CombinedGraphComponent(const std::function<void(std
     m_PlotConfig_02.frame_size = ImVec2(200, 75);
     m_PlotConfig_02.line_thickness = 1.f;
 
+    //Init the combined graph
     static ImU32 colors[2] = { m_PlotConfig.values.color, m_PlotConfig_02.values.color };
     m_PlotConfig_03.values.colors = colors;
 
@@ -95,6 +101,9 @@ dae::CombinedGraphComponent::CombinedGraphComponent(const std::function<void(std
     m_PlotConfig_03.frame_size = ImVec2(200, 75);
     m_PlotConfig_03.line_thickness = 1.f;
     m_PlotConfig_03.values.ys_count = 2;
+
+    m_ValueList.push_back(m_XValues.data());
+    m_ValueList.push_back(m_XValues_02.data());
 }
 
 void dae::CombinedGraphComponent::UpdatePlotConfig_02()
