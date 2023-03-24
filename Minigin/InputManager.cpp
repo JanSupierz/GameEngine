@@ -4,6 +4,11 @@
 
 using namespace dae;
 
+InputManager::InputManager()
+	:m_Keyboard{ SDL_GetKeyboardState(nullptr) }
+{
+}
+
 bool InputManager::ProcessInput()
 {
 	SDL_Event e;

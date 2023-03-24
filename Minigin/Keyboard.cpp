@@ -3,38 +3,37 @@
 
 using namespace dae;
 
+Keyboard::Keyboard(const Uint8* pState)
+	:m_pState{ pState }
+{
+}
+
 void Keyboard::Update(const SDL_Event& e)
 {
 	if (e.type == SDL_KEYDOWN)
 	{
-		for (const auto& binding : m_pButtonDownCommands)
+		auto pBinding{ m_pButtonDownCommands.find(e.key.keysym.scancode) };
+		if (pBinding != m_pButtonDownCommands.end())
 		{
-			if (e.key.keysym.scancode == binding.first)
-			{
-				binding.second->Execute();
-			}
+			pBinding->second->Execute();
 		}
 	}
 
 	if (e.type == SDL_KEYUP)
 	{
-		for (const auto& binding : m_pButtonUpCommands)
+		auto pBinding{ m_pButtonUpCommands.find(e.key.keysym.scancode) };
+		if (pBinding != m_pButtonUpCommands.end())
 		{
-			if (e.key.keysym.scancode == binding.first)
-			{
-				binding.second->Execute();
-			}
+			pBinding->second->Execute();
 		}
 	}
 }
 
 void Keyboard::UpdatePressed()
 {
-	const Uint8* state = SDL_GetKeyboardState(nullptr);
-
 	for (const auto& binding : m_pButtonPressedCommands)
 	{
-		if (state[binding.first])
+		if (m_pState[binding.first])
 		{
 			binding.second->Execute();
 		}

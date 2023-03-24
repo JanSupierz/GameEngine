@@ -11,12 +11,14 @@ namespace dae
 	class Keyboard
 	{
 	public:
+		Keyboard(const Uint8* pState);
 		void Update(const SDL_Event& e);
 		void UpdatePressed();
 
 		void MapCommandToButton(SDL_Scancode button, std::unique_ptr<Command>&& pCommand, ButtonState state);
 
 	private:
+		const Uint8* m_pState;
 
 		std::unordered_map<SDL_Scancode, std::unique_ptr<Command>, std::hash<SDL_Scancode>> m_pButtonUpCommands;
 		std::unordered_map<SDL_Scancode, std::unique_ptr<Command>, std::hash<SDL_Scancode>> m_pButtonDownCommands;

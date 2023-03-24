@@ -10,13 +10,15 @@ namespace dae
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
+		InputManager();
+
 		bool ProcessInput();
 		Controller* AddController();
 		Keyboard* GetKeyboard();
 
 	private:
 		std::vector<std::unique_ptr<Controller>> m_pControllers{};
-		Keyboard m_Keyboard{};
+		Keyboard m_Keyboard;
 	};
 
 }
