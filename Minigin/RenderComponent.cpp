@@ -9,15 +9,17 @@ void dae::RenderComponent::Render()
 {
 	if (m_pTexture)
 	{
-		const float framePercentage{ SceneManager::GetInstance().GetFramePercentage() };
-
+		//const float framePercentage{ SceneManager::GetInstance().GetFramePercentage() };
+		//
 		const glm::vec3 position{ GetOwner()->GetWorldPosition() };
-		const glm::vec3 currentVelocity{ position - m_LastPosition };
-		const glm::vec3 extrapolatedPosition{ position + currentVelocity * framePercentage };
-
+		//const glm::vec3 currentVelocity{ position - m_LastPosition };
+		//const glm::vec3 extrapolatedPosition{ position + currentVelocity * framePercentage};
+		//
 		m_LastPosition = position;
+		//
+		//Renderer::GetInstance().RenderTexture(*m_pTexture, extrapolatedPosition.x, extrapolatedPosition.y);
 
-		Renderer::GetInstance().RenderTexture(*m_pTexture, extrapolatedPosition.x, extrapolatedPosition.y);
+		Renderer::GetInstance().RenderTexture(*m_pTexture, position.x, position.y);
 	}
 }
 

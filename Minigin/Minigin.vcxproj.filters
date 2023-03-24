@@ -126,6 +126,9 @@
     <ClInclude Include="UpdatePositionCommand.h">
       <Filter>Other Files</Filter>
     </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>Other Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -216,6 +219,9 @@
       <Filter>Engine Files\Input\Commands</Filter>
     </ClCompile>
     <ClCompile Include="UpdatePositionCommand.cpp">
+      <Filter>Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
       <Filter>Engine Files</Filter>
     </ClCompile>
   </ItemGroup>

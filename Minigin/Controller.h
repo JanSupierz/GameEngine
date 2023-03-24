@@ -5,6 +5,7 @@
 namespace dae
 {
 	class Command;
+	enum class ButtonState;
 
 	class Controller final
 	{
@@ -29,11 +30,6 @@ namespace dae
 			ButtonB = 0x2000,
 			ButtonX = 0x4000,
 			ButtonY = 0x8000
-		};
-
-		enum class ButtonState
-		{
-			Up, Down, Pressed
 		};
 
 		void Update();

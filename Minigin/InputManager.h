@@ -3,19 +3,20 @@
 #include <vector>
 #include <memory>
 #include "Controller.h"
+#include "Keyboard.h"
 
 namespace dae
 {
-	class Controller;
-
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
 		bool ProcessInput();
 		Controller* AddController();
+		Keyboard* GetKeyboard();
 
 	private:
 		std::vector<std::unique_ptr<Controller>> m_pControllers{};
+		Keyboard m_Keyboard{};
 	};
 
 }
