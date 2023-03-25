@@ -124,10 +124,13 @@
       <Filter>Engine Files\Input\Commands</Filter>
     </ClInclude>
     <ClInclude Include="UpdatePositionCommand.h">
-      <Filter>Other Files</Filter>
+      <Filter>Engine Files\Input\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPositionCommand.h">
+      <Filter>Engine Files\Input\Commands</Filter>
     </ClInclude>
     <ClInclude Include="Keyboard.h">
-      <Filter>Other Files</Filter>
+      <Filter>Engine Files\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -219,10 +222,13 @@
       <Filter>Engine Files\Input\Commands</Filter>
     </ClCompile>
     <ClCompile Include="UpdatePositionCommand.cpp">
-      <Filter>Engine Files</Filter>
+      <Filter>Engine Files\Input\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="SetPositionCommand.cpp">
+      <Filter>Engine Files\Input\Commands</Filter>
     </ClCompile>
     <ClCompile Include="Keyboard.cpp">
-      <Filter>Engine Files</Filter>
+      <Filter>Engine Files\Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

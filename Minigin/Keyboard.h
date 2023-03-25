@@ -8,7 +8,7 @@ namespace dae
 {
 	enum class ButtonState;
 
-	class Keyboard
+	class Keyboard final
 	{
 	public:
 		Keyboard(const Uint8* pState);

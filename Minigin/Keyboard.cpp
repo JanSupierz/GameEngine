@@ -1,5 +1,4 @@
 #include "Keyboard.h"
-#include "Command.h"
 
 using namespace dae;
 
@@ -12,16 +11,15 @@ void Keyboard::Update(const SDL_Event& e)
 {
 	if (e.type == SDL_KEYDOWN)
 	{
-		auto pBinding{ m_pButtonDownCommands.find(e.key.keysym.scancode) };
+		const auto pBinding{ m_pButtonDownCommands.find(e.key.keysym.scancode) };
 		if (pBinding != m_pButtonDownCommands.end())
 		{
 			pBinding->second->Execute();
 		}
 	}
-
-	if (e.type == SDL_KEYUP)
+	else if (e.type == SDL_KEYUP)
 	{
-		auto pBinding{ m_pButtonUpCommands.find(e.key.keysym.scancode) };
+		const auto pBinding{ m_pButtonUpCommands.find(e.key.keysym.scancode) };
 		if (pBinding != m_pButtonUpCommands.end())
 		{
 			pBinding->second->Execute();

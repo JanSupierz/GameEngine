@@ -7,7 +7,7 @@
 
 using namespace dae;
 
-class Controller::ControllerImpl
+class Controller::ControllerImpl final
 {
 public:
 	ControllerImpl(int controllerIndex)
