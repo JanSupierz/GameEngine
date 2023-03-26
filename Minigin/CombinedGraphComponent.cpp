@@ -1,5 +1,6 @@
 #include "CombinedGraphComponent.h"
 #include "imgui.h"
+#include <algorithm>
 
 void dae::CombinedGraphComponent::Update()
 {
