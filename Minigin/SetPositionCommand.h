@@ -12,7 +12,7 @@ namespace dae
         SetPositionCommand(GameObject* pGameObject, const glm::vec3& direction);
 
         void Execute() override;
-        void Undo() override;
+        void Undo();
 
     private:
         GameObject* m_pGameObject;

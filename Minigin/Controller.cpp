@@ -3,7 +3,13 @@
 #include <Xinput.h>
 #pragma comment(lib, "xinput.lib")
 #include "Controller.h"
+
 #include "Command.h"
+#include "SingleValuecommand.h"
+#include "AxisValuecommand.h"
+
+#include <glm/glm.hpp>
+#include <utility>
 
 using namespace dae;
 
@@ -42,6 +48,30 @@ public:
 	{
 		return m_CurrentState.Gamepad.wButtons & button;
 	}
+	
+	glm::vec2 GetValue(ControllerThumbsticks thumbstick) const
+	{
+		if (thumbstick == ControllerThumbsticks::LeftThumbstick)
+		{
+			return glm::vec2{ m_CurrentState.Gamepad.sThumbLX,m_CurrentState.Gamepad.sThumbLY };
+		}
+		else
+		{
+			return glm::vec2{ m_CurrentState.Gamepad.sThumbRX,m_CurrentState.Gamepad.sThumbRY };
+		}
+	}
+
+	float GetValue(ControllerTriggers trigger) const
+	{
+		if (trigger == ControllerTriggers::LeftTrigger)
+		{
+			return m_CurrentState.Gamepad.bLeftTrigger;
+		}
+		else
+		{
+			return m_CurrentState.Gamepad.bRightTrigger;
+		}
+	}
 
 private:
 	XINPUT_STATE m_PreviousState{};
@@ -53,8 +83,8 @@ private:
 	const int m_ControllerIndex;
 };
 
-Controller::Controller(int controllerIndex)
-	:m_pImpl(new ControllerImpl{ controllerIndex })
+Controller::Controller(int controllerIndex, bool invertY)
+	:m_pImpl(new ControllerImpl{ controllerIndex }), m_InvertY{ invertY }
 {
 }
 
@@ -67,6 +97,7 @@ void Controller::Update()
 {
 	m_pImpl->Update();
 
+	//Buttons
 	for (const auto& binding : m_pButtonDownCommands)
 	{
 		if (IsDown(binding.first))
@@ -90,6 +121,18 @@ void Controller::Update()
 			binding.second->Execute();
 		}
 	}
+
+	//Triggers
+	for (const auto& binding : m_pTriggerCommands)
+	{
+		UpdateBinding(binding);
+	}
+
+	//Thumbsticks
+	for (auto& binding : m_pThumbstickCommands)
+	{
+		UpdateBinding(binding);
+	}
 }
 
 bool dae::Controller::IsDown(ControllerButtons button) const
@@ -105,6 +148,55 @@ bool dae::Controller::IsUp(ControllerButtons button) const
 bool dae::Controller::IsPressed(ControllerButtons button) const
 {
 	return m_pImpl->IsPressed(static_cast<unsigned int>(button));
+}
+
+void dae::Controller::UpdateBinding(const std::pair<const ControllerTriggers, std::unique_ptr<SingleValueCommand>>& binding) const
+{
+	constexpr float maxValue{ 255.f };
+	constexpr float deadZone{ 0.10f * maxValue };
+	constexpr float fit{ maxValue - deadZone };
+
+	float value{ m_pImpl->GetValue(binding.first) };
+
+	if (value < deadZone)
+	{
+		return;
+	}
+
+	binding.second->SetValue((value - deadZone) / fit);
+	binding.second->Execute();
+}
+
+void dae::Controller::UpdateBinding(const std::pair<const ControllerThumbsticks, std::unique_ptr<AxisValueCommand>>& binding) const
+{
+	constexpr float maxValue{ 32768 };
+	constexpr float deadZone{ 0.15f * maxValue };
+	constexpr float fit{ maxValue - deadZone };
+
+	glm::vec2 value{ m_pImpl->GetValue(binding.first) };
+
+	//Check deadZones
+	if (abs(value.x) < deadZone && abs(value.y) < deadZone)
+	{
+		return;
+	}
+
+	if (abs(value.x) < deadZone)
+	{
+		value.x = 0.f;
+	}
+	else if (abs(value.y) < deadZone)
+	{
+		value.y = 0.f;
+	}
+
+	if (m_InvertY)
+	{
+		value.y *= -1;
+	}
+
+	binding.second->SetValue((value - deadZone) / fit);
+	binding.second->Execute();
 }
 
 void dae::Controller::MapCommandToButton(ControllerButtons button, std::unique_ptr<Command>&& pCommand, ButtonState state)
@@ -123,5 +215,15 @@ void dae::Controller::MapCommandToButton(ControllerButtons button, std::unique_p
 	default:
 		break;
 	}
+}
+
+void dae::Controller::MapCommandToTrigger(ControllerTriggers trigger, std::unique_ptr<SingleValueCommand>&& pCommand)
+{
+	m_pTriggerCommands.emplace(trigger, std::move(pCommand));
+}
+
+void dae::Controller::MapCommandToThumbstick(ControllerThumbsticks thumbstick, std::unique_ptr<AxisValueCommand>&& pCommand)
+{
+	m_pThumbstickCommands.emplace(thumbstick, std::move(pCommand));
 }
 

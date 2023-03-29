@@ -34,6 +34,12 @@
     <Filter Include="Engine Files\Input\Commands">
       <UniqueIdentifier>{870c4db0-9c94-404b-b6d5-1753a8025371}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Files\Input\Commands\Base Commands">
+      <UniqueIdentifier>{0bd5deeb-f5ad-40d2-8703-08fe09f1a154}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Files\Input\Commands\Game Commands">
+      <UniqueIdentifier>{08b8a46f-8e63-4798-b2d8-116692026f67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -120,17 +126,29 @@
     <ClInclude Include="Controller.h">
       <Filter>Engine Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Command.h">
-      <Filter>Engine Files\Input\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="UpdatePositionCommand.h">
-      <Filter>Engine Files\Input\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="SetPositionCommand.h">
-      <Filter>Engine Files\Input\Commands</Filter>
-    </ClInclude>
     <ClInclude Include="Keyboard.h">
       <Filter>Engine Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleValueCommand.h">
+      <Filter>Engine Files\Input\Commands\Base Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Engine Files\Input\Commands\Base Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdatePositionCommand.h">
+      <Filter>Engine Files\Input\Commands\Game Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPositionCommand.h">
+      <Filter>Engine Files\Input\Commands\Game Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisValueCommand.h">
+      <Filter>Engine Files\Input\Commands\Base Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdatePositionAxisCommand.h">
+      <Filter>Engine Files\Input\Commands\Game Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdatePositionTriggerCommand.h">
+      <Filter>Engine Files\Input\Commands\Game Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -218,17 +236,29 @@
     <ClCompile Include="Controller.cpp">
       <Filter>Engine Files\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Command.cpp">
-      <Filter>Engine Files\Input\Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="UpdatePositionCommand.cpp">
-      <Filter>Engine Files\Input\Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="SetPositionCommand.cpp">
-      <Filter>Engine Files\Input\Commands</Filter>
-    </ClCompile>
     <ClCompile Include="Keyboard.cpp">
       <Filter>Engine Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleValueCommand.cpp">
+      <Filter>Engine Files\Input\Commands\Base Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>Engine Files\Input\Commands\Base Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="SetPositionCommand.cpp">
+      <Filter>Engine Files\Input\Commands\Game Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdatePositionCommand.cpp">
+      <Filter>Engine Files\Input\Commands\Game Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisValueCommand.cpp">
+      <Filter>Engine Files\Input\Commands\Base Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdatePositionAxisCommand.cpp">
+      <Filter>Engine Files\Input\Commands\Game Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdatePositionTriggerCommand.cpp">
+      <Filter>Engine Files\Input\Commands\Game Commands</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

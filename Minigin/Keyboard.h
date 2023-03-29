@@ -11,7 +11,9 @@ namespace dae
 	class Keyboard final
 	{
 	public:
-		Keyboard(const Uint8* pState);
+		explicit Keyboard(const Uint8* pState);
+		virtual ~Keyboard() = default;
+
 		void Update(const SDL_Event& e);
 		void UpdatePressed();
 

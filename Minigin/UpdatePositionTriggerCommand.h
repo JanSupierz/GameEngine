@@ -1,5 +1,5 @@
 #pragma once
-#include "Command.h"
+#include "SingleValueCommand.h"
 #include <glm/glm.hpp>
 
 namespace dae
@@ -7,10 +7,10 @@ namespace dae
     class GameObject;
     class SceneManager;
 
-    class UpdatePositionCommand final : public Command
+    class UpdatePositionTriggerCommand final : public SingleValueCommand
     {
     public:
-        UpdatePositionCommand(GameObject* pGameObject, const glm::vec3& direction);
+        UpdatePositionTriggerCommand(GameObject* pGameObject, const glm::vec2& direction);
 
         void Execute() override;
         void Undo();
@@ -18,8 +18,8 @@ namespace dae
     private:
         GameObject* m_pGameObject;
         SceneManager* m_pSceneManager{ nullptr };
-        glm::vec3 m_OldPosition;
-        glm::vec3 m_Direction;
+        glm::vec2 m_OldPosition;
+        const glm::vec2 m_Direction;
     };
 }
 
