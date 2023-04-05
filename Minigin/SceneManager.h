@@ -13,12 +13,9 @@ namespace dae
 		Scene& CreateScene(const std::string& name);
 
 		void Update(float deltaTime);
-		void FixedUpdate(float fixedTimeStep);
-		void Render(float framePercentage);
+		void Render() const;
 
 		float GetDeltaTime() const;
-		float GetFixedTimeStep() const;
-		float GetFramePercentage() const;
 
 		Scene* GetCurrentScene() const;
 	private:
@@ -29,7 +26,5 @@ namespace dae
 		Scene* m_CurrentScene{};
 
 		float m_DeltaTime{};
-		float m_FixedTimeStep{};
-		float m_FramePercentage{};
 	};
 }

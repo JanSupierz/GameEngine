@@ -1,16 +1,16 @@
-#include "UpdatePositionTriggerCommand.h"
+#include "UpdatePosition1DCommand.h"
 #include "GameObject.h"
 #include "SceneManager.h"
 
 using namespace dae;
 
-UpdatePositionTriggerCommand::UpdatePositionTriggerCommand(GameObject* pGameObject,const glm::vec2& direction)
-    : SingleValueCommand{}, m_pGameObject(pGameObject),
+UpdatePosition1DCommand::UpdatePosition1DCommand(GameObject* pGameObject,const glm::vec2& direction)
+    : Value1DCommand{}, m_pGameObject(pGameObject),
     m_OldPosition(pGameObject->GetLocalPosition()),
     m_pSceneManager(&SceneManager::GetInstance()), m_Direction( direction )
 {};
 
-void UpdatePositionTriggerCommand::Execute()
+void UpdatePosition1DCommand::Execute()
 {
     if (!m_pGameObject) return;
 
@@ -20,7 +20,7 @@ void UpdatePositionTriggerCommand::Execute()
     m_pGameObject->SetPosition(newPosition.x, newPosition.y);
 }
 
-void UpdatePositionTriggerCommand::Undo()
+void UpdatePosition1DCommand::Undo()
 {
     if (!m_pGameObject) return;
 

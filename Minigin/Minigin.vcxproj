@@ -179,7 +179,7 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AxisValueCommand.h" />
+    <ClInclude Include="Value2DCommand.h" />
     <ClInclude Include="CombinedGraphComponent.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Component.h" />
@@ -208,16 +208,16 @@
     <ClInclude Include="RotatorComponent.h" />
     <ClInclude Include="SetPositionCommand.h" />
     <ClInclude Include="Singleton.h" />
-    <ClInclude Include="SingleValueCommand.h" />
+    <ClInclude Include="Value1DCommand.h" />
     <ClInclude Include="TextComponent.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Transform.h" />
-    <ClInclude Include="UpdatePositionAxisCommand.h" />
+    <ClInclude Include="UpdatePosition2DCommand.h" />
     <ClInclude Include="UpdatePositionCommand.h" />
-    <ClInclude Include="UpdatePositionTriggerCommand.h" />
+    <ClInclude Include="UpdatePosition1DCommand.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AxisValueCommand.cpp" />
+    <ClCompile Include="Value2DCommand.cpp" />
     <ClCompile Include="CombinedGraphComponent.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -246,13 +246,13 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="RotatorComponent.cpp" />
     <ClCompile Include="SetPositionCommand.cpp" />
-    <ClCompile Include="SingleValueCommand.cpp" />
+    <ClCompile Include="Value1DCommand.cpp" />
     <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="UpdatePositionAxisCommand.cpp" />
+    <ClCompile Include="UpdatePosition2DCommand.cpp" />
     <ClCompile Include="UpdatePositionCommand.cpp" />
-    <ClCompile Include="UpdatePositionTriggerCommand.cpp" />
+    <ClCompile Include="UpdatePosition1DCommand.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

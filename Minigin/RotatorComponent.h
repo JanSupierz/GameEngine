@@ -9,7 +9,7 @@ namespace dae
 	class RotatorComponent final :public Component
 	{
 	public:
-		virtual void FixedUpdate() override;
+		virtual void Update() override;
 
 		RotatorComponent(const glm::vec3& origin, float radius, float cycleTime, int priority = 0);
 		virtual ~RotatorComponent() = default;

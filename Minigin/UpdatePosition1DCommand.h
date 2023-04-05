@@ -1,5 +1,5 @@
 #pragma once
-#include "AxisValueCommand.h"
+#include "Value1DCommand.h"
 #include <glm/glm.hpp>
 
 namespace dae
@@ -7,10 +7,10 @@ namespace dae
     class GameObject;
     class SceneManager;
 
-    class UpdatePositionAxisCommand final : public AxisValueCommand
+    class UpdatePosition1DCommand final : public Value1DCommand
     {
     public:
-        UpdatePositionAxisCommand(GameObject* pGameObject, float speed);
+        UpdatePosition1DCommand(GameObject* pGameObject, const glm::vec2& direction);
 
         void Execute() override;
         void Undo();
@@ -19,7 +19,7 @@ namespace dae
         GameObject* m_pGameObject;
         SceneManager* m_pSceneManager{ nullptr };
         glm::vec2 m_OldPosition;
-        const float m_Speed;
+        const glm::vec2 m_Direction;
     };
 }
 

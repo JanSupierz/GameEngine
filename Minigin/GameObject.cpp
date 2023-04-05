@@ -30,11 +30,6 @@ dae::GameObject::~GameObject() = default;
 
 	void dae::GameObject::FixedUpdate()
 	{
-		for (auto& pComponent : m_pComponents)
-		{
-			pComponent->FixedUpdate();
-		}
-
 		for (auto& pChild : m_pChildren)
 		{
 			pChild->FixedUpdate();

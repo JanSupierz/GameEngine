@@ -129,7 +129,7 @@
     <ClInclude Include="Keyboard.h">
       <Filter>Engine Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="SingleValueCommand.h">
+    <ClInclude Include="Value1DCommand.h">
       <Filter>Engine Files\Input\Commands\Base Commands</Filter>
     </ClInclude>
     <ClInclude Include="Command.h">
@@ -141,13 +141,13 @@
     <ClInclude Include="SetPositionCommand.h">
       <Filter>Engine Files\Input\Commands\Game Commands</Filter>
     </ClInclude>
-    <ClInclude Include="AxisValueCommand.h">
+    <ClInclude Include="Value2DCommand.h">
       <Filter>Engine Files\Input\Commands\Base Commands</Filter>
     </ClInclude>
-    <ClInclude Include="UpdatePositionAxisCommand.h">
+    <ClInclude Include="UpdatePosition2DCommand.h">
       <Filter>Engine Files\Input\Commands\Game Commands</Filter>
     </ClInclude>
-    <ClInclude Include="UpdatePositionTriggerCommand.h">
+    <ClInclude Include="UpdatePosition1DCommand.h">
       <Filter>Engine Files\Input\Commands\Game Commands</Filter>
     </ClInclude>
   </ItemGroup>
@@ -239,7 +239,7 @@
     <ClCompile Include="Keyboard.cpp">
       <Filter>Engine Files\Input</Filter>
     </ClCompile>
-    <ClCompile Include="SingleValueCommand.cpp">
+    <ClCompile Include="Value1DCommand.cpp">
       <Filter>Engine Files\Input\Commands\Base Commands</Filter>
     </ClCompile>
     <ClCompile Include="Command.cpp">
@@ -251,13 +251,13 @@
     <ClCompile Include="UpdatePositionCommand.cpp">
       <Filter>Engine Files\Input\Commands\Game Commands</Filter>
     </ClCompile>
-    <ClCompile Include="AxisValueCommand.cpp">
+    <ClCompile Include="Value2DCommand.cpp">
       <Filter>Engine Files\Input\Commands\Base Commands</Filter>
     </ClCompile>
-    <ClCompile Include="UpdatePositionAxisCommand.cpp">
+    <ClCompile Include="UpdatePosition2DCommand.cpp">
       <Filter>Engine Files\Input\Commands\Game Commands</Filter>
     </ClCompile>
-    <ClCompile Include="UpdatePositionTriggerCommand.cpp">
+    <ClCompile Include="UpdatePosition1DCommand.cpp">
       <Filter>Engine Files\Input\Commands\Game Commands</Filter>
     </ClCompile>
   </ItemGroup>

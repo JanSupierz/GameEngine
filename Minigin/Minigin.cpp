@@ -86,16 +86,11 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& input = InputManager::GetInstance();
 
 	//Update loop
-	constexpr float fixedTimeStep{ 0.016f };
-	constexpr float maximumAllowedFrameTime{ 0.1f };
-	constexpr float desiredFPS{ 170.f };
+	constexpr float desiredFPS{ 144.f };
 	constexpr int maxWaitingTimeMs{ static_cast<int>(1000 / desiredFPS) };
 
 	auto lastTime{ std::chrono::high_resolution_clock::now() };
 	bool doContinue = true;
-
-	//Make sure to run the fixed update before the first render
-	float timeLag{ fixedTimeStep };
 
 	while (doContinue)
 	{
@@ -104,23 +99,14 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		const float deltaTime{ std::chrono::duration<float>(currentTime - lastTime).count() };
 		lastTime = currentTime;
 
-		timeLag += (std::min)(deltaTime, maximumAllowedFrameTime);
-
 		//Check input
 		doContinue = input.ProcessInput();
-
-		//Fixed update
-		while (timeLag >= fixedTimeStep)
-		{
-			sceneManager.FixedUpdate(fixedTimeStep);
-			timeLag -= fixedTimeStep;	
-		}
 
 		//Update scenes
 		sceneManager.Update(deltaTime);
 		
 		//Render
-		renderer.Render(timeLag / fixedTimeStep);
+		renderer.Render();
 		
 		//Count sleep time
 		const auto sleepTime{ currentTime + std::chrono::milliseconds(maxWaitingTimeMs) - std::chrono::high_resolution_clock::now() };

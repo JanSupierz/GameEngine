@@ -7,7 +7,6 @@ namespace dae
 	{
 	public:
 		virtual void Update();
-		virtual void FixedUpdate();
 		virtual void Render();
 
 		virtual ~Component() = default;

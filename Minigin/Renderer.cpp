@@ -43,7 +43,7 @@ void dae::Renderer::Init(SDL_Window* window)
 	ImGui_ImplOpenGL2_Init();
 }
 
-void dae::Renderer::Render(float framePercentage) const
+void dae::Renderer::Render() const
 {
 	const auto& color = GetBackgroundColor();
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
@@ -53,7 +53,7 @@ void dae::Renderer::Render(float framePercentage) const
 	ImGui_ImplSDL2_NewFrame(m_window);
 	ImGui::NewFrame();
 
-	SceneManager::GetInstance().Render(framePercentage);
+	SceneManager::GetInstance().Render();
 	//ImGui::ShowDemoWindow();
 
 	ImGui::Render();

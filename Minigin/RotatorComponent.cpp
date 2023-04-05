@@ -2,9 +2,9 @@
 #include "SceneManager.h"
 #include "GameObject.h"
 
-void dae::RotatorComponent::FixedUpdate()
+void dae::RotatorComponent::Update()
 {
-	const float deltaTime{ SceneManager::GetInstance().GetFixedTimeStep() };
+	const float deltaTime{ SceneManager::GetInstance().GetDeltaTime() };
 	
 	m_Angle += m_CycleSpeed * deltaTime;
 	

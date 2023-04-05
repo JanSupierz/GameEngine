@@ -40,10 +40,6 @@ void dae::Component::Update()
 {
 }
 
-void dae::Component::FixedUpdate()
-{
-}
-
 void dae::Component::Render()
 {
 }

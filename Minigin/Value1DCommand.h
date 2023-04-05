@@ -3,11 +3,11 @@
 
 namespace dae
 {
-    class SingleValueCommand : public Command
+    class Value1DCommand : public Command
     {
     public:
-        explicit SingleValueCommand();
-        virtual ~SingleValueCommand() = default;
+        explicit Value1DCommand();
+        virtual ~Value1DCommand() = default;
 
         virtual void Execute() = 0;
         void SetValue(float value);

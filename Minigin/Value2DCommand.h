@@ -4,11 +4,11 @@
 
 namespace dae
 {
-    class AxisValueCommand : public Command
+    class Value2DCommand : public Command
     {
     public:
-        explicit AxisValueCommand();
-        virtual ~AxisValueCommand() = default;
+        explicit Value2DCommand();
+        virtual ~Value2DCommand() = default;
 
         virtual void Execute() = 0;
         void SetValue(const glm::vec2& value);

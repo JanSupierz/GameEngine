@@ -1,16 +1,16 @@
-#include "UpdatePositionAxisCommand.h"
+#include "UpdatePosition2DCommand.h"
 #include "GameObject.h"
 #include "SceneManager.h"
 
 using namespace dae;
 
-UpdatePositionAxisCommand::UpdatePositionAxisCommand(GameObject* pGameObject, float speed)
-    : AxisValueCommand{}, m_pGameObject(pGameObject),
+UpdatePosition2DCommand::UpdatePosition2DCommand(GameObject* pGameObject, float speed)
+    : Value2DCommand{}, m_pGameObject(pGameObject),
     m_OldPosition(pGameObject->GetLocalPosition()), m_Speed(speed),
     m_pSceneManager(&SceneManager::GetInstance())
 {};
 
-void UpdatePositionAxisCommand::Execute()
+void UpdatePosition2DCommand::Execute()
 {
     if (!m_pGameObject) return;
 
@@ -20,7 +20,7 @@ void UpdatePositionAxisCommand::Execute()
     m_pGameObject->SetPosition(newPosition.x, newPosition.y);
 }
 
-void UpdatePositionAxisCommand::Undo()
+void UpdatePosition2DCommand::Undo()
 {
     if (!m_pGameObject) return;
 

@@ -1,12 +1,11 @@
 #pragma once
 #include <memory>
-#include <unordered_map>
 
 namespace dae
 {
 	class Command;
-	class SingleValueCommand;
-	class AxisValueCommand;
+	class Value1DCommand;
+	class Value2DCommand;
 
 	enum class ButtonState;
 
@@ -53,12 +52,9 @@ namespace dae
 		bool IsUp(ControllerButtons button) const;
 		bool IsPressed(ControllerButtons button) const;
 
-		void UpdateBinding(const std::pair<const ControllerTriggers, std::unique_ptr<SingleValueCommand>>& binding) const;
-		void UpdateBinding(const std::pair<const ControllerThumbsticks, std::unique_ptr<AxisValueCommand>>& binding) const;
-
 		void MapCommandToButton(ControllerButtons button, std::unique_ptr<Command>&& pCommand, ButtonState state);
-		void MapCommandToTrigger(ControllerTriggers trigger, std::unique_ptr<SingleValueCommand>&& pCommand);
-		void MapCommandToThumbstick(ControllerThumbsticks thumbstick, std::unique_ptr<AxisValueCommand>&& pCommand);
+		void MapCommandToTrigger(ControllerTriggers trigger, std::unique_ptr<Value1DCommand>&& pCommand);
+		void MapCommandToThumbstick(ControllerThumbsticks thumbstick, std::unique_ptr<Value2DCommand>&& pCommand);
 
 		explicit Controller(int controllerIndex, bool invertY = true);
 		~Controller();
@@ -67,17 +63,7 @@ namespace dae
 		Controller& operator=(Controller&&) = default;
 
 	private:
-		bool m_InvertY{ true };
-
 		class ControllerImpl;
 		ControllerImpl* m_pImpl;
-
-		//https://stackoverflow.com/questions/18837857/cant-use-enum-class-as-unordered-map-key
-		std::unordered_map<ControllerButtons, std::unique_ptr<Command>, std::hash<ControllerButtons>> m_pButtonUpCommands;
-		std::unordered_map<ControllerButtons, std::unique_ptr<Command>, std::hash<ControllerButtons>> m_pButtonDownCommands;
-		std::unordered_map<ControllerButtons, std::unique_ptr<Command>, std::hash<ControllerButtons>> m_pButtonPressedCommands;
-
-		std::unordered_map<ControllerTriggers, std::unique_ptr<SingleValueCommand>, std::hash<ControllerTriggers>> m_pTriggerCommands;
-		std::unordered_map<ControllerThumbsticks, std::unique_ptr<AxisValueCommand>, std::hash<ControllerThumbsticks>> m_pThumbstickCommands;
 	};
 }

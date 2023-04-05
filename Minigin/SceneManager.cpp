@@ -11,20 +11,8 @@ void dae::SceneManager::Update(float deltaTime)
 	}
 }
 
-void dae::SceneManager::FixedUpdate(float fixedTimeStep)
+void dae::SceneManager::Render() const
 {
-	m_FixedTimeStep = fixedTimeStep;
-
-	for (auto& scene : m_pScenes)
-	{
-		scene->FixedUpdate();
-	}
-}
-
-void dae::SceneManager::Render(float framePercentage)
-{
-	m_FramePercentage = framePercentage;
-
 	for (const auto& scene : m_pScenes)
 	{
 		scene->Render();
@@ -34,16 +22,6 @@ void dae::SceneManager::Render(float framePercentage)
 float dae::SceneManager::GetDeltaTime() const
 {
 	return m_DeltaTime;
-}
-
-float dae::SceneManager::GetFixedTimeStep() const
-{
-	return m_FixedTimeStep;
-}
-
-float dae::SceneManager::GetFramePercentage() const
-{
-	return m_FramePercentage;
 }
 
 dae::Scene* dae::SceneManager::GetCurrentScene() const
