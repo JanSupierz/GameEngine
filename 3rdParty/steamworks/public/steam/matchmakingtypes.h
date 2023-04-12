@@ -8,6 +8,7 @@
 
 #pragma warning(push)
 #pragma warning(disable : 4996)
+#pragma warning(disable : 6340)
 
 #ifndef MATCHMAKINGTYPES_H
 #define MATCHMAKINGTYPES_H
