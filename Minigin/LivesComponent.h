@@ -17,9 +17,11 @@ namespace dae
 		LivesComponent& operator=(const LivesComponent& other) = default;
 		LivesComponent& operator=(LivesComponent&& other) = default;
 
-		virtual void OnNotify(const void* pEntity, const std::string& event) override;
+		virtual void OnNotify(const void* pData, const std::string& event) override;
 
 	private:
+		void TextToTexture(const std::string& name);
+
 		std::shared_ptr<TextComponent> m_pTextComponent;
 		int m_NrLives{};
 	};

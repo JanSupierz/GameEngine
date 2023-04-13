@@ -10,11 +10,10 @@ namespace dae
 	{
 	public:
 		void Update();
-		void FixedUpdate();
 		void Render() const;
 
 		GameObject(int priority = 0);
-		virtual ~GameObject();
+		virtual ~GameObject() = default;
 		GameObject(const GameObject& other) = default;
 		GameObject(GameObject&& other) = default;
 		GameObject& operator=(const GameObject& other) = default;

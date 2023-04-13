@@ -43,6 +43,9 @@
     <Filter Include="Game Files\Commands">
       <UniqueIdentifier>{08b8a46f-8e63-4798-b2d8-116692026f67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Files\SteamAchievements">
+      <UniqueIdentifier>{d2905bf0-c538-4a3f-a50c-313c2d9a3582}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -159,7 +162,7 @@
     <ClInclude Include="Component.h">
       <Filter>Game Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Achievements.h">
+    <ClInclude Include="AchievementsManager.h">
       <Filter>Game Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="LivesComponent.h">
@@ -167,6 +170,21 @@
     </ClInclude>
     <ClInclude Include="PlayerComponent.h">
       <Filter>Game Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaceBombCommand.h">
+      <Filter>Game Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="BombComponent.h">
+      <Filter>Game Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreComponent.h">
+      <Filter>Game Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoresManager.h">
+      <Filter>Game Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="SteamAchievements.h">
+      <Filter>Game Files\SteamAchievements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -281,7 +299,7 @@
     <ClCompile Include="Component.cpp">
       <Filter>Game Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Achievements.cpp">
+    <ClCompile Include="AchievementsManager.cpp">
       <Filter>Game Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
@@ -292,6 +310,21 @@
     </ClCompile>
     <ClCompile Include="PlayerComponent.cpp">
       <Filter>Game Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaceBombCommand.cpp">
+      <Filter>Game Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="BombComponent.cpp">
+      <Filter>Game Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreComponent.cpp">
+      <Filter>Game Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoresManager.cpp">
+      <Filter>Game Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="SteamAchievements.cpp">
+      <Filter>Game Files\SteamAchievements</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

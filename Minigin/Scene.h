@@ -4,17 +4,21 @@
 namespace dae
 {
 	class GameObject;
+	class Observer;
+
 	class Scene final
 	{
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
 		void Add(std::shared_ptr<GameObject> object);
 		void Remove(std::shared_ptr<GameObject> object);
+
+		void Add(std::shared_ptr<Observer> observer);
+		void Remove(std::shared_ptr<Observer> observer);
+
 		void RemoveAll();
-		void CheckParentException(std::shared_ptr<GameObject> object) const;
 
 		void Update();
-		void FixedUpdate();
 		void Render() const;
 
 		~Scene();
@@ -28,6 +32,9 @@ namespace dae
 
 		std::string m_name;
 		std::vector < std::shared_ptr<GameObject>> m_pObjects{};
+
+		//Observers are not updated/rendered
+		std::vector < std::shared_ptr<Observer>> m_pObservers{};
 
 		static unsigned int m_idCounter; 
 	};

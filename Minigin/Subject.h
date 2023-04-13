@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <memory>
 
 namespace dae
 {
@@ -9,14 +10,15 @@ namespace dae
     class Subject
     {
     public:
-        void AddObserver(Observer* pObserver);
-        void RemoveObserver(Observer* pObserver);
+        virtual ~Subject();
+        void AddObserver(std::weak_ptr<Observer>  wpObserver);
+        void RemoveObserver(std::weak_ptr<Observer>  wpObserver);
 
     protected:
-        void Notify(const void* pEntity, const std::string& event) const;
+        void Notify(const void* pData, const std::string& event) const;
 
     private:
-        std::vector<Observer*> m_pObservers{};
+        std::vector<std::weak_ptr<Observer>> m_wpObservers{};
     };
 }
 

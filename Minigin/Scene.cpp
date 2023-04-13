@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "GameObject.h"
+#include "Observer.h"
 #include <algorithm>
 
 using namespace dae;
@@ -35,6 +36,16 @@ void Scene::Add(std::shared_ptr<GameObject> object)
 	std::sort(m_pObjects.begin(), m_pObjects.end(), compareFunction);
 }
 
+void Scene::Add(std::shared_ptr<Observer> observer)
+{
+	m_pObservers.emplace_back(std::move(observer));
+}
+
+void Scene::Remove(std::shared_ptr<Observer> observer)
+{
+	m_pObservers.erase(std::remove(m_pObservers.begin(), m_pObservers.end(), observer), m_pObservers.end());
+}
+
 void Scene::Remove(std::shared_ptr<GameObject> object)
 {
 	m_pObjects.erase(std::remove(m_pObjects.begin(), m_pObjects.end(), object), m_pObjects.end());
@@ -43,6 +54,7 @@ void Scene::Remove(std::shared_ptr<GameObject> object)
 void Scene::RemoveAll()
 {
 	m_pObjects.clear();
+	m_pObservers.clear();
 }
 
 void Scene::Update()
@@ -56,14 +68,6 @@ void Scene::Update()
 	}
 
 	m_pObjects.erase(std::remove_if(m_pObjects.begin(), m_pObjects.end(), [&](std::shared_ptr<GameObject> pGameObject) {return pGameObject->IsDestroyed(); }), m_pObjects.end());
-}
-
-void dae::Scene::FixedUpdate()
-{
-	for (auto& pObject : m_pObjects)
-	{
-		pObject->FixedUpdate();
-	}
 }
 
 void Scene::Render() const

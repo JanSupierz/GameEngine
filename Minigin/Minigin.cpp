@@ -11,6 +11,7 @@
 #include "ResourceManager.h"
 #include <chrono>
 #include <thread>
+#include "SteamAchievements.h"
 
 SDL_Window* g_window{};
 
@@ -80,6 +81,16 @@ dae::Minigin::~Minigin()
 void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
+
+	std::vector<Achievement_t> achievements
+	{
+		_ACH_ID(ACH_WIN_ONE_GAME, "Winner"),
+		_ACH_ID(ACH_WIN_100_GAMES, "Champion"),
+		_ACH_ID(ACH_TRAVEL_FAR_ACCUM, "Interstellar"),
+		_ACH_ID(ACH_TRAVEL_FAR_SINGLE, "Orbiter"),
+	};
+
+	dae::SteamAchievements::GetInstance().Initialize(achievements, true);
 
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();

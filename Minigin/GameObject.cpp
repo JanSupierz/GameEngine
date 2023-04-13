@@ -13,8 +13,6 @@ dae::GameObject::GameObject(int priority)
 {
 }
 
-dae::GameObject::~GameObject() = default;
-
 	void dae::GameObject::Update()
 	{
 		for (auto& pComponent : m_pComponents)
@@ -25,14 +23,6 @@ dae::GameObject::~GameObject() = default;
 		for (auto& pChild : m_pChildren)
 		{
 			pChild->Update();
-		}
-	}
-
-	void dae::GameObject::FixedUpdate()
-	{
-		for (auto& pChild : m_pChildren)
-		{
-			pChild->FixedUpdate();
 		}
 	}
 

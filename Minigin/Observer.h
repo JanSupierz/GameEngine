@@ -7,7 +7,7 @@ namespace dae
 	{
 	public:
 		virtual ~Observer() = default;
-		virtual void OnNotify(const void* pEntity, const std::string& event) = 0;
+		virtual void OnNotify(const void* pData, const std::string& event) = 0;
 	};
 }
 

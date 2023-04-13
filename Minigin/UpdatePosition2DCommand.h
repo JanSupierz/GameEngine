@@ -13,12 +13,10 @@ namespace dae
         UpdatePosition2DCommand(GameObject* pGameObject, float speed);
 
         void Execute() override;
-        void Undo();
 
     private:
         GameObject* m_pGameObject;
         SceneManager* m_pSceneManager{ nullptr };
-        glm::vec2 m_OldPosition;
         const float m_Speed;
     };
 }

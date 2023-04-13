@@ -9,22 +9,45 @@ dae::LivesComponent::LivesComponent(int nrLives, std::shared_ptr<TextComponent> 
 {
 }
 
-void dae::LivesComponent::OnNotify(const void* pEntity, const std::string& event)
+void dae::LivesComponent::OnNotify(const void* pData, const std::string& event)
 {
 	if (event == "PlayerDied")
 	{
 		--m_NrLives;
 
-		const auto pPlayer{ static_cast<const PlayerComponent*>(pEntity) };
-		std::string text{ pPlayer->GetName() + ": " + std::to_string(m_NrLives) + " lives" };
+		const auto pPlayerPair{ static_cast<const std::pair<PlayerComponent*, PlayerComponent*>*>(pData) };
+		const auto pPlayer{ pPlayerPair->second };
 
-		if (m_pTextComponent)
-		{
-			m_pTextComponent->SetTextToTexture(text);
-		}
-		else
-		{
-			std::cout << text << '\n';
-		}
+		TextToTexture(pPlayer->GetName());
+		return;
+	}
+
+	if (event == "Start")
+	{
+		const auto pPlayer{ static_cast<const PlayerComponent*>(pData) };
+
+		TextToTexture(pPlayer->GetName());
+		return;
+	}
+
+	//Test add/remove observer
+	if (event == "AddedObserver") //"RemovedObserver"
+	{
+		TextToTexture("Subject");
+		return;
+	}
+}
+
+void dae::LivesComponent::TextToTexture(const std::string& name)
+{
+	std::string text{ name + ": " + std::to_string(m_NrLives) + " lives" };
+
+	if (m_pTextComponent)
+	{
+		m_pTextComponent->SetTextToTexture(text);
+	}
+	else
+	{
+		std::cout << text << '\n';
 	}
 }
