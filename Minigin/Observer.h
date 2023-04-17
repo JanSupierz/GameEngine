@@ -1,13 +1,15 @@
 #pragma once
-#include <iostream>
-
 namespace dae
 {
+	template <class EventType>
+	class Subject;
+
+	template <class EventType>
 	class Observer
 	{
 	public:
 		virtual ~Observer() = default;
-		virtual void OnNotify(const void* pData, const std::string& event) = 0;
+		virtual void OnNotify(const EventType& event) = 0;
 	};
 }
 

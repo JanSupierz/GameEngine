@@ -36,16 +36,6 @@ void Scene::Add(std::shared_ptr<GameObject> object)
 	std::sort(m_pObjects.begin(), m_pObjects.end(), compareFunction);
 }
 
-void Scene::Add(std::shared_ptr<Observer> observer)
-{
-	m_pObservers.emplace_back(std::move(observer));
-}
-
-void Scene::Remove(std::shared_ptr<Observer> observer)
-{
-	m_pObservers.erase(std::remove(m_pObservers.begin(), m_pObservers.end(), observer), m_pObservers.end());
-}
-
 void Scene::Remove(std::shared_ptr<GameObject> object)
 {
 	m_pObjects.erase(std::remove(m_pObjects.begin(), m_pObjects.end(), object), m_pObjects.end());
@@ -54,7 +44,6 @@ void Scene::Remove(std::shared_ptr<GameObject> object)
 void Scene::RemoveAll()
 {
 	m_pObjects.clear();
-	m_pObservers.clear();
 }
 
 void Scene::Update()

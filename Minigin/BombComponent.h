@@ -1,13 +1,14 @@
 #pragma once
 #include "Component.h"
-#include "Subject.h"
+#include <memory>
 
 namespace dae
 {
 	class GameObject;
 	class PlayerComponent;
+	class BombExplodedEvent;
 
-	class BombComponent final : public Component, public Subject
+	class BombComponent final : public Component
 	{
 	public:
 		BombComponent(float explosionTime, std::shared_ptr<PlayerComponent> pPlayer, int priority = 0);
@@ -19,11 +20,13 @@ namespace dae
 
 		virtual void Update() override;
 		PlayerComponent* GetPlayer() const;
-
+		BombExplodedEvent* GetExplodeEvent() const;
 	private:
-		void Explode() const;
+		void Explode();
 		float m_TimeLeft;
 		std::shared_ptr<PlayerComponent> m_pPlayer;
+
+		std::shared_ptr<BombExplodedEvent> m_pBombExploded;
 	};
 }
 

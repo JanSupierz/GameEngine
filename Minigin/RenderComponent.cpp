@@ -10,13 +10,13 @@ void dae::RenderComponent::Render()
 	{
 		const glm::vec3 position{ GetOwner()->GetWorldPosition() };
 
-		Renderer::GetInstance().RenderTexture(*m_pTexture, position.x, position.y);
+		Renderer::GetInstance()->RenderTexture(*m_pTexture, position.x, position.y);
 	}
 }
 
 void dae::RenderComponent::SetTexture(const std::string& filename)
 {
-	m_pTexture = ResourceManager::GetInstance().LoadTexture(filename);
+	m_pTexture = ResourceManager::GetInstance()->LoadTexture(filename);
 }
 
 void dae::RenderComponent::SetTexture(std::shared_ptr<Texture2D> pTexture)

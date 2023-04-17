@@ -4,7 +4,6 @@
 namespace dae
 {
 	class GameObject;
-	class Observer;
 
 	class Scene final
 	{
@@ -12,9 +11,6 @@ namespace dae
 	public:
 		void Add(std::shared_ptr<GameObject> object);
 		void Remove(std::shared_ptr<GameObject> object);
-
-		void Add(std::shared_ptr<Observer> observer);
-		void Remove(std::shared_ptr<Observer> observer);
 
 		void RemoveAll();
 
@@ -32,9 +28,6 @@ namespace dae
 
 		std::string m_name;
 		std::vector < std::shared_ptr<GameObject>> m_pObjects{};
-
-		//Observers are not updated/rendered
-		std::vector < std::shared_ptr<Observer>> m_pObservers{};
 
 		static unsigned int m_idCounter; 
 	};

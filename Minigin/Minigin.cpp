@@ -65,14 +65,14 @@ dae::Minigin::Minigin(const std::string &dataPath)
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	Renderer::GetInstance().Init(g_window);
+	Renderer::GetInstance()->Init(g_window);
 
-	ResourceManager::GetInstance().Init(dataPath);
+	ResourceManager::GetInstance()->Init(dataPath);
 }
 
 dae::Minigin::~Minigin()
 {
-	Renderer::GetInstance().Destroy();
+	Renderer::GetInstance()->Destroy();
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;
 	SDL_Quit();
@@ -90,7 +90,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		_ACH_ID(ACH_TRAVEL_FAR_SINGLE, "Orbiter"),
 	};
 
-	dae::SteamAchievements::GetInstance().Initialize(achievements, true);
+	dae::SteamAchievements::GetInstance()->Initialize(achievements, true);
 
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
@@ -111,13 +111,13 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		lastTime = currentTime;
 
 		//Check input
-		doContinue = input.ProcessInput();
+		doContinue = input->ProcessInput();
 
 		//Update scenes
-		sceneManager.Update(deltaTime);
+		sceneManager->Update(deltaTime);
 		
 		//Render
-		renderer.Render();
+		renderer->Render();
 		
 		//Count sleep time
 		const auto sleepTime{ currentTime + std::chrono::milliseconds(maxWaitingTimeMs) - std::chrono::high_resolution_clock::now() };

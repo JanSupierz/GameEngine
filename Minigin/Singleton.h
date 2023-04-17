@@ -1,13 +1,15 @@
 #pragma once
+#include <memory>
+
 namespace dae
 {
 	template <typename T>
 	class Singleton
 	{
 	public:
-		static T& GetInstance()
+		static std::shared_ptr<T>& GetInstance()
 		{
-			static T instance{};
+			static std::shared_ptr<T> instance = std::shared_ptr<T>(new T());
 			return instance;
 		}
 

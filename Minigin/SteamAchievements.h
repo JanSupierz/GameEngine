@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "Observer.h"
 
 namespace dae
 {
@@ -17,7 +18,7 @@ namespace dae
 		int m_iIconImage{};
 	};
 
-	// Defining our achievements
+	//Define your achievements
 	enum EAchievements
 	{
 		ACH_WIN_ONE_GAME = 0,
@@ -26,13 +27,16 @@ namespace dae
 		ACH_TRAVEL_FAR_SINGLE = 3,
 	};
 
-	class SteamAchievements final : public dae::Singleton<SteamAchievements>
+	class GainedPointEvent;
+
+	class SteamAchievements final : public dae::Singleton<SteamAchievements>, public Observer<GainedPointEvent>
 	{
 	public:
 		void Initialize(std::vector<Achievement_t>& achievemnets, bool reset);
-		bool SetAchievement(EAchievements achievement);
+		virtual void OnNotify(const GainedPointEvent& event) override;
 
 	private:
+		bool SetAchievement(EAchievements achievement);
 		std::vector<Achievement_t> m_Achievements;
 	};
 }

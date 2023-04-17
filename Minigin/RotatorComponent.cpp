@@ -4,7 +4,7 @@
 
 void dae::RotatorComponent::Update()
 {
-	const float deltaTime{ SceneManager::GetInstance().GetDeltaTime() };
+	const float deltaTime{ SceneManager::GetInstance()->GetDeltaTime() };
 	
 	m_Angle += m_CycleSpeed * deltaTime;
 	

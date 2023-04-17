@@ -1,20 +1,26 @@
 #include "ScoresManager.h"
 #include "PlayerComponent.h"
+#include "GainedPointEvent.h"
+#include "PlayerDiedEvent.h"
 
-void dae::ScoresManager::OnNotify(const void* pData, const std::string& event)
+dae::ScoresManager::ScoresManager()
+	:m_pGainedPoint{ std::make_unique<GainedPointEvent>() }
 {
-	if (event == "PlayerDied")
+}
+
+void dae::ScoresManager::OnNotify(const PlayerDiedEvent& event)
+{
+	const auto pKiller{ event.GetKiller() };
+	const auto pKilled{ event.GetKilled() };
+
+	if (pKiller != nullptr && pKilled != nullptr && pKiller != pKilled)
 	{
-		const auto pPlayerPair{ static_cast<const std::pair<PlayerComponent*, PlayerComponent*>*>(pData) };
-
-		const auto pKiller{ pPlayerPair->first };
-		const auto pKilled{ pPlayerPair->second };
-
-		if (pKiller && pKilled && pKiller != pKilled)
-		{
-			Notify(pKiller, "GainedPoint");
-		}
-
-		return;
+		pKiller->SetScore(pKiller->GetScore() + 50);
+		m_pGainedPoint->operator()(pKiller);
 	}
+}
+
+dae::GainedPointEvent* dae::ScoresManager::GetGainedPointEvent() const
+{
+	return m_pGainedPoint.get();
 }

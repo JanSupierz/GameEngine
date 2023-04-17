@@ -6,7 +6,7 @@ using namespace dae;
 
 UpdatePosition1DCommand::UpdatePosition1DCommand(GameObject* pGameObject,const glm::vec2& direction)
     : Value1DCommand{}, m_pGameObject(pGameObject),
-    m_pSceneManager(&SceneManager::GetInstance()), m_Direction( direction )
+    m_pSceneManager(SceneManager::GetInstance().get()), m_Direction( direction )
 {};
 
 void UpdatePosition1DCommand::Execute()

@@ -3,33 +3,29 @@
 #include "TextComponent.h"
 #include <iostream>
 #include "PlayerComponent.h"
+#include "GainedPointEvent.h"
 
 dae::ScoreComponent::ScoreComponent(std::shared_ptr<PlayerComponent> pPlayer, std::shared_ptr<TextComponent> pTextComponent, int priority)
-	:Component(priority), m_pTextComponent(pTextComponent), m_Score{}, m_pPlayer{ pPlayer }
+	:Component(priority), m_pTextComponent(pTextComponent), m_pPlayer{ pPlayer }
 {
-	UpdateHUD(m_pPlayer->GetName());
+	UpdateHUD();
 }
 
-void dae::ScoreComponent::OnNotify(const void* pData, const std::string& event)
+
+void dae::ScoreComponent::OnNotify(const GainedPointEvent& event)
 {
-	if (event == "GainedPoint")
+	const auto pPlayer{ event.GetPlayer() };
+	
+	//Is my player
+	if (pPlayer == m_pPlayer.get())
 	{
-		const auto pPlayer{ static_cast<const PlayerComponent*>(pData) };
-
-		if (pPlayer != m_pPlayer.get()) return;
-
-		++m_Score;
-		UpdateHUD(pPlayer->GetName());
-
-		Notify(&m_Score, "ScoreChanged");
-
-		return;
+		UpdateHUD();
 	}
 }
 
-void dae::ScoreComponent::UpdateHUD(const std::string& name)
+void dae::ScoreComponent::UpdateHUD()
 {
-	std::string text{ name + ": " + std::to_string(m_Score) + " score" };
+	std::string text{ m_pPlayer->GetName() + ": " + std::to_string(m_pPlayer->GetScore()) + " score"};
 
 	if (m_pTextComponent)
 	{

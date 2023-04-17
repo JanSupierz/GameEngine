@@ -203,14 +203,17 @@ xcopy "$(SolutionDir)3rdParty\steamworks\redistributable_bin\win64\*.dll" "$(Out
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AchievementsManager.h" />
     <ClInclude Include="BombComponent.h" />
+    <ClInclude Include="BombExplodedEvent.h" />
+    <ClInclude Include="GainedPointEvent.h" />
     <ClInclude Include="LivesComponent.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="PlaceBombCommand.h" />
     <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="PlayerDiedEvent.h" />
     <ClInclude Include="ScoreComponent.h" />
     <ClInclude Include="ScoresManager.h" />
+    <ClInclude Include="StartInfoComponent.h" />
     <ClInclude Include="SteamAchievements.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="Value2DCommand.h" />
@@ -251,14 +254,17 @@ xcopy "$(SolutionDir)3rdParty\steamworks\redistributable_bin\win64\*.dll" "$(Out
     <ClInclude Include="UpdatePosition1DCommand.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AchievementsManager.cpp" />
     <ClCompile Include="BombComponent.cpp" />
+    <ClCompile Include="BombExplodedEvent.cpp" />
+    <ClCompile Include="GainedPointEvent.cpp" />
     <ClCompile Include="LivesComponent.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="PlaceBombCommand.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
+    <ClCompile Include="PlayerDiedEvent.cpp" />
     <ClCompile Include="ScoreComponent.cpp" />
     <ClCompile Include="ScoresManager.cpp" />
+    <ClCompile Include="StartInfoComponent.cpp" />
     <ClCompile Include="SteamAchievements.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="Value2DCommand.cpp" />

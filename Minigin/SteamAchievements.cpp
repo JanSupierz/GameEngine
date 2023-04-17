@@ -1,5 +1,7 @@
 #include "SteamAchievements.h"
 #include "isteamuserstats.h"
+#include "GainedPointEvent.h"
+#include "PlayerComponent.h"
 
 bool dae::SteamAchievements::SetAchievement(EAchievements achievement)
 {
@@ -26,5 +28,15 @@ void dae::SteamAchievements::Initialize(std::vector<Achievement_t>& achievements
 		{
 			SteamUserStats()->ClearAchievement(achievement.m_pchAchievementID);
 		}
+	}
+}
+
+void dae::SteamAchievements::OnNotify(const GainedPointEvent& event)
+{
+	int score{ event.GetPlayer()->GetScore() };
+
+	if (score >= 500)
+	{
+		SetAchievement(ACH_WIN_ONE_GAME);
 	}
 }

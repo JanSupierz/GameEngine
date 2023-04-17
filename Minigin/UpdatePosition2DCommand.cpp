@@ -6,7 +6,7 @@ using namespace dae;
 
 UpdatePosition2DCommand::UpdatePosition2DCommand(GameObject* pGameObject, float speed)
     : Value2DCommand{}, m_pGameObject(pGameObject), m_Speed(speed),
-    m_pSceneManager(&SceneManager::GetInstance())
+    m_pSceneManager(SceneManager::GetInstance().get())
 {};
 
 void UpdatePosition2DCommand::Execute()

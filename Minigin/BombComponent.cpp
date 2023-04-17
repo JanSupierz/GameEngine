@@ -3,14 +3,16 @@
 #include "SceneManager.h"
 #include "PlayerComponent.h"
 
+#include "BombExplodedEvent.h"
+
 dae::BombComponent::BombComponent(float time, std::shared_ptr<PlayerComponent> pPlayer, int priority)
-	:Component(priority), m_TimeLeft{ time }, m_pPlayer(pPlayer)
+	:Component(priority), m_TimeLeft{ time }, m_pPlayer(pPlayer), m_pBombExploded{std::make_unique<BombExplodedEvent>() }
 {
 }
 
 void dae::BombComponent::Update()
 {
-	m_TimeLeft -= SceneManager::GetInstance().GetDeltaTime();
+	m_TimeLeft -= SceneManager::GetInstance()->GetDeltaTime();
 
 	if (m_TimeLeft <= 0)
 	{
@@ -18,13 +20,18 @@ void dae::BombComponent::Update()
 	}
 }
 
+void dae::BombComponent::Explode()
+{
+	m_pBombExploded->operator()(this);
+	GetOwner()->Destroy();
+}
+
 dae::PlayerComponent* dae::BombComponent::GetPlayer() const
 {
 	return m_pPlayer.get();
 }
 
-void dae::BombComponent::Explode() const
+dae::BombExplodedEvent* dae::BombComponent::GetExplodeEvent() const
 {
-	Notify(this, "BombExploded");
-	GetOwner()->Destroy();
+	return m_pBombExploded.get();
 }

@@ -5,6 +5,7 @@
 #include "RenderComponent.h"
 #include "BombComponent.h"
 #include "PlayerComponent.h"
+#include "BombExplodedEvent.h"
 
 using namespace dae;
 
@@ -19,7 +20,7 @@ void PlaceBombCommand::Execute()
 
     glm::vec3 position = m_pGameObject->GetWorldPosition();
 
-    const auto pScene{ SceneManager::GetInstance().GetCurrentScene() };
+    const auto pScene{ SceneManager::GetInstance()->GetCurrentScene() };
 
     //Create bomb
 	const auto pBomb{ std::make_shared<GameObject>() };
@@ -35,7 +36,7 @@ void PlaceBombCommand::Execute()
     //Make all players observe the bomb
     for (const auto pPlayer : PlayerComponent::GetPlayers())
     {
-        pBombComponent->AddObserver(pPlayer->shared_from_this());
+        pBombComponent->GetExplodeEvent()->AddObserver(pPlayer->shared_from_this());
     }
 
     pScene->Add(pBomb);

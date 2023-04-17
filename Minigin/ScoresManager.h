@@ -1,20 +1,28 @@
 #pragma once
+#include "Singleton.h"
 #include "Observer.h"
-#include "Subject.h"
 
 namespace dae
 {
-    class ScoresManager final : public Observer, public Subject
+    class GainedPointEvent;
+    class PlayerDiedEvent;
+
+    class ScoresManager final :public dae::Singleton<ScoresManager>, public Observer<PlayerDiedEvent>
     {
     public:
-        ScoresManager() = default;
+        ScoresManager();
         virtual ~ScoresManager() = default;
         ScoresManager(const ScoresManager& other) = default;
         ScoresManager(ScoresManager&& other) = default;
         ScoresManager& operator=(const ScoresManager& other) = default;
         ScoresManager& operator=(ScoresManager&& other) = default;
 
-        virtual void OnNotify(const void* pdata, const std::string& event) override;
+        virtual void OnNotify(const PlayerDiedEvent& event) override;
+
+        GainedPointEvent* GetGainedPointEvent() const;
+
+    private:
+        std::unique_ptr<GainedPointEvent> m_pGainedPoint;
     };
 }
 

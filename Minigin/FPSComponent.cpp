@@ -6,7 +6,7 @@
 
 void dae::FPSComponent::Update()
 {
-	const float deltaTime{ SceneManager::GetInstance().GetDeltaTime() };
+	const float deltaTime{ SceneManager::GetInstance()->GetDeltaTime() };
 
 	//frameRate = frames/elapsedTime
 	++m_NrFrames;

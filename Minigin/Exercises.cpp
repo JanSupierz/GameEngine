@@ -210,7 +210,7 @@ namespace Exercises
 		auto pTextImage = std::make_shared<dae::GameObject>();
 
 		auto pTextRenderer = std::make_shared<dae::RenderComponent>();
-		auto pProgTextComponent = std::make_shared<dae::TextComponent>(pTextRenderer, dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36));
+		auto pProgTextComponent = std::make_shared<dae::TextComponent>(pTextRenderer, dae::ResourceManager::GetInstance()->LoadFont("Lingua.otf", 36));
 		pProgTextComponent->SetTextToTexture("Programming 4 Assignment");
 
 		pTextImage->AddComponent(pTextRenderer);
@@ -231,7 +231,7 @@ namespace Exercises
 
 		//Text rendendering
 		auto pFrameRateRenderer = std::make_shared<dae::RenderComponent>();
-		auto pTextComponent = std::make_shared<dae::TextComponent>(pFrameRateRenderer, dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20));
+		auto pTextComponent = std::make_shared<dae::TextComponent>(pFrameRateRenderer, dae::ResourceManager::GetInstance()->LoadFont("Lingua.otf", 20));
 		pTextComponent->SetColor({ 200,200,0 });
 
 		//FPS component

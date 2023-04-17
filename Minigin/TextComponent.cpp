@@ -23,7 +23,7 @@ void dae::TextComponent::SetTextToTexture(const std::string& text)
 			throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
 		}
 
-		auto pTexture = SDL_CreateTextureFromSurface(Renderer::GetInstance().GetSDLRenderer(), surf);
+		auto pTexture = SDL_CreateTextureFromSurface(Renderer::GetInstance()->GetSDLRenderer(), surf);
 
 		if (pTexture == nullptr)
 		{
