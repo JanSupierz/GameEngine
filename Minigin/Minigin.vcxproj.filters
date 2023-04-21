@@ -4,9 +4,6 @@
     <Filter Include="Game Files">
       <UniqueIdentifier>{78f42027-c3e5-4ba6-a5f6-a355bce5032b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game Files\Components">
-      <UniqueIdentifier>{e533416f-2046-45ff-b473-4ce2235ed2a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
@@ -31,40 +28,19 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Engine Files\Input\Commands">
-      <UniqueIdentifier>{870c4db0-9c94-404b-b6d5-1753a8025371}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game Files\Systems">
-      <UniqueIdentifier>{c0b1f6fc-484a-43c8-ab71-ad4e649e0d5f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game Files\Commands">
-      <UniqueIdentifier>{08b8a46f-8e63-4798-b2d8-116692026f67}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game Files\Systems\SteamAchievements">
-      <UniqueIdentifier>{d2905bf0-c538-4a3f-a50c-313c2d9a3582}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Files\ObserverPattern">
       <UniqueIdentifier>{ca836878-a400-41b6-9996-4a5b0c6bc9e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Files\ObserverPattern\Events">
-      <UniqueIdentifier>{bb104d69-90e0-42e4-9510-a328e35ba253}</UniqueIdentifier>
+    <Filter Include="Engine Files\EventQueue">
+      <UniqueIdentifier>{fcb9db0f-8587-4a64-8661-ba31a4f50bbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Files\Input\Commands">
+      <UniqueIdentifier>{b5032f86-69f0-4e66-a504-ebd2fda23f3f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
       <Filter>Other Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderComponent.h">
-      <Filter>Game Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="FPSComponent.h">
-      <Filter>Game Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="TextComponent.h">
-      <Filter>Game Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="RotatorComponent.h">
-      <Filter>Game Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="imstb_truetype.h">
       <Filter>Engine Files\Rendering\ImGui Files</Filter>
@@ -92,12 +68,6 @@
     </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>Game Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphComponent.h">
-      <Filter>Game Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="CombinedGraphComponent.h">
-      <Filter>Game Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Engine Files\Scene</Filter>
@@ -135,85 +105,40 @@
     <ClInclude Include="Keyboard.h">
       <Filter>Engine Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="UpdatePositionCommand.h">
-      <Filter>Game Files\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="SetPositionCommand.h">
-      <Filter>Game Files\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="UpdatePosition2DCommand.h">
-      <Filter>Game Files\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="UpdatePosition1DCommand.h">
-      <Filter>Game Files\Commands</Filter>
-    </ClInclude>
     <ClInclude Include="Subject.h">
       <Filter>Engine Files\ObserverPattern</Filter>
     </ClInclude>
     <ClInclude Include="Observer.h">
       <Filter>Engine Files\ObserverPattern</Filter>
     </ClInclude>
-    <ClInclude Include="Command.h">
+    <ClInclude Include="EventQueue.h">
+      <Filter>Engine Files\EventQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="EventListener.h">
+      <Filter>Engine Files\EventQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="QueueEvent.h">
+      <Filter>Engine Files\EventQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager.h">
+      <Filter>Engine Files\EventQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="Value2DCommand.h">
       <Filter>Engine Files\Input\Commands</Filter>
     </ClInclude>
     <ClInclude Include="Value1DCommand.h">
       <Filter>Engine Files\Input\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Value2DCommand.h">
+    <ClInclude Include="Command.h">
       <Filter>Engine Files\Input\Commands</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
-      <Filter>Game Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="LivesComponent.h">
-      <Filter>Game Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerComponent.h">
-      <Filter>Game Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="PlaceBombCommand.h">
-      <Filter>Game Files\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="BombComponent.h">
-      <Filter>Game Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreComponent.h">
-      <Filter>Game Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoresManager.h">
-      <Filter>Game Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="SteamAchievements.h">
-      <Filter>Game Files\Systems\SteamAchievements</Filter>
-    </ClInclude>
-    <ClInclude Include="StartInfoComponent.h">
-      <Filter>Game Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="BombExplodedEvent.h">
-      <Filter>Engine Files\ObserverPattern\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="GainedPointEvent.h">
-      <Filter>Engine Files\ObserverPattern\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerDiedEvent.h">
-      <Filter>Engine Files\ObserverPattern\Events</Filter>
+      <Filter>Game Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Minigin.cpp">
       <Filter>Engine Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderComponent.cpp">
-      <Filter>Game Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="FPSComponent.cpp">
-      <Filter>Game Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="TextComponent.cpp">
-      <Filter>Game Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="RotatorComponent.cpp">
-      <Filter>Game Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="imgui.cpp">
       <Filter>Engine Files\Rendering\ImGui Files</Filter>
@@ -238,12 +163,6 @@
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphComponent.cpp">
-      <Filter>Game Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="CombinedGraphComponent.cpp">
-      <Filter>Game Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>Engine Files\Input</Filter>
@@ -272,26 +191,11 @@
     <ClCompile Include="imgui_plot.cpp">
       <Filter>Engine Files\Rendering\ImGui Files</Filter>
     </ClCompile>
-    <ClCompile Include="Exercises.cpp">
-      <Filter>Other Files</Filter>
-    </ClCompile>
     <ClCompile Include="Controller.cpp">
       <Filter>Engine Files\Input</Filter>
     </ClCompile>
     <ClCompile Include="Keyboard.cpp">
       <Filter>Engine Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="SetPositionCommand.cpp">
-      <Filter>Game Files\Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="UpdatePositionCommand.cpp">
-      <Filter>Game Files\Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="UpdatePosition2DCommand.cpp">
-      <Filter>Game Files\Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="UpdatePosition1DCommand.cpp">
-      <Filter>Game Files\Commands</Filter>
     </ClCompile>
     <ClCompile Include="Subject.cpp">
       <Filter>Engine Files\ObserverPattern</Filter>
@@ -299,53 +203,29 @@
     <ClCompile Include="Observer.cpp">
       <Filter>Engine Files\ObserverPattern</Filter>
     </ClCompile>
+    <ClCompile Include="EventQueue.cpp">
+      <Filter>Engine Files\EventQueue</Filter>
+    </ClCompile>
+    <ClCompile Include="EventListener.cpp">
+      <Filter>Engine Files\EventQueue</Filter>
+    </ClCompile>
+    <ClCompile Include="QueueEvent.cpp">
+      <Filter>Engine Files\EventQueue</Filter>
+    </ClCompile>
+    <ClCompile Include="EventManager.cpp">
+      <Filter>Engine Files\EventQueue</Filter>
+    </ClCompile>
+    <ClCompile Include="Value2DCommand.cpp">
+      <Filter>Engine Files\Input\Commands</Filter>
+    </ClCompile>
     <ClCompile Include="Command.cpp">
       <Filter>Engine Files\Input\Commands</Filter>
     </ClCompile>
     <ClCompile Include="Value1DCommand.cpp">
       <Filter>Engine Files\Input\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="Value2DCommand.cpp">
-      <Filter>Engine Files\Input\Commands</Filter>
-    </ClCompile>
     <ClCompile Include="Component.cpp">
-      <Filter>Game Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
       <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LivesComponent.cpp">
-      <Filter>Game Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerComponent.cpp">
-      <Filter>Game Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="PlaceBombCommand.cpp">
-      <Filter>Game Files\Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="BombComponent.cpp">
-      <Filter>Game Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoreComponent.cpp">
-      <Filter>Game Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoresManager.cpp">
-      <Filter>Game Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="SteamAchievements.cpp">
-      <Filter>Game Files\Systems\SteamAchievements</Filter>
-    </ClCompile>
-    <ClCompile Include="StartInfoComponent.cpp">
-      <Filter>Game Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="BombExplodedEvent.cpp">
-      <Filter>Engine Files\ObserverPattern\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="GainedPointEvent.cpp">
-      <Filter>Engine Files\ObserverPattern\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerDiedEvent.cpp">
-      <Filter>Engine Files\ObserverPattern\Events</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

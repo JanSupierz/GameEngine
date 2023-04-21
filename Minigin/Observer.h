@@ -10,6 +10,7 @@ namespace dae
 	public:
 		virtual ~Observer() = default;
 		virtual void OnNotify(const EventType& event) = 0;
+		virtual void OnSubjectDestroy(Subject<EventType>* pSubject) = 0;
 	};
 }
 

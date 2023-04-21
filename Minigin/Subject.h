@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include <memory>
+#include <algorithm>
 
 #include "Observer.h"
 
@@ -12,44 +12,35 @@ namespace dae
     class Subject
     {
     public:
-        void AddObserver(std::weak_ptr<Observer<EventType>> wpObserver)
+        virtual ~Subject()
         {
-            //Check if valid
-            if (auto pObserver = wpObserver.lock())
+            for (const auto& pObserver : m_pObservers)
             {
-                m_wpObservers.push_back(wpObserver);
+                pObserver->OnSubjectDestroy(this);
             }
         }
 
-        void RemoveObserver(std::weak_ptr<Observer<EventType>> wpObserver)
+        void AddObserver(Observer<EventType>* pObserver)
         {
-            auto iterator = std::find_if(m_wpObservers.begin(), m_wpObservers.end(),
-                [&](const std::weak_ptr<Observer<EventType>>& wpObs)
-                {
-                    return wpObs.owner_before(wpObserver) || wpObserver.owner_before(wpObs);
-                });
+            m_pObservers.push_back(pObserver);
+        }
 
-            if (iterator != m_wpObservers.end())
-            {
-                m_wpObservers.erase(iterator);
-            }
+        void RemoveObserver(Observer<EventType>* pObserver)
+        {
+            m_pObservers.erase(std::remove(m_pObservers.begin(), m_pObservers.end(), pObserver), m_pObservers.end());
         }
 
     protected:
         void Notify(const EventType& event) const
         {
-            for (std::weak_ptr<Observer<EventType>> wpObserver : m_wpObservers)
+            for (const auto& pObserver : m_pObservers)
             {
-                //Check if valid
-                if (auto pObserver = wpObserver.lock())
-                {
-                    pObserver->OnNotify(event);
-                }
+                pObserver->OnNotify(event);
             }
         }
 
     private:
-        std::vector<std::weak_ptr<Observer<EventType>>> m_wpObservers{};
+        std::vector<Observer<EventType>*> m_pObservers{};
     };
 }
 

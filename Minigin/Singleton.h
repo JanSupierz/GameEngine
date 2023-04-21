@@ -7,9 +7,9 @@ namespace dae
 	class Singleton
 	{
 	public:
-		static std::shared_ptr<T>& GetInstance()
+		static T& GetInstance()
 		{
-			static std::shared_ptr<T> instance = std::shared_ptr<T>(new T());
+			static T instance{};
 			return instance;
 		}
 

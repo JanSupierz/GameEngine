@@ -11,7 +11,8 @@
 #include "ResourceManager.h"
 #include <chrono>
 #include <thread>
-#include "SteamAchievements.h"
+#include "EventManager.h"
+#include "Scene.h"
 
 SDL_Window* g_window{};
 
@@ -65,14 +66,13 @@ dae::Minigin::Minigin(const std::string &dataPath)
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	Renderer::GetInstance()->Init(g_window);
-
-	ResourceManager::GetInstance()->Init(dataPath);
+	Renderer::GetInstance().Init(g_window);
+	ResourceManager::GetInstance().Init(dataPath);
 }
 
 dae::Minigin::~Minigin()
 {
-	Renderer::GetInstance()->Destroy();
+	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;
 	SDL_Quit();
@@ -82,16 +82,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
 
-	std::vector<Achievement_t> achievements
-	{
-		_ACH_ID(ACH_WIN_ONE_GAME, "Winner"),
-		_ACH_ID(ACH_WIN_100_GAMES, "Champion"),
-		_ACH_ID(ACH_TRAVEL_FAR_ACCUM, "Interstellar"),
-		_ACH_ID(ACH_TRAVEL_FAR_SINGLE, "Orbiter"),
-	};
-
-	dae::SteamAchievements::GetInstance()->Initialize(achievements, true);
-
+	auto& events = EventManager::GetInstance();
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
@@ -111,16 +102,21 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		lastTime = currentTime;
 
 		//Check input
-		doContinue = input->ProcessInput();
+		doContinue = input.ProcessInput();
 
 		//Update scenes
-		sceneManager->Update(deltaTime);
+		sceneManager.Update(deltaTime);
 		
 		//Render
-		renderer->Render();
+		renderer.Render();
 		
+		//Update Event Queues
+		events.HandleEvents();
+
 		//Count sleep time
 		const auto sleepTime{ currentTime + std::chrono::milliseconds(maxWaitingTimeMs) - std::chrono::high_resolution_clock::now() };
 		std::this_thread::sleep_for(sleepTime);
 	}
+
+	sceneManager.GetCurrentScene()->RemoveAll();
 }

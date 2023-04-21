@@ -98,7 +98,7 @@ dae::GameObject::GameObject(int priority)
 		}
 		else
 		{
-			SceneManager::GetInstance()->GetCurrentScene()->Remove(shared_from_this());
+			SceneManager::GetInstance().GetCurrentScene()->Remove(shared_from_this());
 		}
 
 		//Set the given parent
@@ -145,7 +145,7 @@ dae::GameObject::GameObject(int priority)
 		}
 		else 
 		{
-			SceneManager::GetInstance()->GetCurrentScene()->Remove(pNewChild);
+			SceneManager::GetInstance().GetCurrentScene()->Remove(pNewChild);
 		}
 
 		//Set itself as parent of the child
@@ -177,7 +177,7 @@ dae::GameObject::GameObject(int priority)
 		pGameObject->m_pParent = nullptr;
 
 		//Add to the scene
-		SceneManager::GetInstance()->GetCurrentScene()->Add(pGameObject);
+		SceneManager::GetInstance().GetCurrentScene()->Add(pGameObject);
 
 		//Update position, rotation and scale
 		const auto position{ m_Transform.GetWorldPosition() };

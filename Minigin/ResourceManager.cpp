@@ -19,7 +19,7 @@ void dae::ResourceManager::Init(const std::string& dataPath)
 std::shared_ptr<dae::Texture2D> dae::ResourceManager::LoadTexture(const std::string& file) const
 {
 	const auto fullPath = m_dataPath + file;
-	auto texture = IMG_LoadTexture(Renderer::GetInstance()->GetSDLRenderer(), fullPath.c_str());
+	auto texture = IMG_LoadTexture(Renderer::GetInstance().GetSDLRenderer(), fullPath.c_str());
 	if (texture == nullptr)
 	{
 		throw std::runtime_error(std::string("Failed to load texture: ") + SDL_GetError());
