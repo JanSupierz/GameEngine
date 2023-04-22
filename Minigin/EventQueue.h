@@ -9,12 +9,18 @@ namespace dae
     class EventQueue
     {
     public:
-        EventQueue() 
-            : m_pEvents{}, m_Head(0), m_Tail(0)
+        EventQueue()
+            :m_Head(0), m_Tail(0), m_Size(20)
         {
+            m_pEvents = new std::shared_ptr<EventType>[m_Size];
         }
 
-        void AddListener(EventListener<EventType>* pListener) 
+        ~EventQueue()
+        {
+            delete[] m_pEvents;
+        }
+
+        void AddListener(EventListener<EventType>* pListener)
         {
             m_pListeners.push_back(pListener);
         }
@@ -26,23 +32,22 @@ namespace dae
 
         void AddEvent(std::shared_ptr<EventType> pEvent)
         {
-            if (isFull()) 
+            if (isFull())
             {
-                //Replace oldest event
-                m_Tail = (m_Tail + 1) % m_Size; 
+                Resize(m_Size * 2);
             }
 
             m_pEvents[m_Head] = pEvent;
             m_Head = (m_Head + 1) % m_Size;
         }
 
-        void ProcessEvents() 
+        void ProcessEvents()
         {
-            while (!isEmpty()) 
+            while (!isEmpty())
             {
                 std::shared_ptr<EventType> pEvent{ m_pEvents[m_Tail] };
 
-                for (auto pListener : m_pListeners) 
+                for (auto pListener : m_pListeners)
                 {
                     pListener->OnEvent(*pEvent);
                 }
@@ -51,23 +56,37 @@ namespace dae
             }
         }
 
+        void Resize(int newSize)
+        {
+            std::shared_ptr<EventType>* pNewEvents{ new std::shared_ptr<EventType>[newSize] };
+
+            for (int i = 0; i < m_Size; i++)
+            {
+                pNewEvents[i] = m_pEvents[(m_Tail + i) % m_Size];
+            }
+
+            m_pEvents = pNewEvents;
+            m_Tail = 0;
+            m_Head = m_Size;
+            m_Size = newSize;
+        }
+
     private:
-        bool isFull() const 
+        bool isFull() const
         {
             return (m_Head + 1) % m_Size == m_Tail;
         }
 
-        bool isEmpty() const 
+        bool isEmpty() const
         {
             return m_Head == m_Tail;
         }
 
-        static const int m_Size{20};
+        int m_Size;
         std::vector<EventListener<EventType>*> m_pListeners;
-        std::shared_ptr<EventType> m_pEvents[m_Size];
+        std::shared_ptr<EventType>* m_pEvents;
 
         int m_Head;
         int m_Tail;
     };
 }
-
