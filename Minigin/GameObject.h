@@ -58,8 +58,8 @@ namespace dae
 
 		//Transform
 		void SetPosition(float x, float y);
-		glm::vec3 GetWorldPosition();
-		glm::vec3 GetLocalPosition() const;
+		glm::vec2 GetWorldPosition();
+		glm::vec2 GetLocalPosition() const;
 
 		//Priority
 		int GetPriority() const;

@@ -25,6 +25,9 @@
     <Filter Include="Commands">
       <UniqueIdentifier>{1a3454ef-a126-41d8-b11b-9f5ac80ee3a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{11e3ca63-64d0-4b7a-b997-1f104d08b181}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bomberman.cpp">
@@ -93,6 +96,18 @@
     <ClCompile Include="FPSComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="NavigationGrid.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="NavigationNode.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="AIMoveComponent.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BombComponent.h">
@@ -154,6 +169,21 @@
     </ClInclude>
     <ClInclude Include="ScoresManager.h">
       <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="NavigationGrid.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="NavigationNode.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="AIMoveComponent.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Direction.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderComponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

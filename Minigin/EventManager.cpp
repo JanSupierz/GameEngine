@@ -1,9 +1,14 @@
 #include "EventManager.h"
 
-void dae::EventManager::HandleEvents() const
+void dae::EventManager::HandleEvents()
 {
-	for (const auto& pQueue : m_pQueues)
+	if (m_IsDirty)
 	{
-		pQueue.second->ProcessEvents();
+		for (const auto& pQueue : m_pQueues)
+		{
+			pQueue.second->ProcessEvents();
+		}
+
+		m_IsDirty = false;
 	}
 }

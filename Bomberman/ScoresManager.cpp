@@ -6,12 +6,12 @@
 
 dae::ScoresManager::ScoresManager()
 {
-	EventManager::GetInstance().GetQueue<PlayerDiedEvent>()->AddListener(this);
+	EventManager::GetInstance().AddListener(this);
 }
 
 dae::ScoresManager::~ScoresManager()
 {
-	EventManager::GetInstance().GetQueue<PlayerDiedEvent>()->RemoveListener(this);
+	EventManager::GetInstance().RemoveListener(this);
 }
 
 void dae::ScoresManager::OnEvent(const PlayerDiedEvent& event)
@@ -22,6 +22,6 @@ void dae::ScoresManager::OnEvent(const PlayerDiedEvent& event)
 	if (pKiller != nullptr && pKilled != nullptr && pKiller != pKilled)
 	{
 		pKiller->SetScore(pKiller->GetScore() + 50);
-		EventManager::GetInstance().GetQueue<GainedPointEvent>()->AddEvent(std::make_shared<GainedPointEvent>(pKiller));
+		EventManager::GetInstance().AddEvent(std::make_shared<GainedPointEvent>(pKiller));
 	}
 }

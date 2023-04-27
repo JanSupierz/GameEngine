@@ -10,11 +10,11 @@ namespace dae
         public QueueEvent
     {
     public:
-        BombExplodedEvent(glm::vec3 position, PlayerComponent* pPlayer);
-        glm::vec3 GetPosition() const;
+        BombExplodedEvent(const glm::vec2& position, PlayerComponent* pPlayer);
+        glm::vec2 GetPosition() const;
         PlayerComponent* GetPlayer() const;
     private:
-        glm::vec3 m_Position{};
+        glm::vec2 m_Position{};
         PlayerComponent* m_pPlayer{};
     };
 }

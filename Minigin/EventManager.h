@@ -19,6 +19,28 @@ namespace dae
          }
 
          template<class EventType>
+         void AddEvent(std::shared_ptr<EventType> pEvent)
+         {
+             GetQueue<EventType>()->AddEvent(pEvent);
+             m_IsDirty = true;
+         }
+
+         template<class EventType>
+         void AddListener(EventListener<EventType>* pListener)
+         {
+             GetQueue<EventType>()->AddListener(pListener);
+         }
+
+         template<class EventType>
+         void RemoveListener(EventListener<EventType>* pListener)
+         {
+             GetQueue<EventType>()->RemoveListener(pListener);
+         }
+
+         void HandleEvents();
+
+	 private:
+         template<class EventType>
          EventQueue<EventType>* GetQueue()
          {
              auto found = m_pQueues.find(typeid(EventQueue<EventType>));
@@ -37,9 +59,7 @@ namespace dae
              }
          }
 
-         void HandleEvents() const;
-
-	 private:
 		 std::unordered_map<std::type_index, EventQueue<QueueEvent>*> m_pQueues{};
+         bool m_IsDirty{ false };
 	 };
 }

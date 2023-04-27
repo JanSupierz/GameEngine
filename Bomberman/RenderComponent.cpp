@@ -8,7 +8,7 @@ void dae::RenderComponent::Render()
 {
 	if (m_pTexture)
 	{
-		const glm::vec3 position{ GetOwner()->GetWorldPosition() };
+		const glm::vec2 position{ GetOwner()->GetWorldPosition() };
 
 		Renderer::GetInstance().RenderTexture(*m_pTexture, position.x, position.y);
 	}

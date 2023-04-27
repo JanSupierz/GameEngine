@@ -18,7 +18,7 @@ void PlaceBombCommand::Execute()
 {
     if (!m_pGameObject) return;
 
-    glm::vec3 position = m_pGameObject->GetWorldPosition();
+    glm::vec2 position{ m_pGameObject->GetWorldPosition() };
 
     const auto scene{ SceneManager::GetInstance().GetCurrentScene() };
 

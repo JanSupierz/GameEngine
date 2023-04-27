@@ -234,7 +234,7 @@ dae::GameObject::GameObject(int priority)
 		return m_IsDestroyed;
 	}
 
-	glm::vec3 dae::GameObject::GetWorldPosition()
+	glm::vec2 dae::GameObject::GetWorldPosition()
 	{
 		if (m_IsTransformDirty)
 		{
@@ -257,7 +257,7 @@ dae::GameObject::GameObject(int priority)
 		}
 	}
 
-	glm::vec3 dae::GameObject::GetLocalPosition() const
+	glm::vec2 dae::GameObject::GetLocalPosition() const
 	{
 		return m_Transform.GetLocalPosition();
 	}
@@ -280,5 +280,5 @@ dae::GameObject::GameObject(int priority)
 	void dae::GameObject::SetPosition(float x, float y)
 	{
 		SetTransformDirty();
-		m_Transform.SetPosition(x, y, 0.f);
+		m_Transform.SetPosition(x, y);
 	}

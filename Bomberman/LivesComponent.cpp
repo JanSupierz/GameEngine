@@ -10,13 +10,13 @@
 dae::LivesComponent::LivesComponent(PlayerComponent* pPlayer, std::shared_ptr<TextComponent> pTextComponent, int priority)
 	:Component(priority), m_pTextComponent(pTextComponent), m_pPlayer(pPlayer)
 {
-	EventManager::GetInstance().GetQueue<PlayerDiedEvent>()->AddListener(this);
+	EventManager::GetInstance().AddListener(this);
 	UpdateHud(pPlayer->GetName(), pPlayer->GetNrLives());
 }
 
 dae::LivesComponent::~LivesComponent()
 {
-	EventManager::GetInstance().GetQueue<PlayerDiedEvent>()->RemoveListener(this);
+	EventManager::GetInstance().RemoveListener(this);
 }
 
 void dae::LivesComponent::OnEvent(const PlayerDiedEvent& event)

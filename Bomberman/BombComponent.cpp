@@ -23,7 +23,7 @@ void dae::BombComponent::Update()
 
 void dae::BombComponent::Explode()
 {
-	dae::EventManager::GetInstance().GetQueue<BombExplodedEvent>()->AddEvent(std::make_shared<BombExplodedEvent>(GetOwner()->GetWorldPosition(), m_pPlayer.get()));
+	dae::EventManager::GetInstance().AddEvent(std::make_shared<BombExplodedEvent>(GetOwner()->GetWorldPosition(), m_pPlayer.get()));
 	GetOwner()->Destroy();
 }
 

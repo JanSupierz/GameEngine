@@ -8,13 +8,13 @@
 dae::ScoreComponent::ScoreComponent(std::shared_ptr<PlayerComponent> pPlayer, std::shared_ptr<TextComponent> pTextComponent, int priority)
 	:Component(priority), m_pTextComponent(pTextComponent), m_pPlayer{ pPlayer }
 {
-	EventManager::GetInstance().GetQueue<GainedPointEvent>()->AddListener(this);
+	EventManager::GetInstance().AddListener(this);
 	UpdateHUD();
 }
 
 dae::ScoreComponent::~ScoreComponent()
 {
-	EventManager::GetInstance().GetQueue<GainedPointEvent>()->RemoveListener(this);
+	EventManager::GetInstance().RemoveListener(this);
 }
 
 void dae::ScoreComponent::OnEvent(const GainedPointEvent& event)

@@ -38,6 +38,8 @@
 #include "PlayerDiedEvent.h"
 #include "EventManager.h"
 #include "BombExplodedEvent.h"
+#include "NavigationGrid.h"
+#include "AIMoveComponent.h"
 
 using namespace dae;
 
@@ -50,6 +52,40 @@ namespace Exercises
 
 void load()
 {
+	auto& grid = NavigationGrid::GetInstance();
+	grid.AddNode(0, 0);
+	grid.AddNode(1, 0);
+	grid.AddNode(1, 1);
+	grid.AddNode(2, 1);
+	grid.AddNode(3, 1);
+	grid.AddNode(3, 2);
+	grid.AddNode(2, 2);
+
+
+	//grid.AddNode(0, 1);
+	//grid.AddNode(1, 1);
+	//grid.AddNode(2, 1);
+	//grid.AddNode(3, 1);
+	//grid.AddNode(4, 1);
+	//
+	//grid.AddNode(0, 2);
+	//grid.AddNode(1, 2);
+	//grid.AddNode(2, 2);
+	//grid.AddNode(3, 2);
+	//grid.AddNode(4, 2);
+	//
+	//grid.AddNode(0, 3);
+	//grid.AddNode(1, 3);
+	//grid.AddNode(2, 3);
+	//grid.AddNode(3, 3);
+	//grid.AddNode(4, 3);
+	//
+	//grid.AddNode(0, 4);
+	//grid.AddNode(1, 4);
+	//grid.AddNode(2, 4);
+	//grid.AddNode(3, 4);
+	//grid.AddNode(4, 4);
+
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 	auto& input = InputManager::GetInstance();
 	ScoresManager::GetInstance();
@@ -118,9 +154,12 @@ void load()
 	//Player 2
 	const auto pPlayerObject2{ std::make_shared<GameObject>(-10) };
 
+	const auto pAI{ std::make_shared<AIMoveComponent>(150.f) };
+	pPlayerObject2->AddComponent(pAI);
+	pPlayerObject2->SetPosition(50.f, 50.f);
+
 	const auto pPlayer2{ std::make_shared<PlayerComponent>("Player 2",100) };
 	pPlayerObject2->AddComponent(pPlayer2);
-	pPlayerObject2->SetPosition(300.f, 200.f);
 
 	const auto pPlayerRenderer2{ std::make_shared<RenderComponent>() };
 	pPlayerRenderer2->SetTexture("Balloom.png");

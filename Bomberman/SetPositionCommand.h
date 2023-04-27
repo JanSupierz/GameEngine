@@ -9,11 +9,11 @@ namespace dae
     class SetPositionCommand final : public Command
     {
     public:
-        SetPositionCommand(GameObject* pGameObject, const glm::vec3& direction);
+        SetPositionCommand(GameObject* pGameObject, const glm::vec2& direction);
         void Execute() override;
     private:
         GameObject* m_pGameObject;
-        glm::vec3 m_Direction;
+        glm::vec2 m_Direction;
     };
 }
 
