@@ -86,7 +86,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\rapidjson;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -107,7 +107,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\rapidjson;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -128,7 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\rapidjson;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -146,7 +146,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\rapidjson;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -160,17 +160,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AIMoveComponent.cpp" />
+    <ClCompile Include="BlockingComponent.cpp" />
     <ClCompile Include="BombComponent.cpp" />
     <ClCompile Include="Bomberman.cpp" />
     <ClCompile Include="BombExplodedEvent.cpp" />
-    <ClCompile Include="ColliderComponent.cpp" />
     <ClCompile Include="CombinedGraphComponent.cpp" />
     <ClCompile Include="Exercises.cpp" />
+    <ClCompile Include="ExplosionComponent.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="GainedPointEvent.cpp" />
     <ClCompile Include="GraphComponent.cpp" />
-    <ClCompile Include="NavigationGrid.cpp" />
+    <ClCompile Include="GridMovementCommand.cpp" />
     <ClCompile Include="LivesComponent.cpp" />
+    <ClCompile Include="NavigationGrid.cpp" />
     <ClCompile Include="NavigationNode.cpp" />
     <ClCompile Include="PlaceBombCommand.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
@@ -180,6 +182,7 @@
     <ClCompile Include="ScoreComponent.cpp" />
     <ClCompile Include="ScoresManager.cpp" />
     <ClCompile Include="SetPositionCommand.cpp" />
+    <ClCompile Include="SpriteRenderComponent.cpp" />
     <ClCompile Include="StartInfoComponent.cpp" />
     <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="UpdatePosition1DCommand.cpp" />
@@ -188,16 +191,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIMoveComponent.h" />
+    <ClInclude Include="BlockingComponent.h" />
     <ClInclude Include="BombComponent.h" />
     <ClInclude Include="BombExplodedEvent.h" />
-    <ClInclude Include="ColliderComponent.h" />
     <ClInclude Include="CombinedGraphComponent.h" />
     <ClInclude Include="Direction.h" />
+    <ClInclude Include="ExplosionComponent.h" />
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="GainedPointEvent.h" />
     <ClInclude Include="GraphComponent.h" />
-    <ClInclude Include="NavigationGrid.h" />
+    <ClInclude Include="GridMovementCommand.h" />
     <ClInclude Include="LivesComponent.h" />
+    <ClInclude Include="NavigationGrid.h" />
     <ClInclude Include="NavigationNode.h" />
     <ClInclude Include="PlaceBombCommand.h" />
     <ClInclude Include="PlayerComponent.h" />
@@ -207,6 +212,7 @@
     <ClInclude Include="ScoreComponent.h" />
     <ClInclude Include="ScoresManager.h" />
     <ClInclude Include="SetPositionCommand.h" />
+    <ClInclude Include="SpriteRenderComponent.h" />
     <ClInclude Include="StartInfoComponent.h" />
     <ClInclude Include="TextComponent.h" />
     <ClInclude Include="UpdatePosition1DCommand.h" />

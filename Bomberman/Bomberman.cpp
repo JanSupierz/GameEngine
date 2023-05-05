@@ -14,7 +14,7 @@
 #include "InputManager.h"
 #include "Scene.h"
 
-#include "UpdatePositionCommand.h"
+#include "GridMovementCommand.h"
 #include "UpdatePosition1DCommand.h"
 #include "UpdatePosition2DCommand.h"
 #include "SetPositionCommand.h"
@@ -41,6 +41,15 @@
 #include "NavigationGrid.h"
 #include "AIMoveComponent.h"
 
+//Json
+#include <rapidjson.h>
+#include <document.h>
+#include <istreamwrapper.h>
+#include <fstream >
+
+#include "SpriteRenderComponent.h"
+#include "BlockingComponent.h"
+
 using namespace dae;
 
 namespace Exercises
@@ -50,50 +59,131 @@ namespace Exercises
 	void TrashTheCache(Scene& scene);
 }
 
+using rapidjson::Value;
+
+void LoadCells(const Value& cells, float cellSizeX, float cellSizeY, bool createNavigation = false)
+{
+	auto scene{ SceneManager::GetInstance().GetCurrentScene() };
+	auto& grid{ NavigationGrid::GetInstance() };
+
+	//Get sprite dimensions
+	const int spritePosX{ cells[0][0].GetInt() };
+	const int spritePosY{ cells[0][1].GetInt() };
+	const int spriteSizeX{ cells[1][0].GetInt() };
+	const int spriteSizeY{ cells[1][1].GetInt() };
+
+	//Add cells to the scene
+	for (auto cubeIt{ cells.Begin() + 2 }; cubeIt != cells.End(); ++cubeIt)
+	{
+		const Value& node{ *cubeIt };
+
+		int column{ node[0].GetInt() };
+		const Value& rows{ node[1] };
+		for (auto rowIt{ rows.Begin() }; rowIt != rows.End(); ++rowIt)
+		{
+			int row{ (*rowIt).GetInt() };
+
+			if (createNavigation)
+			{
+				grid.AddNode(row, column);
+			}
+
+			const auto pGameObject{ std::make_shared<GameObject>() };
+
+			const auto pRenderComponent
+			{
+				std::make_shared<SpriteRenderComponent>
+				(
+				spritePosX * spriteSizeX,
+				spritePosY * spriteSizeY,
+				spriteSizeX,
+				spriteSizeY,
+				cellSizeX / spriteSizeY
+				)
+			};
+
+			pRenderComponent->SetTexture("BombermanSprites.png");
+
+			pGameObject->AddComponent(pRenderComponent);
+			pGameObject->SetPosition(column * cellSizeX + cellSizeX * 0.5f, row * cellSizeY + cellSizeY * 0.5f);
+
+			scene->Add(pGameObject);
+		}
+	}
+}
+
+void LoadLevelFromFile(const std::string& fileName)
+{
+	if (std::ifstream is{ ResourceManager::GetInstance().GetDataPath() + fileName })
+	{
+		float cellSizeX{ 100.f }, cellSizeY{ 100.f };
+
+		rapidjson::IStreamWrapper isw{ is };
+		rapidjson::Document document{};
+
+		document.ParseStream(isw);
+
+		if (document.HasMember("Dimensions"))
+		{
+			const Value& dimensions{ document["Dimensions"] };
+			cellSizeX = dimensions[0].GetFloat();
+			cellSizeY = dimensions[1].GetFloat();
+		}
+
+		if (document.HasMember("Navigation"))
+		{
+			auto& grid{ NavigationGrid::GetInstance() };
+			grid.SetNodeDimensions(static_cast<int>(cellSizeX), static_cast<int>(cellSizeY));
+
+			const Value& navigation{ document["Navigation"] };
+			LoadCells(navigation, cellSizeX, cellSizeY, true);
+		}
+
+		if (document.HasMember("SolidCubes"))
+		{
+			const Value& navigation{ document["SolidCubes"] };
+			LoadCells(navigation, cellSizeX, cellSizeY);
+		}
+	}
+}
+
+void PlaceCubes(int maxNrBlocks, Scene& scene)
+{
+	int nrBlocks{};
+
+	while (nrBlocks < maxNrBlocks)
+	{
+		NavigationNode* pNode{ NavigationGrid::GetInstance().GetRandomNode() };
+
+		if (pNode && !pNode->IsBlocked())
+		{
+			++nrBlocks;
+
+			const auto pCubeObject{ std::make_shared<GameObject>(-10) };
+
+			const auto pCube{ std::make_shared<BlockingComponent>(pNode) };
+			pCubeObject->AddComponent(pCube);
+			pCubeObject->SetPosition(pNode->GetWorldPosition());
+
+			const auto pCubeRenderer{ std::make_shared<SpriteRenderComponent>(4 * 16,3 * 16,16,16,2.f) };
+			pCubeRenderer->SetTexture("BombermanSprites.png");
+			pCubeObject->AddComponent(pCubeRenderer);
+
+			scene.Add(pCubeObject);
+		}
+	}
+}
+
 void load()
 {
-	auto& grid = NavigationGrid::GetInstance();
-	grid.AddNode(0, 0);
-	grid.AddNode(1, 0);
-	grid.AddNode(1, 1);
-	grid.AddNode(2, 1);
-	grid.AddNode(3, 1);
-	grid.AddNode(3, 2);
-	grid.AddNode(2, 2);
-
-
-	//grid.AddNode(0, 1);
-	//grid.AddNode(1, 1);
-	//grid.AddNode(2, 1);
-	//grid.AddNode(3, 1);
-	//grid.AddNode(4, 1);
-	//
-	//grid.AddNode(0, 2);
-	//grid.AddNode(1, 2);
-	//grid.AddNode(2, 2);
-	//grid.AddNode(3, 2);
-	//grid.AddNode(4, 2);
-	//
-	//grid.AddNode(0, 3);
-	//grid.AddNode(1, 3);
-	//grid.AddNode(2, 3);
-	//grid.AddNode(3, 3);
-	//grid.AddNode(4, 3);
-	//
-	//grid.AddNode(0, 4);
-	//grid.AddNode(1, 4);
-	//grid.AddNode(2, 4);
-	//grid.AddNode(3, 4);
-	//grid.AddNode(4, 4);
-
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 	auto& input = InputManager::GetInstance();
 	ScoresManager::GetInstance();
 
-	Exercises::Drawing(scene);
+	LoadLevelFromFile("Bomberman.json");
+	PlaceCubes(20, scene);
 
-	//Exercises::Rotating(scene);
-	//Exercises::TrashTheCache(scene);
+	//Exercises::Drawing(scene);
 
 	constexpr int fontSize{ 20 };
 
@@ -104,15 +194,15 @@ void load()
 	pPlayerObject1->AddComponent(pPlayer1);
 	pPlayerObject1->SetPosition(200.f, 200.f);
 
-	const auto pPlayerRenderer1{ std::make_shared<RenderComponent>() };
-	pPlayerRenderer1->SetTexture("Oneal.png");
+	const auto pPlayerRenderer1{ std::make_shared<SpriteRenderComponent>(0,0,16,16,2.f) };
+	pPlayerRenderer1->SetTexture("BombermanSprites.png");
 	pPlayerObject1->AddComponent(pPlayerRenderer1);
 
 	scene.Add(pPlayerObject1);
 
 	//Health Display 1
 	const auto pHealthDisplay1{ std::make_shared<GameObject>() };
-	pHealthDisplay1->SetPosition(100.f, 100.f);
+	pHealthDisplay1->SetPosition(10.f, 20.f);
 	const auto pHealthRenderer1{ std::make_shared<RenderComponent>() };
 	pHealthDisplay1->AddComponent(pHealthRenderer1);
 
@@ -127,7 +217,7 @@ void load()
 
 	//Score Display 1
 	const auto pScoreDisplay1{ std::make_shared<GameObject>() };
-	pScoreDisplay1->SetPosition(100.f, 150.f);
+	pScoreDisplay1->SetPosition(10.f, 40.f);
 	const auto pScoreRenderer1{ std::make_shared<RenderComponent>() };
 	pScoreDisplay1->AddComponent(pScoreRenderer1);
 
@@ -146,10 +236,10 @@ void load()
 
 	constexpr float speed{ 100.f };
 
-	pController1->MapCommandToButton(Controller::ControllerButtons::DPadLeft, std::make_unique<UpdatePositionCommand>(pPlayerObject1.get(), glm::vec2{ -speed,0.f }), ButtonState::Pressed);
-	pController1->MapCommandToButton(Controller::ControllerButtons::DPadRight, std::make_unique<UpdatePositionCommand>(pPlayerObject1.get(), glm::vec2{ speed,0.f }), ButtonState::Pressed);
-	pController1->MapCommandToButton(Controller::ControllerButtons::DPadUp, std::make_unique<UpdatePositionCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,-speed }), ButtonState::Pressed);
-	pController1->MapCommandToButton(Controller::ControllerButtons::DPadDown, std::make_unique<UpdatePositionCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,speed }), ButtonState::Pressed);
+	pController1->MapCommandToButton(Controller::ControllerButtons::DPadLeft, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ -speed,0.f }), ButtonState::Pressed);
+	pController1->MapCommandToButton(Controller::ControllerButtons::DPadRight, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ speed,0.f }), ButtonState::Pressed);
+	pController1->MapCommandToButton(Controller::ControllerButtons::DPadUp, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,-speed }), ButtonState::Pressed);
+	pController1->MapCommandToButton(Controller::ControllerButtons::DPadDown, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,speed }), ButtonState::Pressed);
 
 	//Player 2
 	const auto pPlayerObject2{ std::make_shared<GameObject>(-10) };
@@ -161,15 +251,15 @@ void load()
 	const auto pPlayer2{ std::make_shared<PlayerComponent>("Player 2",100) };
 	pPlayerObject2->AddComponent(pPlayer2);
 
-	const auto pPlayerRenderer2{ std::make_shared<RenderComponent>() };
-	pPlayerRenderer2->SetTexture("Balloom.png");
+	const auto pPlayerRenderer2{ std::make_shared<SpriteRenderComponent>(0,15 * 16,16,16,2.f) };
+	pPlayerRenderer2->SetTexture("BombermanSprites.png");
 	pPlayerObject2->AddComponent(pPlayerRenderer2);
 
 	scene.Add(pPlayerObject2);
 
 	//Health Display 2
 	const auto pHealthDisplay2{ std::make_shared<GameObject>() };
-	pHealthDisplay2->SetPosition(300.f, 100.f);
+	pHealthDisplay2->SetPosition(400.f, 20.f);
 	const auto pHealthRenderer2{ std::make_shared<RenderComponent>() };
 	pHealthDisplay2->AddComponent(pHealthRenderer2);
 
@@ -184,7 +274,7 @@ void load()
 
 	//Score Display 2
 	const auto pScoreDisplay2{ std::make_shared<GameObject>() };
-	pScoreDisplay2->SetPosition(300.f, 150.f);
+	pScoreDisplay2->SetPosition(400.f, 40.f);
 	const auto pScoreRenderer2{ std::make_shared<RenderComponent>() };
 	pScoreDisplay2->AddComponent(pScoreRenderer2);
 
@@ -201,10 +291,10 @@ void load()
 	const auto pKeyboard1{ input.GetKeyboard() };
 	pKeyboard1->MapCommandToButton(SDL_SCANCODE_S, std::make_unique<PlaceBombCommand>(pPlayerObject2.get()), ButtonState::Down);
 
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_LEFT, std::make_unique<UpdatePositionCommand>(pPlayerObject2.get(), glm::vec2{ -speed,0.f }), ButtonState::Pressed);
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_RIGHT, std::make_unique<UpdatePositionCommand>(pPlayerObject2.get(), glm::vec2{ speed,0.f }), ButtonState::Pressed);
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_UP, std::make_unique<UpdatePositionCommand>(pPlayerObject2.get(), glm::vec2{ 0.f,-speed }), ButtonState::Pressed);
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_DOWN, std::make_unique<UpdatePositionCommand>(pPlayerObject2.get(), glm::vec2{ 0.f,speed }), ButtonState::Pressed);
+	pKeyboard1->MapCommandToButton(SDL_SCANCODE_LEFT, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ -speed,0.f }), ButtonState::Pressed);
+	pKeyboard1->MapCommandToButton(SDL_SCANCODE_RIGHT, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ speed,0.f }), ButtonState::Pressed);
+	pKeyboard1->MapCommandToButton(SDL_SCANCODE_UP, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ 0.f,-speed }), ButtonState::Pressed);
+	pKeyboard1->MapCommandToButton(SDL_SCANCODE_DOWN, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ 0.f,speed }), ButtonState::Pressed);
 
 	//Start Info
 	const auto pStartInfoDisplay{ std::make_shared<GameObject>() };
@@ -220,3 +310,4 @@ int main(int, char* [])
 
 	return 0;
 }
+

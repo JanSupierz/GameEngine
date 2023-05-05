@@ -20,7 +20,7 @@ namespace dae
 		AIMoveComponent& operator=(const AIMoveComponent& other) = default;
 		AIMoveComponent& operator=(AIMoveComponent&& other) = default;
 	private:
-		NavigationNode* m_pCurrentNode{};
+		NavigationNode* m_pCurrentNode;
 		Direction m_MoveDirection{};
 		std::unique_ptr<UpdatePosition2DCommand> m_pMoveCommand{};
 		float m_Speed{};

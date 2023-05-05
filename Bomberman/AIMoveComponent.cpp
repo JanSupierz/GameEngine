@@ -4,7 +4,6 @@
 #include "GameObject.h"
 #include "UpdatePosition2DCommand.h"
 #include <glm/glm.hpp>
-#include <iostream>
 
 dae::AIMoveComponent::AIMoveComponent(float speed, int priority)
 	:Component{ priority }, m_Speed{ speed },
@@ -18,7 +17,7 @@ void dae::AIMoveComponent::Update()
 	{
 		NavigationNode* pNeighbor{ m_pCurrentNode->GetNeighbor(m_MoveDirection) };
 
-		if (!pNeighbor)
+		if (!pNeighbor || (pNeighbor && pNeighbor->IsBlocked()))
 		{
 			for(int counter{}; counter < 4; ++counter)
 			{
@@ -32,7 +31,7 @@ void dae::AIMoveComponent::Update()
 				}
 
 				pNeighbor = m_pCurrentNode->GetNeighbor(m_MoveDirection);
-				if (pNeighbor) break;
+				if (pNeighbor && !pNeighbor->IsBlocked()) break;
 			} 
 		}
 

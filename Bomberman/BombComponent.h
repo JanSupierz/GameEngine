@@ -1,17 +1,16 @@
 #pragma once
 #include "Component.h"
-#include <memory>
 
 namespace dae
 {
-	class GameObject;
 	class PlayerComponent;
-	class BombExplodedEvent;
+	class NavigationNode;
+	class Scene;
 
 	class BombComponent final : public Component
 	{
 	public:
-		BombComponent(float explosionTime, std::shared_ptr<PlayerComponent> pPlayer, int priority = 0);
+		BombComponent(float explosionTime, NavigationNode* pNode, PlayerComponent* pPlayer, int range, int priority = 0);
 		virtual ~BombComponent() = default;
 		BombComponent(const BombComponent& other) = default;
 		BombComponent(BombComponent&& other) = default;
@@ -19,10 +18,13 @@ namespace dae
 		BombComponent& operator=(BombComponent&& other) = default;
 
 		virtual void Update() override;
+		void CreateExplosion(Scene* pScene, NavigationNode* pCurrentNode) const;
 	private:
 		void Explode();
 		float m_TimeLeft;
-		std::shared_ptr<PlayerComponent> m_pPlayer;
+		PlayerComponent* m_pPlayer;
+		NavigationNode* m_pNode;
+		const int m_Range;
 	};
 }
 

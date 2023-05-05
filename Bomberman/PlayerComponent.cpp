@@ -4,6 +4,7 @@
 #include "PlayerDiedEvent.h"
 #include "BombExplodedEvent.h"
 #include "EventManager.h"
+#include "NavigationGrid.h"
 
 using namespace dae;
 
@@ -40,9 +41,7 @@ int dae::PlayerComponent::GetNrLives() const
 
 void dae::PlayerComponent::OnEvent(const BombExplodedEvent& event)
 {
-	constexpr float killDistance{ 80.f };
-
-	if (glm::distance(event.GetPosition(), GetOwner()->GetWorldPosition()) <= killDistance)
+	if (event.GetNode() == NavigationGrid::GetInstance().GetNode(GetOwner()->GetWorldPosition()))
 	{
 		--m_Nrlives;
 		EventManager::GetInstance().AddEvent(std::make_shared<PlayerDiedEvent>(event.GetPlayer(), this));

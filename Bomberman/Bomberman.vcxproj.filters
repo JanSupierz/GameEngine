@@ -28,6 +28,9 @@
     <Filter Include="AI">
       <UniqueIdentifier>{11e3ca63-64d0-4b7a-b997-1f104d08b181}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Systems\Navigation">
+      <UniqueIdentifier>{25a5cca4-463b-4c21-9139-10d31d45661f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bomberman.cpp">
@@ -96,16 +99,25 @@
     <ClCompile Include="FPSComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="NavigationGrid.cpp">
-      <Filter>Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="NavigationNode.cpp">
-      <Filter>Systems</Filter>
-    </ClCompile>
     <ClCompile Include="AIMoveComponent.cpp">
       <Filter>AI</Filter>
     </ClCompile>
-    <ClCompile Include="ColliderComponent.cpp">
+    <ClCompile Include="GridMovementCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteRenderComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosionComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="NavigationGrid.cpp">
+      <Filter>Systems\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="NavigationNode.cpp">
+      <Filter>Systems\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockingComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
@@ -170,19 +182,28 @@
     <ClInclude Include="ScoresManager.h">
       <Filter>Systems</Filter>
     </ClInclude>
-    <ClInclude Include="NavigationGrid.h">
-      <Filter>Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="NavigationNode.h">
-      <Filter>Systems</Filter>
-    </ClInclude>
     <ClInclude Include="AIMoveComponent.h">
       <Filter>AI</Filter>
     </ClInclude>
-    <ClInclude Include="Direction.h">
-      <Filter>Systems</Filter>
+    <ClInclude Include="GridMovementCommand.h">
+      <Filter>Commands</Filter>
     </ClInclude>
-    <ClInclude Include="ColliderComponent.h">
+    <ClInclude Include="SpriteRenderComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Direction.h">
+      <Filter>Systems\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="NavigationGrid.h">
+      <Filter>Systems\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="NavigationNode.h">
+      <Filter>Systems\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockingComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>

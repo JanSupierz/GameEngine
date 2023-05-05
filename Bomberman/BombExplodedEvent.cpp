@@ -1,14 +1,15 @@
 #include "BombExplodedEvent.h"
 #include "PlayerComponent.h"
+#include "NavigationNode.h"
 
-dae::BombExplodedEvent::BombExplodedEvent(const glm::vec2& position, PlayerComponent* pPlayer)
-	: m_pPlayer(pPlayer), m_Position{ position }
+dae::BombExplodedEvent::BombExplodedEvent(NavigationNode* pNode, PlayerComponent* pPlayer)
+	: m_pPlayer(pPlayer), m_pNode{ pNode }
 {
 }
 
-glm::vec2 dae::BombExplodedEvent::GetPosition() const
+dae::NavigationNode* dae::BombExplodedEvent::GetNode() const
 {
-	return m_Position;
+	return m_pNode;
 }
 
 dae::PlayerComponent* dae::BombExplodedEvent::GetPlayer() const

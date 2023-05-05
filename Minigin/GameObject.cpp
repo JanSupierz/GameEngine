@@ -282,3 +282,8 @@ dae::GameObject::GameObject(int priority)
 		SetTransformDirty();
 		m_Transform.SetPosition(x, y);
 	}
+
+	void dae::GameObject::SetPosition(const glm::vec2& position)
+	{
+		SetPosition(position.x, position.y);
+	}

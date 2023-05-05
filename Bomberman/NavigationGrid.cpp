@@ -3,13 +3,21 @@
 #include "Direction.h"
 #include <iostream>
 
-void dae::NavigationGrid::AddNode(int row, int column)
+dae::NavigationNode* dae::NavigationGrid::AddNode(int row, int column)
 {
+    m_MaxRow = std::max(m_MaxRow, row);
+    m_MaxColumn = std::max(m_MaxColumn, row);
+
     glm::vec2 location{ column * m_NodeWidth + m_NodeWidth / 2.f, row * m_NodeHeight + m_NodeHeight / 2.f };
 
-    if (GetNode(row, column))
     {
-        std::cout << "Node at location already exists: " << row << " " << column << '\n';
+        auto pTempNode{ GetNode(row,column) };
+
+        if (pTempNode)
+        {
+            std::cout << "Node at location already exists: " << row << " " << column << '\n';
+            return pTempNode;
+        }
     }
 
     auto pNode{ std::make_unique<NavigationNode>(row, column, location) };
@@ -28,23 +36,23 @@ void dae::NavigationGrid::AddNode(int row, int column)
 
             if (direction.first == 1)
             {
-                neighbor = Direction::down;
-                current = Direction::up;
+                neighbor = Direction::right;
+                current = Direction::left;
             }
             else if(direction.first == -1)
+            {
+                neighbor = Direction::left;
+                current = Direction::right;
+            }
+            else if (direction.second == 1)
             {
                 neighbor = Direction::up;
                 current = Direction::down;
             }
-            else if (direction.second == 1)
-            {
-                neighbor = Direction::right;
-                current = Direction::left;
-            }
             else
             {
-                neighbor = Direction::left;
-                current = Direction::right;
+                neighbor = Direction::down;
+                current = Direction::up;
             }
 
             pNode->SetNeighbor(neighbor, pNeighbor);
@@ -53,6 +61,8 @@ void dae::NavigationGrid::AddNode(int row, int column)
     }
 
     m_pNodes.push_back(std::move(pNode));
+
+    return m_pNodes.back().get();
 }
 
 dae::NavigationNode* dae::NavigationGrid::GetNode(int row, int column) const
@@ -69,10 +79,15 @@ dae::NavigationNode* dae::NavigationGrid::GetNode(int row, int column) const
 
 dae::NavigationNode* dae::NavigationGrid::GetNode(const glm::vec2& position) const
 {
-    const int row{ static_cast<int>(position.x) / m_NodeHeight };
-    const int column{ static_cast<int>(position.y) / m_NodeWidth };
+    const int column{ static_cast<int>(position.x) / m_NodeWidth };
+    const int row{ static_cast<int>(position.y) / m_NodeHeight };
 
     return GetNode(row, column);
+}
+
+dae::NavigationNode* dae::NavigationGrid::GetRandomNode() const
+{   
+    return GetNode(rand() % m_MaxRow + 1, rand() % m_MaxColumn + 1);
 }
 
 void dae::NavigationGrid::SetNodeDimensions(int width, int height)

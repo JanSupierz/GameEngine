@@ -1,11 +1,13 @@
 #include "PlaceBombCommand.h"
 #include "GameObject.h"
 #include "SceneManager.h"
-#include "Scene.h"
-#include "RenderComponent.h"
+#include "SpriteRenderComponent.h"
 #include "BombComponent.h"
 #include "PlayerComponent.h"
 #include "BombExplodedEvent.h"
+#include "NavigationGrid.h"
+#include "NavigationNode.h"
+#include "Scene.h"
 
 using namespace dae;
 
@@ -20,20 +22,26 @@ void PlaceBombCommand::Execute()
 
     glm::vec2 position{ m_pGameObject->GetWorldPosition() };
 
-    const auto scene{ SceneManager::GetInstance().GetCurrentScene() };
+    NavigationNode* pNode{ NavigationGrid::GetInstance().GetNode(position) };
 
-    //Create bomb
-	const auto pBomb{ std::make_shared<GameObject>() };
-	pBomb->SetPosition(position.x, position.y);
+    if (pNode)
+    {
+        //Create bomb
+        const auto pBomb{ std::make_shared<GameObject>() };
 
-	const auto pBombRenderer{ std::make_shared<RenderComponent>() };
-    pBombRenderer->SetTexture("Bomb.png");
-	pBomb->AddComponent(pBombRenderer);
+        const auto pBombRenderer{ std::make_shared<SpriteRenderComponent>(0,3 * 16,16,16,2.f) };
+        pBombRenderer->SetTexture("BombermanSprites.png");
+        pBomb->AddComponent(pBombRenderer);
 
-    const auto pBombComponent{ std::make_shared<BombComponent>(3.f, m_pGameObject->GetComponent<PlayerComponent>()) };
-    pBomb->AddComponent(pBombComponent);
+        const glm::vec2& nodePosition{ pNode->GetWorldPosition() };
+        pBomb->SetPosition(nodePosition.x, nodePosition.y);
 
-    scene->Add(pBomb);
+        constexpr float detonationTime{ 3.f };
+        const auto pBombComponent{ std::make_shared<BombComponent>(detonationTime,pNode, m_pGameObject->GetComponent<PlayerComponent>().get(),2) };
+        pBomb->AddComponent(pBombComponent);
+
+        SceneManager::GetInstance().GetCurrentScene()->Add(pBomb);
+    }
 }
 
 

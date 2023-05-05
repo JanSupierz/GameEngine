@@ -80,6 +80,9 @@ dae::Minigin::~Minigin()
 
 void dae::Minigin::Run(const std::function<void()>& load)
 {
+	//Init random
+	srand(static_cast<unsigned int>(time(nullptr)));
+
 	load();
 
 	auto& events = EventManager::GetInstance();
