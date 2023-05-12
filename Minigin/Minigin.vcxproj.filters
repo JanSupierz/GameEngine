@@ -37,6 +37,18 @@
     <Filter Include="Engine Files\Input\Commands">
       <UniqueIdentifier>{b5032f86-69f0-4e66-a504-ebd2fda23f3f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Files\Navigation">
+      <UniqueIdentifier>{7abe3203-ad72-4ab3-9fea-f007b1134da8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Files\Sound">
+      <UniqueIdentifier>{5a7adf60-4f5c-43e4-8473-a6cc2004f56a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Files\ServiceLocator">
+      <UniqueIdentifier>{cbd0bd3c-3fb1-4fb5-a255-298bd9dd7b38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Files\Logging">
+      <UniqueIdentifier>{03474e04-546a-49d5-baa1-d4777d6f55f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -135,6 +147,30 @@
     <ClInclude Include="Component.h">
       <Filter>Game Files</Filter>
     </ClInclude>
+    <ClInclude Include="NavigationNode.h">
+      <Filter>Engine Files\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="Direction.h">
+      <Filter>Engine Files\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="NavigationGrid.h">
+      <Filter>Engine Files\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL_SoundSystem.h">
+      <Filter>Engine Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSystem.h">
+      <Filter>Engine Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceLocator.h">
+      <Filter>Engine Files\ServiceLocator</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggingSystem.h">
+      <Filter>Engine Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggingSoundSystem.h">
+      <Filter>Engine Files\Logging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Minigin.cpp">
@@ -226,6 +262,27 @@
     </ClCompile>
     <ClCompile Include="Component.cpp">
       <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NavigationGrid.cpp">
+      <Filter>Engine Files\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="NavigationNode.cpp">
+      <Filter>Engine Files\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL_SoundSystem.cpp">
+      <Filter>Engine Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundSystem.cpp">
+      <Filter>Engine Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceLocator.cpp">
+      <Filter>Engine Files\ServiceLocator</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggingSystem.cpp">
+      <Filter>Engine Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggingSoundSystem.cpp">
+      <Filter>Engine Files\Logging</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

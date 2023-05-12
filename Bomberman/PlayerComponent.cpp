@@ -39,6 +39,16 @@ int dae::PlayerComponent::GetNrLives() const
 	return m_Nrlives;
 }
 
+dae::NavigationNode* dae::PlayerComponent::GetNode() const
+{
+	return m_pCurrentNode;
+}
+
+void dae::PlayerComponent::SetNode(NavigationNode* pNode)
+{
+	m_pCurrentNode = pNode;
+}
+
 void dae::PlayerComponent::OnEvent(const BombExplodedEvent& event)
 {
 	if (event.GetNode() == NavigationGrid::GetInstance().GetNode(GetOwner()->GetWorldPosition()))

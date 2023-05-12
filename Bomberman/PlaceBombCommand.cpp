@@ -8,6 +8,10 @@
 #include "NavigationGrid.h"
 #include "NavigationNode.h"
 #include "Scene.h"
+#include "ServiceLocator.h"
+#include "SoundSystem.h"
+#include "ServiceLocator.h"
+#include "LoggingSystem.h"
 
 using namespace dae;
 

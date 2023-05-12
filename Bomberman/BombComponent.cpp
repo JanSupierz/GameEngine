@@ -8,11 +8,23 @@
 #include "ExplosionComponent.h"
 #include "NavigationNode.h"
 #include <iostream>
+#include "EventManager.h"
+#include "BombExplodedEvent.h"
+#include "SoundSystem.h"
+
+ int dae::BombComponent::s_ExplosionSoundId = -1;
 
 dae::BombComponent::BombComponent(float time, NavigationNode* pNode, PlayerComponent* pPlayer, int range, int priority)
 	:Component(priority), m_TimeLeft{ time }, m_pPlayer{ pPlayer }, m_pNode{ pNode }, m_Range{ range }
 {
 	pNode->IsBlocked(true);
+	EventManager::GetInstance().AddListener(this);
+}
+
+dae::BombComponent::~BombComponent()
+{
+	m_pNode->IsBlocked(false);
+	EventManager::GetInstance().RemoveListener(this);
 }
 
 void dae::BombComponent::Update()
@@ -25,7 +37,7 @@ void dae::BombComponent::Update()
 	}
 }
 
-void dae::BombComponent::CreateExplosion(Scene* pScene, NavigationNode* pCurrentNode) const
+void dae::BombComponent::CreateExplosion(Scene* pScene, NavigationNode* pNode) const
 {
 	//Create explosions
 	const auto pExplosion{ std::make_shared<GameObject>() };
@@ -35,11 +47,24 @@ void dae::BombComponent::CreateExplosion(Scene* pScene, NavigationNode* pCurrent
 	pExplosion->AddComponent(pRenderComponent);
 
 	constexpr float duration{ 1.f };
-	const auto pExplosionComponent{ std::make_shared<ExplosionComponent>(duration, m_pPlayer, pCurrentNode) };
+	const auto pExplosionComponent{ std::make_shared<ExplosionComponent>(duration, m_pPlayer, pNode) };
 	pExplosion->AddComponent(pExplosionComponent);
 
-	pExplosion->SetPosition(pCurrentNode->GetWorldPosition());
+	pExplosion->SetPosition(pNode->GetWorldPosition());
 	pScene->Add(pExplosion);
+}
+
+void dae::BombComponent::OnEvent(const BombExplodedEvent& event)
+{
+	if (event.GetNode() == m_pNode)
+	{
+		Explode();
+	}
+}
+
+void dae::BombComponent::SetExplosionSound(const int soundId)
+{
+	s_ExplosionSoundId = soundId;
 }
 
 void dae::BombComponent::Explode()
@@ -60,13 +85,11 @@ void dae::BombComponent::Explode()
 			{
 				pCurrentNode = pNode;
 				CreateExplosion(pScene, pCurrentNode);
-				std::cout << "Explosion!\n";
 			}
 		}
 	}
 
-	m_pNode->IsBlocked(false);
-
+	ServiceLocator<SoundSystem>::GetService().Play(s_ExplosionSoundId, 0.5f);
 	GetOwner()->Destroy();
 }
 

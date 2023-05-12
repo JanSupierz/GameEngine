@@ -9,6 +9,7 @@ namespace dae
 {
 	class PlayerDiedEvent;
 	class BombExplodedEvent;
+	class NavigationNode;
 
 	class PlayerComponent final : public Component, public EventListener<BombExplodedEvent>
 	{
@@ -26,11 +27,16 @@ namespace dae
 		int GetScore() const;
 		int GetNrLives() const;
 
+		NavigationNode* GetNode() const;
+		void SetNode(NavigationNode* pNode);
+
 		void SetScore(int score);
 
 	private:
 		const std::string m_Name;
 		int m_Score{};
 		int m_Nrlives{};
+
+		NavigationNode* m_pCurrentNode{ nullptr };
 	};
 }

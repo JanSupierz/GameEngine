@@ -1,3 +1,6 @@
+#pragma warning(push)
+#pragma warning(disable: 33010)
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 // 
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -2735,3 +2738,5 @@ RAPIDJSON_NAMESPACE_END
 RAPIDJSON_DIAG_POP
 
 #endif // RAPIDJSON_DOCUMENT_H_
+
+#pragma warning(pop)

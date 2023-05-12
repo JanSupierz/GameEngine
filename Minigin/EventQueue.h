@@ -2,7 +2,7 @@
 #include <memory>
 #include <vector>
 #include "EventListener.h"
-#include <iostream>
+
 namespace dae
 {
     template<typename EventType>

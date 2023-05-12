@@ -39,7 +39,8 @@
 #include "EventManager.h"
 #include "BombExplodedEvent.h"
 #include "NavigationGrid.h"
-#include "AIMoveComponent.h"
+#include "AIComponent.h"
+#include "AIWalkCommand.h"
 
 //Json
 #include <rapidjson.h>
@@ -49,6 +50,13 @@
 
 #include "SpriteRenderComponent.h"
 #include "BlockingComponent.h"
+
+//Sound
+#include "ServiceLocator.h"
+#include "SoundSystem.h"
+#include "SDL_SoundSystem.h"
+#include "LoggingSoundSystem.h"
+#include "BombComponent.h"
 
 using namespace dae;
 
@@ -176,6 +184,15 @@ void PlaceCubes(int maxNrBlocks, Scene& scene)
 
 void load()
 {
+#if _DEBUG
+	ServiceLocator<SoundSystem>::RegisterService(std::make_unique <LoggingSoundSystem>(std::make_unique<SDL_SoundSystem>()));
+#else
+	ServiceLocator<SoundSystem>::RegisterService(std::make_unique<SDL_SoundSystem>());
+#endif
+	int bombSoundId{};
+	ServiceLocator<SoundSystem>::GetService().AddSound("Explosion.wav", bombSoundId);
+	BombComponent::SetExplosionSound(bombSoundId);
+
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 	auto& input = InputManager::GetInstance();
 	ScoresManager::GetInstance();
@@ -183,7 +200,7 @@ void load()
 	LoadLevelFromFile("Bomberman.json");
 	PlaceCubes(20, scene);
 
-	//Exercises::Drawing(scene);
+
 
 	constexpr int fontSize{ 20 };
 
@@ -236,20 +253,23 @@ void load()
 
 	constexpr float speed{ 100.f };
 
-	pController1->MapCommandToButton(Controller::ControllerButtons::DPadLeft, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ -speed,0.f }), ButtonState::Pressed);
-	pController1->MapCommandToButton(Controller::ControllerButtons::DPadRight, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ speed,0.f }), ButtonState::Pressed);
-	pController1->MapCommandToButton(Controller::ControllerButtons::DPadUp, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,-speed }), ButtonState::Pressed);
-	pController1->MapCommandToButton(Controller::ControllerButtons::DPadDown, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,speed }), ButtonState::Pressed);
+	pController1->MapCommandToButton(Controller::ControllerButtons::DPadLeft, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ -speed,0.f }, pPlayer1.get()), ButtonState::Pressed);
+	pController1->MapCommandToButton(Controller::ControllerButtons::DPadRight, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ speed,0.f }, pPlayer1.get()), ButtonState::Pressed);
+	pController1->MapCommandToButton(Controller::ControllerButtons::DPadUp, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,-speed }, pPlayer1.get()), ButtonState::Pressed);
+	pController1->MapCommandToButton(Controller::ControllerButtons::DPadDown, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,speed }, pPlayer1.get()), ButtonState::Pressed);
 
 	//Player 2
 	const auto pPlayerObject2{ std::make_shared<GameObject>(-10) };
 
-	const auto pAI{ std::make_shared<AIMoveComponent>(150.f) };
-	pPlayerObject2->AddComponent(pAI);
-	pPlayerObject2->SetPosition(50.f, 50.f);
-
+	auto pAIWalkCommand{ std::make_unique<AIWalkCommand>(pPlayerObject2.get(),100.f) };
+	//pAIWalkCommand->SetTarget(pPlayerObject1.get());
 	const auto pPlayer2{ std::make_shared<PlayerComponent>("Player 2",100) };
 	pPlayerObject2->AddComponent(pPlayer2);
+
+	const auto pAI{ std::make_shared<AIComponent>(std::move(pAIWalkCommand))};
+	pPlayerObject2->AddComponent(pAI);
+	pPlayerObject2->SetPosition(50.f, 50.f);  
+
 
 	const auto pPlayerRenderer2{ std::make_shared<SpriteRenderComponent>(0,15 * 16,16,16,2.f) };
 	pPlayerRenderer2->SetTexture("BombermanSprites.png");
@@ -291,16 +311,18 @@ void load()
 	const auto pKeyboard1{ input.GetKeyboard() };
 	pKeyboard1->MapCommandToButton(SDL_SCANCODE_S, std::make_unique<PlaceBombCommand>(pPlayerObject2.get()), ButtonState::Down);
 
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_LEFT, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ -speed,0.f }), ButtonState::Pressed);
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_RIGHT, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ speed,0.f }), ButtonState::Pressed);
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_UP, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ 0.f,-speed }), ButtonState::Pressed);
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_DOWN, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ 0.f,speed }), ButtonState::Pressed);
+	pKeyboard1->MapCommandToButton(SDL_SCANCODE_LEFT, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ -speed,0.f }, pPlayer2.get()), ButtonState::Pressed);
+	pKeyboard1->MapCommandToButton(SDL_SCANCODE_RIGHT, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ speed,0.f }, pPlayer2.get()), ButtonState::Pressed);
+	pKeyboard1->MapCommandToButton(SDL_SCANCODE_UP, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ 0.f,-speed }, pPlayer2.get()), ButtonState::Pressed);
+	pKeyboard1->MapCommandToButton(SDL_SCANCODE_DOWN, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ 0.f,speed }, pPlayer2.get()), ButtonState::Pressed);
 
 	//Start Info
 	const auto pStartInfoDisplay{ std::make_shared<GameObject>() };
 	const auto pStartInfo{ std::make_shared<StartInfoComponent>() };
 	pStartInfoDisplay->AddComponent(pStartInfo);
 	scene.Add(pStartInfoDisplay);
+
+	
 }
 
 int main(int, char* [])

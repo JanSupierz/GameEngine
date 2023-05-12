@@ -34,17 +34,17 @@ dae::NavigationNode* dae::NavigationGrid::AddNode(int row, int column)
             Direction neighbor{};
             Direction current{};
 
-            if (direction.first == 1)
+            if (direction.second == 1)
             {
                 neighbor = Direction::right;
                 current = Direction::left;
             }
-            else if(direction.first == -1)
+            else if (direction.second == -1)
             {
                 neighbor = Direction::left;
                 current = Direction::right;
             }
-            else if (direction.second == 1)
+            else if (direction.first == 1)
             {
                 neighbor = Direction::up;
                 current = Direction::down;

@@ -159,7 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AIMoveComponent.cpp" />
+    <ClCompile Include="AIWalkCommand.cpp" />
+    <ClCompile Include="AIComponent.cpp" />
     <ClCompile Include="BlockingComponent.cpp" />
     <ClCompile Include="BombComponent.cpp" />
     <ClCompile Include="Bomberman.cpp" />
@@ -172,8 +173,6 @@
     <ClCompile Include="GraphComponent.cpp" />
     <ClCompile Include="GridMovementCommand.cpp" />
     <ClCompile Include="LivesComponent.cpp" />
-    <ClCompile Include="NavigationGrid.cpp" />
-    <ClCompile Include="NavigationNode.cpp" />
     <ClCompile Include="PlaceBombCommand.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="PlayerDiedEvent.cpp" />
@@ -190,20 +189,18 @@
     <ClCompile Include="UpdatePositionCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AIMoveComponent.h" />
+    <ClInclude Include="AIWalkCommand.h" />
+    <ClInclude Include="AIComponent.h" />
     <ClInclude Include="BlockingComponent.h" />
     <ClInclude Include="BombComponent.h" />
     <ClInclude Include="BombExplodedEvent.h" />
     <ClInclude Include="CombinedGraphComponent.h" />
-    <ClInclude Include="Direction.h" />
     <ClInclude Include="ExplosionComponent.h" />
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="GainedPointEvent.h" />
     <ClInclude Include="GraphComponent.h" />
     <ClInclude Include="GridMovementCommand.h" />
     <ClInclude Include="LivesComponent.h" />
-    <ClInclude Include="NavigationGrid.h" />
-    <ClInclude Include="NavigationNode.h" />
     <ClInclude Include="PlaceBombCommand.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="PlayerDiedEvent.h" />
