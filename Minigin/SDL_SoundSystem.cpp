@@ -6,6 +6,14 @@
 #include <unordered_map>
 #include "LoggingSystem.h"
 #include <algorithm>
+
+//SoundQueue
+#include <thread>
+#include <atomic>
+#include <condition_variable>
+#include <queue>
+#include <tuple>
+
 using namespace dae;
 
 //SDL_mixer tutorial
@@ -39,10 +47,15 @@ public:
 
             ServiceLocator<LoggingSystem>::GetService().Log(ss.str());
         }
+
+        //Start a sound thread
+        m_SoundThread = std::jthread(&SDL_SoundImpl::SoundThreadFunction, this);
 	}	
 
     ~SDL_SoundImpl()
     {
+        Stop();
+
         //Free chunks
         for (auto& sound : m_Sounds)
         {
@@ -56,6 +69,49 @@ public:
         Mix_CloseAudio();
     }
 
+    void PlaySound(const int soundId, const float volume)
+    {
+        //Add sound to the queue
+        std::unique_lock<std::mutex> lock(m_SoundQueueMutex);
+
+        m_SoundQueue.push(std::make_tuple(SoundEvent::Play, soundId, volume));
+        lock.unlock();
+        m_SoundQueueCondition.notify_one();
+    }
+
+    void PreloadSound(const int soundId)
+    {
+        //Add sound to the queue
+        std::unique_lock<std::mutex> lock(m_SoundQueueMutex);
+
+        m_SoundQueue.push(std::make_tuple(SoundEvent::Preload, soundId, 0.f));
+        lock.unlock();
+        m_SoundQueueCondition.notify_one();
+    }
+
+    void AddSound(const std::string& fileName, int& soundId)
+    {
+        const std::string path{ ResourceManager::GetInstance().GetDataPath() + "Sounds/" + fileName };
+
+        //Add sounds to the map
+        std::lock_guard<std::mutex> lock(m_SoundQueueMutex);
+
+        soundId = static_cast<int>(m_Sounds.size());
+        m_Sounds[soundId] = std::make_pair(nullptr, path);
+    }
+
+private:
+    enum class SoundEvent
+    {
+        Preload, Play
+    };
+
+    void Stop()
+    {
+        m_Quit = true;
+        m_SoundQueueCondition.notify_one();
+    }
+
     void Play(const int soundId, const float volume)
     {
         auto& sound{ m_Sounds[soundId] };
@@ -65,13 +121,9 @@ public:
         {
             sound.first = Mix_LoadWAV(sound.second.c_str());
 
-            //Log error
+            //Return if loading failed
             if (sound.first == nullptr)
             {
-                std::stringstream ss{};
-                ss << "Mix_LoadWAV() failed: " << Mix_GetError();
-
-                ServiceLocator<LoggingSystem>::GetService().Log(ss.str());
                 return;
             }
         }
@@ -84,16 +136,65 @@ public:
         Mix_PlayChannel(-1, sound.first, 0);
     }
 
-    void AddSound(const std::string& fileName, int& soundId)
+    void Preload(const int soundId)
     {
-        const std::string path{ ResourceManager::GetInstance().GetDataPath() + "Sounds/" + fileName };
+        auto& sound{ m_Sounds[soundId] };
 
-        soundId = static_cast<int>(m_Sounds.size());
-        m_Sounds[soundId] = std::make_pair(nullptr, path);
+        //Load chunk if null
+        if (sound.first == nullptr)
+        {
+            sound.first = Mix_LoadWAV(sound.second.c_str());
+
+            //Return if loading failed
+            if (sound.first == nullptr)
+            {
+                return;
+            }
+        }
     }
 
-private:
+    void SoundThreadFunction()
+    {
+        while (!m_Quit)
+        {
+            std::unique_lock<std::mutex> lock(m_SoundQueueMutex);
+            m_SoundQueueCondition.wait(lock, [this] { return !m_SoundQueue.empty() || m_Quit; });
+
+            while (!m_SoundQueue.empty())
+            {
+                const auto& sound{ m_SoundQueue.front() };
+
+                //Event type
+                switch (std::get<0>(sound))
+                {
+                    case SoundEvent::Play:
+                    {
+                        //Sound Id and Volume
+                        Play(std::get<1>(sound), std::get<2>(sound));
+                    }
+                    break;
+                    case SoundEvent::Preload:
+                    {
+                        //Sound Id
+                        Preload(std::get<1>(sound));
+                    }
+                    break;
+                    default:
+                        break;
+                }
+
+                m_SoundQueue.pop();
+            }
+        }
+    }
+
     std::unordered_map<int, std::pair<Mix_Chunk*, std::string>> m_Sounds{};
+
+    std::atomic<bool> m_Quit{ false };
+    std::jthread m_SoundThread;
+    std::mutex m_SoundQueueMutex;
+    std::condition_variable m_SoundQueueCondition;
+    std::queue<std::tuple<SoundEvent, int, float>> m_SoundQueue;
 };
 
 SDL_SoundSystem::SDL_SoundSystem()
@@ -108,7 +209,12 @@ dae::SDL_SoundSystem::~SDL_SoundSystem()
 
 void dae::SDL_SoundSystem::Play(const int soundId, const float volume)
 {
-    m_pImpl->Play(soundId, volume);
+    m_pImpl->PlaySound(soundId, volume);
+}
+
+void dae::SDL_SoundSystem::Preload(const int soundId)
+{
+    m_pImpl->PreloadSound(soundId);
 }
 
 void dae::SDL_SoundSystem::AddSound(const std::string& fileName, int& soundId)

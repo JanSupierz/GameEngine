@@ -191,6 +191,7 @@ void load()
 #endif
 	int bombSoundId{};
 	ServiceLocator<SoundSystem>::GetService().AddSound("Explosion.wav", bombSoundId);
+	ServiceLocator<SoundSystem>::GetService().Preload(bombSoundId);
 	BombComponent::SetExplosionSound(bombSoundId);
 
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");

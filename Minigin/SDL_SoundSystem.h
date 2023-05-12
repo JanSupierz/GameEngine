@@ -10,6 +10,7 @@ namespace dae
 		~SDL_SoundSystem();
 
 		virtual void Play(const int soundId, const float volume) override;
+		virtual void Preload(const int soundId) override;
 		virtual void AddSound(const std::string& fileName, int& soundId) override;
 	private:
 		class SDL_SoundImpl;

@@ -7,6 +7,7 @@ class SoundSystem
 public:
 	virtual ~SoundSystem() = default;
 	virtual void Play(const int soundId, const float volume) = 0;
+	virtual void Preload(const int soundId) = 0;
 	virtual void AddSound(const std::string& fileName, int& soundId) = 0;
 };
 
@@ -17,5 +18,6 @@ template <>
 class NullService<SoundSystem> : public SoundSystem {
 public:
 	virtual void Play(const int, const float) {};
+	virtual void Preload(const int) {};
 	virtual void AddSound(const std::string&, int& soundId) { soundId = -1; };
 };
