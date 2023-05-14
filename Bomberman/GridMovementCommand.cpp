@@ -66,12 +66,12 @@ void GridMovementCommand::Execute()
             //Prevent speeding up on the corners
             newPosition = oldPosition + glm::normalize(newPosition - oldPosition)* speedDelta;
         }
-    }
 
-    //Move to the destination
-    if ((pNode == pCurrentNode) || (pNode && !pNode->IsBlocked()))
-    {
-        m_pGameObject->SetPosition(newPosition.x, newPosition.y);
-        m_pPlayer->SetNode(pNode);
+        //Move to the destination
+        if ((pNode == pCurrentNode) || (pNode && !pNode->IsBlocked()))
+        {
+            m_pGameObject->SetPosition(newPosition.x, newPosition.y);
+            m_pPlayer->SetNode(pNode);
+        }
     }
 }

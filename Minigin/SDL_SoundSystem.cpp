@@ -182,7 +182,7 @@ private:
                     default:
                         break;
                 }
-
+              
                 m_SoundQueue.pop();
             }
         }

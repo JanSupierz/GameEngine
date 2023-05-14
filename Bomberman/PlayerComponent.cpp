@@ -8,8 +8,8 @@
 
 using namespace dae;
 
-PlayerComponent::PlayerComponent(const std::string& name, int nrLives, int priority)
-	: Component(priority), m_Name{ name }, m_Nrlives{ nrLives }
+PlayerComponent::PlayerComponent(const glm::vec2& startPos, const std::string& name, int nrLives, int priority)
+	: Component(priority), m_Name{ name }, m_Nrlives{ nrLives }, m_StartPosition{ startPos }
 {
 	EventManager::GetInstance().AddListener(this);
 }
@@ -55,5 +55,7 @@ void dae::PlayerComponent::OnEvent(const BombExplodedEvent& event)
 	{
 		--m_Nrlives;
 		EventManager::GetInstance().AddEvent(std::make_shared<PlayerDiedEvent>(event.GetPlayer(), this));
+
+		GetOwner()->SetPosition(m_StartPosition);
 	}
 }

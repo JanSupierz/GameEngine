@@ -34,10 +34,13 @@
 #include "ScoresManager.h"
 #include "StartInfoComponent.h"
 
+//Events
 #include "GainedPointEvent.h"
 #include "PlayerDiedEvent.h"
 #include "EventManager.h"
 #include "BombExplodedEvent.h"
+
+//Navigation
 #include "NavigationGrid.h"
 #include "AIComponent.h"
 #include "AIWalkCommand.h"
@@ -68,6 +71,23 @@ namespace Exercises
 }
 
 using rapidjson::Value;
+
+void LoadReserved(const Value& cells, std::vector<std::tuple<int, int, std::string>>& reservedCubes)
+{
+	for (auto cubeIt{ cells.Begin() }; cubeIt != cells.End(); ++cubeIt)
+	{
+		const Value& node{ *cubeIt };
+		int column{ node[0].GetInt() };
+
+		const Value& rows{ node[1] };
+		for (auto rowIt{ rows.Begin() }; rowIt != rows.End(); ++rowIt)
+		{
+			int row{ (*rowIt).GetInt() };
+
+			reservedCubes.push_back(std::make_tuple(column, row, node[2].GetString()));
+		}
+	}
+}
 
 void LoadCells(const Value& cells, float cellSizeX, float cellSizeY, bool createNavigation = false)
 {
@@ -120,7 +140,7 @@ void LoadCells(const Value& cells, float cellSizeX, float cellSizeY, bool create
 	}
 }
 
-void LoadLevelFromFile(const std::string& fileName)
+void LoadLevelFromFile(const std::string& fileName, std::vector<std::tuple<int, int, std::string>>& reservedCubes)
 {
 	if (std::ifstream is{ ResourceManager::GetInstance().GetDataPath() + fileName })
 	{
@@ -152,10 +172,29 @@ void LoadLevelFromFile(const std::string& fileName)
 			const Value& navigation{ document["SolidCubes"] };
 			LoadCells(navigation, cellSizeX, cellSizeY);
 		}
+
+		if (document.HasMember("ReservedPlaces"))
+		{
+			const Value& reservedPlaces{ document["ReservedPlaces"] };
+			LoadReserved(reservedPlaces, reservedCubes);
+		}
 	}
 }
 
-void PlaceCubes(int maxNrBlocks, Scene& scene)
+bool IsReserved(const NavigationNode* const pNode, const std::vector<std::tuple<int, int, std::string>>& reservedCubes)
+{
+	int row{ pNode->GetRow() }, column{ pNode->GetColumn() };
+
+	const auto it = std::find_if(reservedCubes.begin(), reservedCubes.end(), [&](const auto& tuple) 
+	{
+		return std::get<0>(tuple) == column && std::get<1>(tuple) == row;
+	});
+
+	//Is reserved
+	return it != reservedCubes.end();
+}
+
+void PlaceCubes(int maxNrBlocks, Scene& scene, const std::vector<std::tuple<int, int, std::string>>& reservedCubes)
 {
 	int nrBlocks{};
 
@@ -163,7 +202,7 @@ void PlaceCubes(int maxNrBlocks, Scene& scene)
 	{
 		NavigationNode* pNode{ NavigationGrid::GetInstance().GetRandomNode() };
 
-		if (pNode && !pNode->IsBlocked())
+		if (pNode && !pNode->IsBlocked() && !IsReserved(pNode, reservedCubes))
 		{
 			++nrBlocks;
 
@@ -182,6 +221,70 @@ void PlaceCubes(int maxNrBlocks, Scene& scene)
 	}
 }
 
+std::shared_ptr<GameObject> CreatePlayer(const NavigationNode* const pNode, 
+	const std::string& name, const float playerSpeed, Scene& scene,  const int spritePosX, 
+	const int spritePosY, const float infoDisplayOffsetX = 10.f, const float infoDisplayOffsetY = 20.f, 
+	const float infoDisplaySpacing = 20.f, const int spriteCellDimensions = 16, const float spriteCellScale = 2.f)
+{
+	//Player
+	const auto pPlayerObject{ std::make_shared<GameObject>(-10) };
+
+	const int health{ 3 };
+	const auto pPlayer{ std::make_shared<PlayerComponent>(pNode->GetWorldPosition(),name,health) };
+	pPlayerObject->AddComponent(pPlayer);
+	pPlayerObject->SetPosition(pNode->GetWorldPosition());
+
+	const auto pPlayerRenderer{ std::make_shared<SpriteRenderComponent>(spritePosX,spritePosY,spriteCellDimensions,spriteCellDimensions,spriteCellScale) };
+	pPlayerRenderer->SetTexture("BombermanSprites.png");
+	pPlayerObject->AddComponent(pPlayerRenderer);
+
+	scene.Add(pPlayerObject);
+
+	//Health Display
+	const auto pHealthDisplay{ std::make_shared<GameObject>() };
+	pHealthDisplay->SetPosition(infoDisplayOffsetX, infoDisplayOffsetY);
+	const auto pHealthRenderer{ std::make_shared<RenderComponent>() };
+	pHealthDisplay->AddComponent(pHealthRenderer);
+
+	constexpr int fontSize{ 20 };
+	const auto pHealthText{ std::make_shared<TextComponent>(pHealthRenderer) };
+	pHealthText->SetFont(ResourceManager::GetInstance().LoadFont("Lingua.otf", fontSize));
+	pHealthDisplay->AddComponent(pHealthText);
+
+	const auto pLives{ std::make_shared<LivesComponent>(pPlayer.get(), pHealthText) };
+	pHealthDisplay->AddComponent(pLives);
+
+	scene.Add(pHealthDisplay);
+
+	//Score Display 1
+	const auto pScoreDisplay{ std::make_shared<GameObject>() };
+	pScoreDisplay->SetPosition(infoDisplayOffsetX, infoDisplayOffsetY + infoDisplaySpacing);
+	const auto pScoreRenderer{ std::make_shared<RenderComponent>() };
+	pScoreDisplay->AddComponent(pScoreRenderer);
+
+	const auto pScoreText{ std::make_shared<TextComponent>(pScoreRenderer) };
+	pScoreText->SetFont(ResourceManager::GetInstance().LoadFont("Lingua.otf", fontSize));
+	pScoreDisplay->AddComponent(pScoreText);
+
+	const auto pScore{ std::make_shared<ScoreComponent>(pPlayer, pScoreText) };
+	pScoreDisplay->AddComponent(pScore);
+
+	scene.Add(pScoreDisplay);
+
+	//Controller
+	auto& input = InputManager::GetInstance();
+
+	const auto pController1{ input.AddController() };
+	pController1->MapCommandToButton(Controller::ControllerButtons::ButtonA, std::make_unique<PlaceBombCommand>(pPlayerObject.get()), ButtonState::Down);
+
+	pController1->MapCommandToButton(Controller::ControllerButtons::DPadLeft, std::make_unique<GridMovementCommand>(pPlayerObject.get(), glm::vec2{ -playerSpeed,0.f }, pPlayer.get()), ButtonState::Pressed);
+	pController1->MapCommandToButton(Controller::ControllerButtons::DPadRight, std::make_unique<GridMovementCommand>(pPlayerObject.get(), glm::vec2{ playerSpeed,0.f }, pPlayer.get()), ButtonState::Pressed);
+	pController1->MapCommandToButton(Controller::ControllerButtons::DPadUp, std::make_unique<GridMovementCommand>(pPlayerObject.get(), glm::vec2{ 0.f,-playerSpeed }, pPlayer.get()), ButtonState::Pressed);
+	pController1->MapCommandToButton(Controller::ControllerButtons::DPadDown, std::make_unique<GridMovementCommand>(pPlayerObject.get(), glm::vec2{ 0.f,playerSpeed }, pPlayer.get()), ButtonState::Pressed);
+
+	return pPlayerObject;
+}
+
 void load()
 {
 #if _DEBUG
@@ -189,6 +292,8 @@ void load()
 #else
 	ServiceLocator<SoundSystem>::RegisterService(std::make_unique<SDL_SoundSystem>());
 #endif
+
+	//Load sounds
 	int bombSoundId{};
 	ServiceLocator<SoundSystem>::GetService().AddSound("Explosion.wav", bombSoundId);
 	ServiceLocator<SoundSystem>::GetService().Preload(bombSoundId);
@@ -196,134 +301,38 @@ void load()
 
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 	auto& input = InputManager::GetInstance();
+	auto& navigation = NavigationGrid::GetInstance();
 	ScoresManager::GetInstance();
 
-	LoadLevelFromFile("Bomberman.json");
-	PlaceCubes(20, scene);
+	//Create level
+	std::vector<std::tuple<int, int, std::string>> reservedCubes{};
+	LoadLevelFromFile("Bomberman.json", reservedCubes);
+	PlaceCubes(100, scene, reservedCubes);
 
-
-
-	constexpr int fontSize{ 20 };
-
-	//Player 1
-	const auto pPlayerObject1{ std::make_shared<GameObject>(-10) };
-
-	const auto pPlayer1{ std::make_shared<PlayerComponent>("Player 1",100) };
-	pPlayerObject1->AddComponent(pPlayer1);
-	pPlayerObject1->SetPosition(200.f, 200.f);
-
-	const auto pPlayerRenderer1{ std::make_shared<SpriteRenderComponent>(0,0,16,16,2.f) };
-	pPlayerRenderer1->SetTexture("BombermanSprites.png");
-	pPlayerObject1->AddComponent(pPlayerRenderer1);
-
-	scene.Add(pPlayerObject1);
-
-	//Health Display 1
-	const auto pHealthDisplay1{ std::make_shared<GameObject>() };
-	pHealthDisplay1->SetPosition(10.f, 20.f);
-	const auto pHealthRenderer1{ std::make_shared<RenderComponent>() };
-	pHealthDisplay1->AddComponent(pHealthRenderer1);
-
-	const auto pHealthText1{ std::make_shared<TextComponent>(pHealthRenderer1) };
-	pHealthText1->SetFont(ResourceManager::GetInstance().LoadFont("Lingua.otf", fontSize));
-	pHealthDisplay1->AddComponent(pHealthText1);
-
-	const auto pLives1{ std::make_shared<LivesComponent>(pPlayer1.get(), pHealthText1) };
-	pHealthDisplay1->AddComponent(pLives1);
-
-	scene.Add(pHealthDisplay1);
-
-	//Score Display 1
-	const auto pScoreDisplay1{ std::make_shared<GameObject>() };
-	pScoreDisplay1->SetPosition(10.f, 40.f);
-	const auto pScoreRenderer1{ std::make_shared<RenderComponent>() };
-	pScoreDisplay1->AddComponent(pScoreRenderer1);
-
-	const auto pScoreText1{ std::make_shared<TextComponent>(pScoreRenderer1) };
-	pScoreText1->SetFont(ResourceManager::GetInstance().LoadFont("Lingua.otf", fontSize));
-	pScoreDisplay1->AddComponent(pScoreText1);
-
-	const auto pScore1{ std::make_shared<ScoreComponent>(pPlayer1, pScoreText1) };
-	pScoreDisplay1->AddComponent(pScore1);
-
-	scene.Add(pScoreDisplay1);
-
-	//Controller 1
-	const auto pController1{ input.AddController() };
-	pController1->MapCommandToButton(Controller::ControllerButtons::ButtonA, std::make_unique<PlaceBombCommand>(pPlayerObject1.get()), ButtonState::Down);
-
+	//Create players
 	constexpr float speed{ 100.f };
+	const auto pPlayerObject1{ CreatePlayer(navigation.GetNode(3, 1), "Player 1", speed, scene, 0, 0) };
 
-	pController1->MapCommandToButton(Controller::ControllerButtons::DPadLeft, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ -speed,0.f }, pPlayer1.get()), ButtonState::Pressed);
-	pController1->MapCommandToButton(Controller::ControllerButtons::DPadRight, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ speed,0.f }, pPlayer1.get()), ButtonState::Pressed);
-	pController1->MapCommandToButton(Controller::ControllerButtons::DPadUp, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,-speed }, pPlayer1.get()), ButtonState::Pressed);
-	pController1->MapCommandToButton(Controller::ControllerButtons::DPadDown, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,speed }, pPlayer1.get()), ButtonState::Pressed);
+	const auto pPlayer1{ pPlayerObject1->GetComponent<PlayerComponent>() };
 
-	//Player 2
-	const auto pPlayerObject2{ std::make_shared<GameObject>(-10) };
+	const auto pKeyboard{ input.GetKeyboard() };
+	pKeyboard->MapCommandToButton(SDL_SCANCODE_LEFT, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ -speed,0.f }, pPlayer1.get()), ButtonState::Pressed);
+	pKeyboard->MapCommandToButton(SDL_SCANCODE_RIGHT, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ speed,0.f }, pPlayer1.get()), ButtonState::Pressed);
+	pKeyboard->MapCommandToButton(SDL_SCANCODE_UP, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,-speed }, pPlayer1.get()), ButtonState::Pressed);
+	pKeyboard->MapCommandToButton(SDL_SCANCODE_DOWN, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,speed }, pPlayer1.get()), ButtonState::Pressed);
+
+	const auto pPlayerObject2{ CreatePlayer(navigation.GetNode(3, 1), "Player 2", speed, scene, 0, 15 * 16, 440.f) };
 
 	auto pAIWalkCommand{ std::make_unique<AIWalkCommand>(pPlayerObject2.get(),100.f) };
-	//pAIWalkCommand->SetTarget(pPlayerObject1.get());
-	const auto pPlayer2{ std::make_shared<PlayerComponent>("Player 2",100) };
-	pPlayerObject2->AddComponent(pPlayer2);
 
 	const auto pAI{ std::make_shared<AIComponent>(std::move(pAIWalkCommand))};
-	pPlayerObject2->AddComponent(pAI);
-	pPlayerObject2->SetPosition(50.f, 50.f);  
-
-
-	const auto pPlayerRenderer2{ std::make_shared<SpriteRenderComponent>(0,15 * 16,16,16,2.f) };
-	pPlayerRenderer2->SetTexture("BombermanSprites.png");
-	pPlayerObject2->AddComponent(pPlayerRenderer2);
-
-	scene.Add(pPlayerObject2);
-
-	//Health Display 2
-	const auto pHealthDisplay2{ std::make_shared<GameObject>() };
-	pHealthDisplay2->SetPosition(400.f, 20.f);
-	const auto pHealthRenderer2{ std::make_shared<RenderComponent>() };
-	pHealthDisplay2->AddComponent(pHealthRenderer2);
-
-	const auto pHealthText2{ std::make_shared<TextComponent>(pHealthRenderer2) };
-	pHealthText2->SetFont(ResourceManager::GetInstance().LoadFont("Lingua.otf", fontSize));
-	pHealthDisplay2->AddComponent(pHealthText2);
-
-	const auto pLives2{ std::make_shared<LivesComponent>(pPlayer2.get(), pHealthText2) };
-	pHealthDisplay2->AddComponent(pLives2);
-
-	scene.Add(pHealthDisplay2);
-
-	//Score Display 2
-	const auto pScoreDisplay2{ std::make_shared<GameObject>() };
-	pScoreDisplay2->SetPosition(400.f, 40.f);
-	const auto pScoreRenderer2{ std::make_shared<RenderComponent>() };
-	pScoreDisplay2->AddComponent(pScoreRenderer2);
-
-	const auto pScoreText2{ std::make_shared<TextComponent>(pScoreRenderer2) };
-	pScoreText2->SetFont(ResourceManager::GetInstance().LoadFont("Lingua.otf", fontSize));
-	pScoreDisplay2->AddComponent(pScoreText2);
-
-	const auto pScore2{ std::make_shared<ScoreComponent>(pPlayer2, pScoreText2) };
-	pScoreDisplay2->AddComponent(pScore2);
-
-	scene.Add(pScoreDisplay2);
-
-	//Keyboard 1
-	const auto pKeyboard1{ input.GetKeyboard() };
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_S, std::make_unique<PlaceBombCommand>(pPlayerObject2.get()), ButtonState::Down);
-
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_LEFT, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ -speed,0.f }, pPlayer2.get()), ButtonState::Pressed);
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_RIGHT, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ speed,0.f }, pPlayer2.get()), ButtonState::Pressed);
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_UP, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ 0.f,-speed }, pPlayer2.get()), ButtonState::Pressed);
-	pKeyboard1->MapCommandToButton(SDL_SCANCODE_DOWN, std::make_unique<GridMovementCommand>(pPlayerObject2.get(), glm::vec2{ 0.f,speed }, pPlayer2.get()), ButtonState::Pressed);
+	pPlayerObject2->AddComponent(pAI); 
 
 	//Start Info
 	const auto pStartInfoDisplay{ std::make_shared<GameObject>() };
 	const auto pStartInfo{ std::make_shared<StartInfoComponent>() };
 	pStartInfoDisplay->AddComponent(pStartInfo);
 	scene.Add(pStartInfoDisplay);
-
-	
 }
 
 int main(int, char* [])

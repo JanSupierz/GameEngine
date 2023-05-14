@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <glm/glm.hpp>
 
 namespace dae
 {
@@ -14,7 +15,7 @@ namespace dae
 	class PlayerComponent final : public Component, public EventListener<BombExplodedEvent>
 	{
 	public:
-		PlayerComponent(const std::string& name, int nrLives, int priority = 0);
+		PlayerComponent(const glm::vec2& startPos, const std::string& name, int nrLives, int priority = 0);
 		virtual ~PlayerComponent();
 		PlayerComponent(const PlayerComponent& other) = default;
 		PlayerComponent(PlayerComponent&& other) = default;
@@ -36,6 +37,8 @@ namespace dae
 		const std::string m_Name;
 		int m_Score{};
 		int m_Nrlives{};
+
+		const glm::vec2 m_StartPosition;
 
 		NavigationNode* m_pCurrentNode{ nullptr };
 	};

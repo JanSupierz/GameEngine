@@ -1,12 +1,13 @@
 #include "NavigationGrid.h"
 #include "NavigationNode.h"
 #include "Direction.h"
-#include <iostream>
+#include <sstream>
+#include "LoggingSystem.h"
 
 dae::NavigationNode* dae::NavigationGrid::AddNode(int row, int column)
 {
     m_MaxRow = std::max(m_MaxRow, row);
-    m_MaxColumn = std::max(m_MaxColumn, row);
+    m_MaxColumn = std::max(m_MaxColumn, column);
 
     glm::vec2 location{ column * m_NodeWidth + m_NodeWidth / 2.f, row * m_NodeHeight + m_NodeHeight / 2.f };
 
@@ -15,7 +16,10 @@ dae::NavigationNode* dae::NavigationGrid::AddNode(int row, int column)
 
         if (pTempNode)
         {
-            std::cout << "Node at location already exists: " << row << " " << column << '\n';
+            std::stringstream ss{};
+
+            ss << "Node at location already exists: " << row << " " << column << '\n';
+            ServiceLocator<LoggingSystem>::GetService().Log(ss.str());
             return pTempNode;
         }
     }
