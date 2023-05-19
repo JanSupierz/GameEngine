@@ -2,7 +2,7 @@
 #include "NavigationNode.h"
 #include "Direction.h"
 #include <sstream>
-#include "LoggingSystem.h"
+#include "Logger.h"
 
 dae::NavigationNode* dae::NavigationGrid::AddNode(int row, int column)
 {
@@ -19,7 +19,7 @@ dae::NavigationNode* dae::NavigationGrid::AddNode(int row, int column)
             std::stringstream ss{};
 
             ss << "Node at location already exists: " << row << " " << column << '\n';
-            ServiceLocator<LoggingSystem>::GetService().Log(ss.str());
+            Logger::Get().Log(ss.str());
             return pTempNode;
         }
     }

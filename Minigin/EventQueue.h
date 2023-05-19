@@ -32,8 +32,8 @@ namespace dae
                 Resize(m_Size * 2);
             }
 
-            m_pEvents[m_Head] = pEvent;
-            m_Head = (m_Head + 1) % m_Size;
+            m_pEvents[m_Tail] = pEvent;
+            m_Tail = (m_Tail + 1) % m_Size;
         }
 
         void ProcessEvents()
@@ -42,23 +42,42 @@ namespace dae
             {
                 for (auto pListener : m_pListeners)
                 {
-                    pListener->OnEvent(*(m_pEvents[m_Tail]));
+                    pListener->OnEvent(*(m_pEvents[m_Head]));
                 }
 
-                m_Tail = (m_Tail + 1) % m_Size;
+                m_pEvents[m_Head] = nullptr;
+                m_Head = (m_Head + 1) % m_Size;
             }
         }
 
         void Resize(int newSize)
         {
             m_pEvents.resize(newSize);
+
+            const int difference{ m_Head - m_Tail };
+
+            //Head is larger than tail
+            //We need to copy the head part to the end
+            if (difference > 0)
+            {
+                const int nrNumbersToCopy{ m_Size - m_Head };
+
+                for (int index{}; index < nrNumbersToCopy; ++index)
+                {
+                    m_pEvents[newSize - nrNumbersToCopy + index] = m_pEvents[m_Head + index];
+                    m_pEvents[m_Head + index] = nullptr;
+                }
+
+                m_Head = newSize - nrNumbersToCopy;
+            }
+
             m_Size = newSize;
         }
 
     private:
         bool isFull() const
-        {
-            return (m_Head + 1) % m_Size == m_Tail;
+        { 
+            return (m_Tail + 1) % m_Size == m_Head;
         }
 
         bool isEmpty() const

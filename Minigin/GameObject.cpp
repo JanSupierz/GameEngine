@@ -177,6 +177,7 @@ dae::GameObject::GameObject(int priority)
 		pGameObject->m_pParent = nullptr;
 
 		//Add to the scene
+		assert(pGameObject != nullptr);
 		SceneManager::GetInstance().GetCurrentScene()->Add(pGameObject);
 
 		//Update position, rotation and scale

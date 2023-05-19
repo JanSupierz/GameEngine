@@ -1,24 +1,20 @@
 #pragma once
 #include <sstream>
 #include <iostream>
-#include "ServiceLocator.h"
 
-class LoggingSystem
+namespace dae
 {
-public:
-	virtual ~LoggingSystem() = default;
-	virtual void Log(const std::string& message) = 0;
-};
+	class LoggingSystem
+	{
+	public:
+		LoggingSystem() = default;
+		virtual ~LoggingSystem() = default;
 
-template <typename Service>
-class NullService;
+		LoggingSystem(const LoggingSystem& other) = delete;
+		LoggingSystem(LoggingSystem&& other) = delete;
+		LoggingSystem& operator=(const LoggingSystem& other) = delete;
+		LoggingSystem& operator=(LoggingSystem&& other) = delete;
 
-template <>
-class NullService<LoggingSystem> : public LoggingSystem {
-public:
-#if _DEBUG
-	virtual void Log(const std::string& message) { std::cout << "Log: " << message << '\n'; };
-#else
-	virtual void Log(const std::string&) {};
-#endif
-};
+		virtual void Log(const std::string& message) = 0;
+	};
+}

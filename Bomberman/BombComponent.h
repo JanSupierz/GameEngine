@@ -31,6 +31,8 @@ namespace dae
 		NavigationNode* m_pNode;
 		const int m_Range;
 
+		bool m_IsExploded{ false };
+
 		static int s_ExplosionSoundId;
 	};
 }

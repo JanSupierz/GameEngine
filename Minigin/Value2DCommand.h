@@ -7,7 +7,7 @@ namespace dae
     class Value2DCommand : public Command
     {
     public:
-        explicit Value2DCommand();
+        explicit Value2DCommand() = default;
         virtual ~Value2DCommand() = default;
 
         virtual void Execute() = 0;

@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -28,33 +24,28 @@
     <Filter Include="AI">
       <UniqueIdentifier>{11e3ca63-64d0-4b7a-b997-1f104d08b181}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\Exercises">
+      <UniqueIdentifier>{5bc9e8a8-bd43-4938-944f-459b52e37c87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bomberman.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Game Files</Filter>
     </ClCompile>
     <ClCompile Include="Exercises.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Game Files</Filter>
     </ClCompile>
     <ClCompile Include="BombComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="CombinedGraphComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="PlayerComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="RotatorComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="StartInfoComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="TextComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="UpdatePosition1DCommand.cpp">
@@ -78,13 +69,10 @@
     <ClCompile Include="GainedPointEvent.cpp">
       <Filter>Events</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerDiedEvent.cpp">
+    <ClCompile Include="DeathEvent.cpp">
       <Filter>Events</Filter>
     </ClCompile>
     <ClCompile Include="ScoreComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="LivesComponent.cpp">
@@ -93,17 +81,11 @@
     <ClCompile Include="ScoresManager.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
-    <ClCompile Include="FPSComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="AIComponent.cpp">
       <Filter>AI</Filter>
     </ClCompile>
     <ClCompile Include="GridMovementCommand.cpp">
       <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteRenderComponent.cpp">
-      <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="ExplosionComponent.cpp">
       <Filter>Components</Filter>
@@ -114,21 +96,30 @@
     <ClCompile Include="AIWalkCommand.cpp">
       <Filter>AI</Filter>
     </ClCompile>
+    <ClCompile Include="CombinedGraphComponent.cpp">
+      <Filter>Components\Exercises</Filter>
+    </ClCompile>
+    <ClCompile Include="FPSComponent.cpp">
+      <Filter>Components\Exercises</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphComponent.cpp">
+      <Filter>Components\Exercises</Filter>
+    </ClCompile>
+    <ClCompile Include="RotatorComponent.cpp">
+      <Filter>Components\Exercises</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BombComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="CombinedGraphComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="PlayerComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="StartInfoComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="RotatorComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="ScoreComponent.h">
@@ -140,7 +131,7 @@
     <ClInclude Include="GainedPointEvent.h">
       <Filter>Events</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerDiedEvent.h">
+    <ClInclude Include="DeathEvent.h">
       <Filter>Events</Filter>
     </ClInclude>
     <ClInclude Include="SetPositionCommand.h">
@@ -158,19 +149,7 @@
     <ClInclude Include="UpdatePositionCommand.h">
       <Filter>Commands</Filter>
     </ClInclude>
-    <ClInclude Include="FPSComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="LivesComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="TextComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="ScoresManager.h">
@@ -182,9 +161,6 @@
     <ClInclude Include="GridMovementCommand.h">
       <Filter>Commands</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteRenderComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="ExplosionComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
@@ -193,6 +169,21 @@
     </ClInclude>
     <ClInclude Include="AIWalkCommand.h">
       <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="CombinedGraphComponent.h">
+      <Filter>Components\Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSComponent.h">
+      <Filter>Components\Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphComponent.h">
+      <Filter>Components\Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="RotatorComponent.h">
+      <Filter>Components\Exercises</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyComponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

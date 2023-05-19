@@ -8,18 +8,33 @@
 
 using namespace dae;
 
-GridMovementCommand::GridMovementCommand(GameObject* pGameObject, const glm::vec2& direction, PlayerComponent* pPlayer)
+GridMovementCommand::GridMovementCommand(GameObject* pGameObject, const glm::vec2& direction, PlayerComponent* pPlayer, bool useValue2D)
     : m_pGameObject(pGameObject),
     m_Direction(glm::normalize(direction)),
     m_Speed{ glm::length(direction) },
     m_pSceneManager(&SceneManager::GetInstance()),
     m_pGrid{ &NavigationGrid::GetInstance() },
-    m_pPlayer{ pPlayer }
+    m_pPlayer{ pPlayer },
+    m_UseValue2D{ useValue2D }
 {};
 
 void GridMovementCommand::Execute()
 {
     if (!m_pGameObject) return;
+
+    if (m_UseValue2D)
+    {
+        if (abs(m_Value.x) > abs(m_Value.y))
+        {
+            m_Direction.x = (m_Value.x > 0.f ? 1.f: -1.f);
+            m_Direction.y = 0.f;
+        }
+        else
+        {
+            m_Direction.x = 0.f;
+            m_Direction.y = (m_Value.y > 0.f ? 1.f: -1.f);
+        }
+    }
 
     NavigationNode* pCurrentNode{ m_pPlayer->GetNode() };
     const float speedDelta{ m_Speed * m_pSceneManager->GetDeltaTime() };

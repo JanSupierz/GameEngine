@@ -1,23 +1,21 @@
 #pragma once
-#include "ServiceLocator.h"
 #include <string>
 
-class SoundSystem
+namespace dae
 {
-public:
-	virtual ~SoundSystem() = default;
-	virtual void Play(const int soundId, const float volume) = 0;
-	virtual void Preload(const int soundId) = 0;
-	virtual void AddSound(const std::string& fileName, int& soundId) = 0;
-};
+	class SoundSystem
+	{
+	public:
+		SoundSystem() = default;
+		virtual ~SoundSystem();
 
-template <class Service>
-class NullService;
+		SoundSystem(const SoundSystem& other) = delete;
+		SoundSystem(SoundSystem&& other) = delete;
+		SoundSystem& operator=(const SoundSystem& other) = delete;
+		SoundSystem& operator=(SoundSystem&& other) = delete;
 
-template <>
-class NullService<SoundSystem> : public SoundSystem {
-public:
-	virtual void Play(const int, const float) {};
-	virtual void Preload(const int) {};
-	virtual void AddSound(const std::string&, int& soundId) { soundId = -1; };
-};
+		virtual void Play(const int soundId, const float volume) = 0;
+		virtual void Preload(const int soundId) = 0;
+		virtual void AddSound(const std::string& fileName, int& soundId) = 0;
+	};
+}

@@ -4,7 +4,7 @@
 #include "TextComponent.h"
 #include <iostream>
 #include "PlayerComponent.h"
-#include "PlayerDiedEvent.h"
+#include "DeathEvent.h"
 #include "EventManager.h"
 
 dae::LivesComponent::LivesComponent(PlayerComponent* pPlayer, std::shared_ptr<TextComponent> pTextComponent, int priority)
@@ -19,7 +19,7 @@ dae::LivesComponent::~LivesComponent()
 	EventManager::GetInstance().RemoveListener(this);
 }
 
-void dae::LivesComponent::OnEvent(const PlayerDiedEvent& event)
+void dae::LivesComponent::OnEvent(const DeathEvent& event)
 {
 	if (m_pPlayer == event.GetKilled())
 	{

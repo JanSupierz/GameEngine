@@ -8,17 +8,22 @@ void dae::StartInfoComponent::Render()
 
     ImGui::Spacing();
 
-    ImGui::Text("Player1: Controller");
+    ImGui::Text("Controller:");
     ImGui::Text("Place bombs wih 'A'");
     ImGui::Text("Move using the DPad");
 
     ImGui::Spacing();
 
-    ImGui::Text("Player2: Keyboard");
+    ImGui::Text("Keyboard:");
     ImGui::Text("Place bombs wih 's'");
     ImGui::Text("Move using the arrows");
 
     ImGui::Spacing();
+
+    ImGui::Text("Goal:");
+    ImGui::Text("Kill enemies");
+    ImGui::Text("Find the door");
+    ImGui::Text("(Door isn't working)");
 
     if (ImGui::Button("OK"))
     {

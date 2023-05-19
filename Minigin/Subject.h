@@ -7,7 +7,7 @@
 
 namespace dae
 {
-    //The event type should derive from Subject<EventType>
+    //The event type should derrive from Subject<EventType> and wrap the Notify function
     template<class EventType>
     class Subject
     {

@@ -9,9 +9,9 @@ namespace dae
 	class GameObject;
 	class TextComponent;
 	class PlayerComponent;
-	class PlayerDiedEvent;
+	class DeathEvent;
 
-	class LivesComponent final : public Component, public EventListener<PlayerDiedEvent>
+	class LivesComponent final : public Component, public EventListener<DeathEvent>
 	{
 	public:
 		LivesComponent(PlayerComponent* pPlayer, std::shared_ptr<TextComponent> pTextComponent = nullptr, int priority = 0);
@@ -21,7 +21,7 @@ namespace dae
 		LivesComponent& operator=(const LivesComponent& other) = default;
 		LivesComponent& operator=(LivesComponent&& other) = default;
 
-		virtual void OnEvent(const PlayerDiedEvent& event) override;
+		virtual void OnEvent(const DeathEvent& event) override;
 
 	private:
 		void UpdateHud(const std::string& name, int nrLives);

@@ -43,17 +43,23 @@
     <Filter Include="Engine Files\Sound">
       <UniqueIdentifier>{5a7adf60-4f5c-43e4-8473-a6cc2004f56a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine Files\ServiceLocator">
-      <UniqueIdentifier>{cbd0bd3c-3fb1-4fb5-a255-298bd9dd7b38}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Files\Logging">
       <UniqueIdentifier>{03474e04-546a-49d5-baa1-d4777d6f55f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Files\Physics">
+      <UniqueIdentifier>{941777ca-bcc1-4bfc-b860-0dbdb7cc4933}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Files\Physics\Components">
+      <UniqueIdentifier>{3e49862b-cba7-4c08-9f0a-f93ec42d5d6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Files\Rendering\Components">
+      <UniqueIdentifier>{8363c2c7-cb7d-4dbe-bf4f-7b150d9f1b32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Files\Physics\Events">
+      <UniqueIdentifier>{a7c44057-53af-4d7e-9017-fc235e5a3ef7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Singleton.h">
-      <Filter>Other Files</Filter>
-    </ClInclude>
     <ClInclude Include="imstb_truetype.h">
       <Filter>Engine Files\Rendering\ImGui Files</Filter>
     </ClInclude>
@@ -162,13 +168,37 @@
     <ClInclude Include="SoundSystem.h">
       <Filter>Engine Files\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="ServiceLocator.h">
-      <Filter>Engine Files\ServiceLocator</Filter>
-    </ClInclude>
     <ClInclude Include="LoggingSystem.h">
       <Filter>Engine Files\Logging</Filter>
     </ClInclude>
     <ClInclude Include="LoggingSoundSystem.h">
+      <Filter>Engine Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>Engine Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Other Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderComponent.h">
+      <Filter>Engine Files\Physics\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderComponent.h">
+      <Filter>Engine Files\Rendering\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteRenderComponent.h">
+      <Filter>Engine Files\Rendering\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="TextComponent.h">
+      <Filter>Engine Files\Rendering\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionEvent.h">
+      <Filter>Engine Files\Physics\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio.h">
+      <Filter>Engine Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
       <Filter>Engine Files\Logging</Filter>
     </ClInclude>
   </ItemGroup>
@@ -275,13 +305,34 @@
     <ClCompile Include="SoundSystem.cpp">
       <Filter>Engine Files\Sound</Filter>
     </ClCompile>
-    <ClCompile Include="ServiceLocator.cpp">
-      <Filter>Engine Files\ServiceLocator</Filter>
-    </ClCompile>
     <ClCompile Include="LoggingSystem.cpp">
       <Filter>Engine Files\Logging</Filter>
     </ClCompile>
     <ClCompile Include="LoggingSoundSystem.cpp">
+      <Filter>Engine Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>Engine Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderComponent.cpp">
+      <Filter>Engine Files\Physics\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderComponent.cpp">
+      <Filter>Engine Files\Rendering\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteRenderComponent.cpp">
+      <Filter>Engine Files\Rendering\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TextComponent.cpp">
+      <Filter>Engine Files\Rendering\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionEvent.cpp">
+      <Filter>Engine Files\Physics\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio.cpp">
+      <Filter>Engine Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
       <Filter>Engine Files\Logging</Filter>
     </ClCompile>
   </ItemGroup>

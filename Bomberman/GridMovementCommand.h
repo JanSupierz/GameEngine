@@ -1,5 +1,5 @@
 #pragma once
-#include "Command.h"
+#include "Value2DCommand.h"
 #include <glm/glm.hpp>
 
 namespace dae
@@ -9,10 +9,10 @@ namespace dae
     class NavigationGrid;
     class PlayerComponent;
 
-    class GridMovementCommand final : public Command
+    class GridMovementCommand final : public Value2DCommand
     {
     public:
-        GridMovementCommand(GameObject* pGameObject, const glm::vec2& direction, PlayerComponent* pPlayer);
+        GridMovementCommand(GameObject* pGameObject, const glm::vec2& direction, PlayerComponent* pPlayer, bool useValue2D = false);
         void Execute() override;
 
     private:
@@ -22,6 +22,7 @@ namespace dae
         NavigationGrid* m_pGrid{ nullptr };
         glm::vec2 m_Direction;
         float m_Speed;
+        const bool m_UseValue2D;
     };
 }
 

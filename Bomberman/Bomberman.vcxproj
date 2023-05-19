@@ -88,6 +88,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\rapidjson;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,6 +110,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\rapidjson;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,6 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\rapidjson;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,6 +151,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\rapidjson;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -166,6 +170,7 @@
     <ClCompile Include="Bomberman.cpp" />
     <ClCompile Include="BombExplodedEvent.cpp" />
     <ClCompile Include="CombinedGraphComponent.cpp" />
+    <ClCompile Include="EnemyComponent.cpp" />
     <ClCompile Include="Exercises.cpp" />
     <ClCompile Include="ExplosionComponent.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
@@ -175,15 +180,12 @@
     <ClCompile Include="LivesComponent.cpp" />
     <ClCompile Include="PlaceBombCommand.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
-    <ClCompile Include="PlayerDiedEvent.cpp" />
-    <ClCompile Include="RenderComponent.cpp" />
+    <ClCompile Include="DeathEvent.cpp" />
     <ClCompile Include="RotatorComponent.cpp" />
     <ClCompile Include="ScoreComponent.cpp" />
     <ClCompile Include="ScoresManager.cpp" />
     <ClCompile Include="SetPositionCommand.cpp" />
-    <ClCompile Include="SpriteRenderComponent.cpp" />
     <ClCompile Include="StartInfoComponent.cpp" />
-    <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="UpdatePosition1DCommand.cpp" />
     <ClCompile Include="UpdatePosition2DCommand.cpp" />
     <ClCompile Include="UpdatePositionCommand.cpp" />
@@ -195,6 +197,7 @@
     <ClInclude Include="BombComponent.h" />
     <ClInclude Include="BombExplodedEvent.h" />
     <ClInclude Include="CombinedGraphComponent.h" />
+    <ClInclude Include="EnemyComponent.h" />
     <ClInclude Include="ExplosionComponent.h" />
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="GainedPointEvent.h" />
@@ -203,15 +206,12 @@
     <ClInclude Include="LivesComponent.h" />
     <ClInclude Include="PlaceBombCommand.h" />
     <ClInclude Include="PlayerComponent.h" />
-    <ClInclude Include="PlayerDiedEvent.h" />
-    <ClInclude Include="RenderComponent.h" />
+    <ClInclude Include="DeathEvent.h" />
     <ClInclude Include="RotatorComponent.h" />
     <ClInclude Include="ScoreComponent.h" />
     <ClInclude Include="ScoresManager.h" />
     <ClInclude Include="SetPositionCommand.h" />
-    <ClInclude Include="SpriteRenderComponent.h" />
     <ClInclude Include="StartInfoComponent.h" />
-    <ClInclude Include="TextComponent.h" />
     <ClInclude Include="UpdatePosition1DCommand.h" />
     <ClInclude Include="UpdatePosition2DCommand.h" />
     <ClInclude Include="UpdatePositionCommand.h" />

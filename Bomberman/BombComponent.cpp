@@ -10,7 +10,8 @@
 #include <iostream>
 #include "EventManager.h"
 #include "BombExplodedEvent.h"
-#include "SoundSystem.h"
+#include "Audio.h"
+#include "ColliderComponent.h"
 
  int dae::BombComponent::s_ExplosionSoundId = -1;
 
@@ -42,16 +43,22 @@ void dae::BombComponent::CreateExplosion(Scene* pScene, NavigationNode* pNode) c
 	//Create explosions
 	const auto pExplosion{ std::make_shared<GameObject>() };
 
+	const float dimension{ static_cast<float>(NavigationGrid::GetInstance().GetSmallerDimension()) };
+	const auto pCollider{ std::make_shared<ColliderComponent>(glm::vec2{dimension, dimension}) };
+	pExplosion->AddComponent(pCollider);
+
 	const auto pRenderComponent{ std::make_shared<SpriteRenderComponent>(0,11 * 16,16,16,2.f) };
 	pRenderComponent->SetTexture("BombermanSprites.png");
 	pExplosion->AddComponent(pRenderComponent);
 
-	constexpr float duration{ 1.f };
-	const auto pExplosionComponent{ std::make_shared<ExplosionComponent>(duration, m_pPlayer, pNode) };
+	constexpr float duration{ 0.5f };
+	const auto pExplosionComponent{ std::make_shared<ExplosionComponent>(duration, m_pPlayer, pNode, pCollider->GetCollisionEvent()) };
 	pExplosion->AddComponent(pExplosionComponent);
 
 	pExplosion->SetPosition(pNode->GetWorldPosition());
 	pScene->Add(pExplosion);
+
+	EventManager::GetInstance().AddEvent(std::make_shared<BombExplodedEvent>(pNode, m_pPlayer));
 }
 
 void dae::BombComponent::OnEvent(const BombExplodedEvent& event)
@@ -69,6 +76,9 @@ void dae::BombComponent::SetExplosionSound(const int soundId)
 
 void dae::BombComponent::Explode()
 {
+	if (m_IsExploded) return;
+	m_IsExploded = true;
+
 	const auto pScene{ SceneManager::GetInstance().GetCurrentScene() };
 
 	CreateExplosion(pScene, m_pNode);
@@ -89,7 +99,7 @@ void dae::BombComponent::Explode()
 		}
 	}
 
-	ServiceLocator<SoundSystem>::GetService().Play(s_ExplosionSoundId, 0.5f);
+	Audio::Get().Play(s_ExplosionSoundId, 0.5f);
 	GetOwner()->Destroy();
 }
 

@@ -50,5 +50,6 @@
         [2,[3], "Player1"],
         [9,[9], "Balloom"],
         [13,[12], "Balloom"]
-    ]
+    ],
+    "MaxNrCubes": 100
 }

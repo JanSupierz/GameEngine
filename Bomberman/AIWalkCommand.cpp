@@ -4,6 +4,8 @@
 #include "NavigationGrid.h"
 #include "NavigationNode.h"
 #include <Algorithm>
+#include <random>
+
 using namespace dae;
 
 AIWalkCommand::AIWalkCommand(GameObject* pGameObject, float speed)
@@ -102,7 +104,8 @@ void AIWalkCommand::Execute()
 			//Node not valid -> Check other nodes
 			if (!pNeighbor || (pNeighbor && pNeighbor->IsBlocked()))
 			{
-				std::random_shuffle(begin(m_DirectionsToCheck), end(m_DirectionsToCheck));
+				static auto rd{ std::random_device{} };
+				std::shuffle(begin(m_DirectionsToCheck), end(m_DirectionsToCheck), rd);
 
 				for (Direction direction : m_DirectionsToCheck)
 				{
@@ -117,7 +120,7 @@ void AIWalkCommand::Execute()
 			}
 		}
 
-		if (pNeighbor )
+		if (pNeighbor && !pNeighbor->IsBlocked())
 		{
 			glm::vec2 vector{ pNeighbor->GetWorldPosition() - worldPos };
 

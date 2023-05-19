@@ -1,7 +1,8 @@
 #include "LoggingSoundSystem.h"
-#include "LoggingSystem.h"
-#include "ServiceLocator.h"
+#include "Logger.h"
 #include <sstream>
+
+using namespace dae;
 
 void LoggingSoundSystem::Play(const int soundId, const float volume)
 {
@@ -10,7 +11,7 @@ void LoggingSoundSystem::Play(const int soundId, const float volume)
 	std::stringstream ss{};
 	ss << "Playing sound with ID " << soundId << " at volume " << volume;
 
-	ServiceLocator<LoggingSystem>::GetService().Log(ss.str());
+	Logger::Get().Log(ss.str());
 }
 
 void LoggingSoundSystem::AddSound(const std::string& fileName, int& soundId)
@@ -20,7 +21,7 @@ void LoggingSoundSystem::AddSound(const std::string& fileName, int& soundId)
 	std::stringstream ss{};
 	ss << "Sound added: " << fileName << " (ID: " << soundId << ")";
 
-	ServiceLocator<LoggingSystem>::GetService().Log(ss.str());
+	Logger::Get().Log(ss.str());
 }
 
 void LoggingSoundSystem::Preload(const int soundId)
@@ -30,5 +31,5 @@ void LoggingSoundSystem::Preload(const int soundId)
 	std::stringstream ss{};
 	ss << "Preloaded sound with ID " << soundId;
 
-	ServiceLocator<LoggingSystem>::GetService().Log(ss.str());
+	Logger::Get().Log(ss.str());
 }

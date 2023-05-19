@@ -8,10 +8,6 @@
 #include "NavigationGrid.h"
 #include "NavigationNode.h"
 #include "Scene.h"
-#include "ServiceLocator.h"
-#include "SoundSystem.h"
-#include "ServiceLocator.h"
-#include "LoggingSystem.h"
 
 using namespace dae;
 
@@ -40,7 +36,7 @@ void PlaceBombCommand::Execute()
         const glm::vec2& nodePosition{ pNode->GetWorldPosition() };
         pBomb->SetPosition(nodePosition.x, nodePosition.y);
 
-        constexpr float detonationTime{ 3.f };
+        constexpr float detonationTime{ 2.5f };
         const auto pBombComponent{ std::make_shared<BombComponent>(detonationTime,pNode, m_pGameObject->GetComponent<PlayerComponent>().get(),2) };
         pBomb->AddComponent(pBombComponent);
 
