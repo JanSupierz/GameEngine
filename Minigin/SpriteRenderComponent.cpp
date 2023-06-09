@@ -3,26 +3,26 @@
 #include "Renderer.h"
 #include "Texture2D.h"
 #include "GameObject.h"
+#include "SceneManager.h"
+#include "Scene.h"
 
 void dae::SpriteRenderComponent::Render()
 {
-	if (m_pTexture)
+	Texture2D* pTexture{ GetTexture() };
+
+	if (pTexture)
 	{
-		const glm::vec2 position{ GetOwner()->GetWorldPosition() };
+		const glm::vec2 position
+		{
+			(IsHUD()
+				? GetOwner()->GetWorldPosition()
+				: GetOwner()->GetWorldPosition() - SceneManager::GetInstance().GetCurrentScene()->GetCamera()->GetWorldPosition()
+			)
+		};
 
 		const float factor{ m_Scale * 0.5f };
-		Renderer::GetInstance().RenderTexture(*m_pTexture, position.x - m_SourceRect.w * factor, position.y - m_SourceRect.h * factor, m_SourceRect, m_Scale);
+		Renderer::GetInstance().RenderTexture(*pTexture, position.x - m_SourceRect.w * factor, position.y - m_SourceRect.h * factor, m_SourceRect, m_Scale);
 	}
-}
-
-void dae::SpriteRenderComponent::SetTexture(const std::string& filename)
-{
-	m_pTexture = ResourceManager::GetInstance().LoadTexture(filename);
-}
-
-void dae::SpriteRenderComponent::SetTexture(std::shared_ptr<Texture2D> pTexture)
-{
-	m_pTexture = pTexture;
 }
 
 void dae::SpriteRenderComponent::SetSourceRect(int x, int y, int width, int height)
@@ -38,8 +38,8 @@ void dae::SpriteRenderComponent::SetScale(float scale)
 	m_Scale = scale;
 }
 
-dae::SpriteRenderComponent::SpriteRenderComponent(int x, int y, int width, int height, float scale, int priority)
-	:Component(priority), m_pTexture{ nullptr },
+dae::SpriteRenderComponent::SpriteRenderComponent(bool isHUD, int x, int y, int width, int height, float scale, int priority)
+	:RenderComponent(isHUD, priority),
 	m_SourceRect{ x, y, width, height },
 	m_Scale{ scale }
 {

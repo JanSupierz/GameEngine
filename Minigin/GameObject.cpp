@@ -8,6 +8,7 @@
 
 class ComponentTypeAlreadyAttachedException {};
 
+
 dae::GameObject::GameObject(int priority)
 	:m_Priority{ priority }
 {
@@ -98,7 +99,7 @@ dae::GameObject::GameObject(int priority)
 		}
 		else
 		{
-			SceneManager::GetInstance().GetCurrentScene()->Remove(shared_from_this());
+			SceneManager::GetInstance().GetCurrentScene()->ForceRemove(shared_from_this());
 		}
 
 		//Set the given parent
@@ -145,7 +146,7 @@ dae::GameObject::GameObject(int priority)
 		}
 		else 
 		{
-			SceneManager::GetInstance().GetCurrentScene()->Remove(pNewChild);
+			SceneManager::GetInstance().GetCurrentScene()->ForceRemove(pNewChild);
 		}
 
 		//Set itself as parent of the child

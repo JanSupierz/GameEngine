@@ -8,6 +8,7 @@ namespace dae
 	class PlayerComponent;
 	class NavigationNode;
 	class Scene;
+	enum class Direction;
 
 	class BombComponent final : public Component, public EventListener<BombExplodedEvent>
 	{
@@ -20,7 +21,7 @@ namespace dae
 		BombComponent& operator=(BombComponent&& other) = default;
 
 		virtual void Update() override;
-		void CreateExplosion(Scene* pScene, NavigationNode* pCurrentNode) const;
+		void CreateExplosion(Scene* pScene, NavigationNode* pCurrentNode, Direction direction, bool shouldStop) const;
 		void OnEvent(const BombExplodedEvent& event) override;
 		
 		static void SetExplosionSound(const int soundId);

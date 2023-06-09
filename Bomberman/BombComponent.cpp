@@ -38,16 +38,37 @@ void dae::BombComponent::Update()
 	}
 }
 
-void dae::BombComponent::CreateExplosion(Scene* pScene, NavigationNode* pNode) const
+void dae::BombComponent::CreateExplosion(Scene* pScene, NavigationNode* pNode, Direction direction, bool shouldStop) const
 {
 	//Create explosions
 	const auto pExplosion{ std::make_shared<GameObject>() };
 
-	const float dimension{ static_cast<float>(NavigationGrid::GetInstance().GetSmallerDimension()) };
+	const float dimension{ static_cast<float>(pNode->GetGrid()->GetSmallerDimension())};
 	const auto pCollider{ std::make_shared<ColliderComponent>(glm::vec2{dimension, dimension}) };
 	pExplosion->AddComponent(pCollider);
 
-	const auto pRenderComponent{ std::make_shared<SpriteRenderComponent>(0,11 * 16,16,16,2.f) };
+	constexpr int tileSize{ 16 };
+	int posX{ 2 * tileSize }, posY{ 11 * tileSize };
+
+	const int offset{ shouldStop ? tileSize * 2 : tileSize };
+
+	switch (direction)
+	{
+	case Direction::up:
+		posY += offset;
+		break;
+	case Direction::down:
+		posY -= offset;
+		break;
+	case Direction::left:
+		posX -= offset;
+		break;
+	case Direction::right:
+		posX += offset;
+		break;
+	}
+
+	const auto pRenderComponent{ std::make_shared<SpriteRenderComponent>(false, posX,posY,tileSize,tileSize,2.f) };
 	pRenderComponent->SetTexture("BombermanSprites.png");
 	pExplosion->AddComponent(pRenderComponent);
 
@@ -81,7 +102,7 @@ void dae::BombComponent::Explode()
 
 	const auto pScene{ SceneManager::GetInstance().GetCurrentScene() };
 
-	CreateExplosion(pScene, m_pNode);
+	CreateExplosion(pScene, m_pNode, Direction::NONE, false);
 
 	for (int neighbor{ static_cast<int>(Direction::begin) }; neighbor <= static_cast<int>(Direction::end); ++neighbor)
 	{
@@ -94,7 +115,15 @@ void dae::BombComponent::Explode()
 			if (pNode)
 			{
 				pCurrentNode = pNode;
-				CreateExplosion(pScene, pCurrentNode);
+
+				const bool shouldStop{ pNode->IsBlocked() };
+
+				CreateExplosion(pScene, pCurrentNode, static_cast<Direction>(neighbor), shouldStop || m_Range == index + 1);
+
+				if (shouldStop)
+				{
+					break;
+				}
 			}
 		}
 	}

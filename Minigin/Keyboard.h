@@ -18,7 +18,7 @@ namespace dae
 		void UpdatePressed();
 
 		void MapCommandToButton(SDL_Scancode button, std::unique_ptr<Command>&& pCommand, ButtonState state);
-
+		void ClearCommands();
 	private:
 		const Uint8* m_pState;
 

@@ -1,6 +1,6 @@
 #include "FPSComponent.h"
 #include "SceneManager.h"
-#include "TextComponent.h"
+#include "TextureComponent.h"
 #include <string>
 #include <iostream>
 
@@ -34,7 +34,7 @@ void dae::FPSComponent::Update()
 	}
 }
 
-dae::FPSComponent::FPSComponent(std::shared_ptr<TextComponent> pTextComponent, float waitingTime, int priority)
+dae::FPSComponent::FPSComponent(std::shared_ptr<TextureComponent> pTextComponent, float waitingTime, int priority)
 	:Component(priority), m_pTextComponent{ pTextComponent }, m_RefreshTime{ std::max(0.f, waitingTime) }
 {
 }

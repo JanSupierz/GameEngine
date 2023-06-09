@@ -7,14 +7,14 @@
 namespace dae
 {
 	class GameObject;
-	class TextComponent;
+	class TextureComponent;
 	class PlayerComponent;
 	class DeathEvent;
 
 	class LivesComponent final : public Component, public EventListener<DeathEvent>
 	{
 	public:
-		LivesComponent(PlayerComponent* pPlayer, std::shared_ptr<TextComponent> pTextComponent = nullptr, int priority = 0);
+		LivesComponent(PlayerComponent* pPlayer, std::shared_ptr<TextureComponent> pTextComponent = nullptr, int priority = 0);
 		virtual ~LivesComponent();
 		LivesComponent(const LivesComponent& other) = default;
 		LivesComponent(LivesComponent&& other) = default;
@@ -25,7 +25,7 @@ namespace dae
 
 	private:
 		void UpdateHud(const std::string& name, int nrLives);
-		std::shared_ptr<TextComponent> m_pTextComponent;
+		std::shared_ptr<TextureComponent> m_pTextComponent;
 
 		PlayerComponent* m_pPlayer;
 	};

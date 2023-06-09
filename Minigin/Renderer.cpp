@@ -74,6 +74,30 @@ void dae::Renderer::Destroy()
 	}
 }
 
+glm::vec2 dae::Renderer::GetWindowSize() const
+{
+	int height{}, width{};
+
+	SDL_GetWindowSize(m_window, &width, &height);
+	return glm::vec2{ width,height };
+}
+
+float dae::Renderer::GetWindowWidth() const
+{
+	int width{};
+	SDL_GetWindowSize(m_window, &width, nullptr);
+
+	return static_cast<float>(width);
+}
+
+float dae::Renderer::GetWindowHeight() const
+{
+	int height{};
+	SDL_GetWindowSize(m_window, nullptr, &height);
+
+	return static_cast<float>(height);
+}
+
 void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y) const
 {
 	SDL_Rect dst{};

@@ -6,13 +6,18 @@
 namespace dae
 {
     template<typename EventType>
-    class EventQueue
+    class EventQueue final
     {
     public:
         EventQueue()
             :m_Head(0), m_Tail(0), m_Size(5)
         {
             m_pEvents.resize(m_Size);
+        }
+
+        ~EventQueue()
+        {
+            m_pListeners.clear();
         }
 
         void AddListener(EventListener<EventType>* pListener)

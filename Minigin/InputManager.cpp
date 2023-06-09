@@ -5,12 +5,23 @@
 using namespace dae;
 
 InputManager::InputManager()
-	:m_Keyboard{ SDL_GetKeyboardState(nullptr) }
+	:m_Keyboard{ SDL_GetKeyboardState(nullptr) }, m_Mouse{}
 {
+}
+
+void dae::InputManager::ClearCommands()
+{
+	m_Keyboard.ClearCommands();
+	m_Mouse.ClearCommands();
+	
+	m_pControllers.clear();
 }
 
 bool InputManager::ProcessInput()
 {
+	//Mouse
+	m_Mouse.UpdateClicked();
+
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) 
 	{
@@ -23,6 +34,7 @@ bool InputManager::ProcessInput()
 		if (e.key.repeat == 0)
 		{
 			m_Keyboard.Update(e);
+			m_Mouse.Update(e);
 		}
 
 		//process event for ImGui
@@ -52,5 +64,10 @@ Controller* dae::InputManager::AddController()
 Keyboard* dae::InputManager::GetKeyboard()
 {
 	return &m_Keyboard;
+}
+
+Mouse* dae::InputManager::GetMouse()
+{
+	return &m_Mouse;
 }
 

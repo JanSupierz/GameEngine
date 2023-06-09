@@ -1,17 +1,19 @@
 #pragma once
 #include "QueueEvent.h"
+#include <string>
 
 namespace dae
 {
-	class PlayerComponent;
-
 	class GainedPointEvent final : public QueueEvent
 	{
 	public:
-		GainedPointEvent(PlayerComponent* pPlayer);
-		PlayerComponent* GetPlayer() const;
+		GainedPointEvent(const std::string& name, int score);
+		std::string GetName() const;
+		int GetScore() const;
+
 	private:
-		PlayerComponent* m_pPlayer;
+		std::string m_Name;
+		int m_Score;
 	};
 }
 

@@ -1,7 +1,7 @@
 #include "Scene.h"
 
 #include "ResourceManager.h"
-#include "TextComponent.h"
+#include "TextureComponent.h"
 #include "RenderComponent.h"
 #include "FPSComponent.h"
 
@@ -170,7 +170,7 @@ namespace Exercises
 		//Rotating balls
 		auto pRotatingBallParent = std::make_shared<dae::GameObject>();
 
-		auto pParentRenderer = std::make_shared<dae::RenderComponent>();
+		auto pParentRenderer = std::make_shared<dae::RenderComponent>(false);
 		pParentRenderer->SetTexture("Balloom.png");
 		pRotatingBallParent->AddComponent(pParentRenderer);
 		pRotatingBallParent->SetPosition(100, 100);
@@ -183,7 +183,7 @@ namespace Exercises
 
 		auto pRotatingBallChild = std::make_shared<dae::GameObject>();
 
-		auto pChildRenderer = std::make_shared<dae::RenderComponent>();
+		auto pChildRenderer = std::make_shared<dae::RenderComponent>(false);
 		pChildRenderer->SetTexture("Oneal.png");
 		pRotatingBallChild->AddComponent(pChildRenderer);
 
@@ -199,7 +199,7 @@ namespace Exercises
 		//Foreground -- Logo
 		auto pLogoImage = std::make_shared<dae::GameObject>();
 
-		auto pLogoRender = std::make_shared<dae::RenderComponent>();
+		auto pLogoRender = std::make_shared<dae::RenderComponent>(true);
 		pLogoRender->SetTexture("logo.tga");
 
 		pLogoImage->AddComponent(pLogoRender);
@@ -209,8 +209,8 @@ namespace Exercises
 		//Foreground -- Text
 		auto pTextImage = std::make_shared<dae::GameObject>();
 
-		auto pTextRenderer = std::make_shared<dae::RenderComponent>();
-		auto pProgTextComponent = std::make_shared<dae::TextComponent>(pTextRenderer, dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36));
+		auto pTextRenderer = std::make_shared<dae::RenderComponent>(true);
+		auto pProgTextComponent = std::make_shared<dae::TextureComponent>(pTextRenderer, dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36));
 		pProgTextComponent->SetTextToTexture("Programming 4 Assignment");
 
 		pTextImage->AddComponent(pTextRenderer);
@@ -220,7 +220,7 @@ namespace Exercises
 		//Background
 		auto pBackgroundImage = std::make_shared<dae::GameObject>(100);
 
-		auto pBackgroundRender = std::make_shared<dae::RenderComponent>(0);
+		auto pBackgroundRender = std::make_shared<dae::RenderComponent>(true, 0);
 		pBackgroundRender->SetTexture("background.tga");
 
 		pBackgroundImage->AddComponent(pBackgroundRender);
@@ -230,14 +230,14 @@ namespace Exercises
 		auto pCounterFPS = std::make_shared<dae::GameObject>();
 
 		//Text rendendering
-		auto pFrameRateRenderer = std::make_shared<dae::RenderComponent>();
-		auto pTextComponent = std::make_shared<dae::TextComponent>(pFrameRateRenderer, dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20));
+		auto pFrameRateRenderer = std::make_shared<dae::RenderComponent>(true);
+		auto pTextComponent = std::make_shared<dae::TextureComponent>(pFrameRateRenderer, dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20));
 		pTextComponent->SetColor({ 200,200,0 });
 
 		//FPS component
 		pCounterFPS->AddComponent(pTextComponent);
 
-		auto pFPSComponent = std::make_shared<dae::FPSComponent>(pCounterFPS->GetComponent<dae::TextComponent>(), 0.5f);
+		auto pFPSComponent = std::make_shared<dae::FPSComponent>(pCounterFPS->GetComponent<dae::TextureComponent>(), 0.5f);
 		//auto pFPSComponent = std::make_shared<dae::FPSComponent>(pTextComponent, 0.5f); //-- The same result as above
 
 		pCounterFPS->AddComponent(pFrameRateRenderer);

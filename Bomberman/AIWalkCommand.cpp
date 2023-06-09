@@ -5,14 +5,15 @@
 #include "NavigationNode.h"
 #include <Algorithm>
 #include <random>
+#include "Scene.h"
 
 using namespace dae;
 
 AIWalkCommand::AIWalkCommand(GameObject* pGameObject, float speed)
-    : m_pGameObject(pGameObject),
-    m_Speed{ speed },
-    m_pSceneManager(&SceneManager::GetInstance()),
-    m_pGrid{ &NavigationGrid::GetInstance() }
+	: m_pGameObject(pGameObject),
+	m_Speed{ speed },
+	m_pSceneManager(&SceneManager::GetInstance()),
+	m_pGrid{ m_pSceneManager->GetCurrentScene()->GetGrid() }
 {
 	m_DirectionsToCheck.resize(4);
 	m_DirectionsToCheck[0] = Direction::up;
@@ -26,7 +27,7 @@ void dae::AIWalkCommand::SetTarget(GameObject* pTarget)
 	m_pTarget = pTarget;
 }
 
-void AIWalkCommand::Execute()
+void dae::AIWalkCommand::Execute()
 {
     if (!m_pGameObject) return;
 
@@ -134,6 +135,6 @@ void AIWalkCommand::Execute()
 	}
 	else
 	{
-		m_pCurrentNode = NavigationGrid::GetInstance().GetNode(worldPos);
+		m_pCurrentNode = m_pGrid->GetNode(worldPos);
 	}
 }

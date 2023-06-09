@@ -4,6 +4,15 @@
 #include <sstream>
 #include "Logger.h"
 
+dae::NavigationGrid::NavigationGrid()
+    :m_NodeHeight{ 32 }, m_NodeWidth{ 32 }, m_MaxColumn{}, m_MaxRow{}, m_pNodes{}
+{
+}
+
+dae::NavigationGrid::~NavigationGrid()
+{
+}
+
 dae::NavigationNode* dae::NavigationGrid::AddNode(int row, int column)
 {
     m_MaxRow = std::max(m_MaxRow, row);
@@ -24,20 +33,20 @@ dae::NavigationNode* dae::NavigationGrid::AddNode(int row, int column)
         }
     }
 
-    auto pNode{ std::make_unique<NavigationNode>(row, column, location) };
+    auto pNode{ std::make_unique<NavigationNode>(row, column, location, this) };
 
     // Check for neighbors in the four directions
     std::vector<std::pair<int, int>> directions = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
-
+    
     for (auto direction : directions)
     {   
         NavigationNode* pNeighbor{ GetNode(row + direction.first, column + direction.second) };
-
+    
         if (pNeighbor)
         {
             Direction neighbor{};
             Direction current{};
-
+    
             if (direction.second == 1)
             {
                 neighbor = Direction::right;
@@ -58,14 +67,13 @@ dae::NavigationNode* dae::NavigationGrid::AddNode(int row, int column)
                 neighbor = Direction::down;
                 current = Direction::up;
             }
-
+    
             pNode->SetNeighbor(neighbor, pNeighbor);
             pNeighbor->SetNeighbor(current, pNode.get());
         }
     }
-
-    m_pNodes.push_back(std::move(pNode));
-
+    
+    m_pNodes.emplace_back(std::move(pNode)); 
     return m_pNodes.back().get();
 }
 
@@ -99,3 +107,12 @@ void dae::NavigationGrid::SetNodeDimensions(int width, int height)
     m_NodeWidth = width;
     m_NodeHeight = height;
 }
+
+int dae::NavigationGrid::GetSmallerDimension() const
+{ 
+    return std::min(m_NodeWidth, m_NodeHeight); 
+}
+void dae::NavigationGrid::Clear()
+{
+    m_pNodes.clear();
+};

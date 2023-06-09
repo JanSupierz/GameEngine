@@ -1,6 +1,6 @@
 #pragma once
 #include "Component.h"
-#include "TextComponent.h"
+#include "TextureComponent.h"
 
 namespace dae
 {
@@ -11,7 +11,7 @@ namespace dae
 	public:
 		virtual void Update() override;
 
-		FPSComponent(std::shared_ptr<TextComponent> pTextComponent = nullptr, float refreshTime = 0.5f, int priority = 0);
+		FPSComponent(std::shared_ptr<TextureComponent> pTextComponent = nullptr, float refreshTime = 0.5f, int priority = 0);
 		virtual ~FPSComponent() = default;
 		FPSComponent(const FPSComponent& other) = default;
 		FPSComponent(FPSComponent&& other) = default;
@@ -19,7 +19,7 @@ namespace dae
 		FPSComponent& operator=(FPSComponent&& other) = default;
 
 	private:
-		std::shared_ptr<TextComponent> m_pTextComponent;
+		std::shared_ptr<TextureComponent> m_pTextComponent;
 		float m_RefreshTime;
 		float m_ElapsedTime{ 0.f };
 		int m_NrFrames{};

@@ -3,6 +3,6 @@ namespace dae
 {
 	enum class Direction
 	{
-		up, down, left, right, end = right, begin = up
+		up, down, left, right, end = right, NONE, begin = up,
 	};
 }

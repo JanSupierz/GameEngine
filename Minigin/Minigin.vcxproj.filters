@@ -24,10 +24,6 @@
     <Filter Include="Engine Files\Rendering\ImGui Files">
       <UniqueIdentifier>{4fc33164-9700-4514-8729-c8ebb606fafb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Other Files\Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Engine Files\ObserverPattern">
       <UniqueIdentifier>{ca836878-a400-41b6-9996-4a5b0c6bc9e7}</UniqueIdentifier>
     </Filter>
@@ -57,6 +53,13 @@
     </Filter>
     <Filter Include="Engine Files\Physics\Events">
       <UniqueIdentifier>{a7c44057-53af-4d7e-9017-fc235e5a3ef7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine Files\Input\Events">
+      <UniqueIdentifier>{0eebf30b-544b-4ffd-b094-bc9b896a6c48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files\Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -189,7 +192,7 @@
     <ClInclude Include="SpriteRenderComponent.h">
       <Filter>Engine Files\Rendering\Components</Filter>
     </ClInclude>
-    <ClInclude Include="TextComponent.h">
+    <ClInclude Include="TextureComponent.h">
       <Filter>Engine Files\Rendering\Components</Filter>
     </ClInclude>
     <ClInclude Include="CollisionEvent.h">
@@ -200,6 +203,12 @@
     </ClInclude>
     <ClInclude Include="Logger.h">
       <Filter>Engine Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseClickEvent.h">
+      <Filter>Engine Files\Input\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Engine Files\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -323,7 +332,7 @@
     <ClCompile Include="SpriteRenderComponent.cpp">
       <Filter>Engine Files\Rendering\Components</Filter>
     </ClCompile>
-    <ClCompile Include="TextComponent.cpp">
+    <ClCompile Include="TextureComponent.cpp">
       <Filter>Engine Files\Rendering\Components</Filter>
     </ClCompile>
     <ClCompile Include="CollisionEvent.cpp">
@@ -334,6 +343,12 @@
     </ClCompile>
     <ClCompile Include="Logger.cpp">
       <Filter>Engine Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseClickEvent.cpp">
+      <Filter>Engine Files\Input\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Engine Files\Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

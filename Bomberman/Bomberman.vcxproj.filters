@@ -31,6 +31,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Components\Game">
+      <UniqueIdentifier>{514d68b3-514e-4752-a38e-bd32756077ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bomberman.cpp">
@@ -38,12 +41,6 @@
     </ClCompile>
     <ClCompile Include="Exercises.cpp">
       <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BombComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerComponent.cpp">
-      <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="StartInfoComponent.cpp">
       <Filter>Components</Filter>
@@ -72,13 +69,7 @@
     <ClCompile Include="DeathEvent.cpp">
       <Filter>Events</Filter>
     </ClCompile>
-    <ClCompile Include="ScoreComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="LivesComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoresManager.cpp">
+    <ClCompile Include="BombermanManager.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
     <ClCompile Include="AIComponent.cpp">
@@ -86,12 +77,6 @@
     </ClCompile>
     <ClCompile Include="GridMovementCommand.cpp">
       <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="ExplosionComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="BlockingComponent.cpp">
-      <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="AIWalkCommand.cpp">
       <Filter>AI</Filter>
@@ -108,21 +93,54 @@
     <ClCompile Include="RotatorComponent.cpp">
       <Filter>Components\Exercises</Filter>
     </ClCompile>
-    <ClCompile Include="EnemyComponent.cpp">
+    <ClCompile Include="CameraComponent.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraTargetComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="NextSceneCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefabs.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadHelpers.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClickCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelLoadComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyComponent.cpp">
+      <Filter>Components\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockingComponent.cpp">
+      <Filter>Components\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="BombComponent.cpp">
+      <Filter>Components\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosionComponent.cpp">
+      <Filter>Components\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="LivesComponent.cpp">
+      <Filter>Components\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerComponent.cpp">
+      <Filter>Components\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreComponent.cpp">
+      <Filter>Components\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BombComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="StartInfoComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="BombExplodedEvent.h">
@@ -149,10 +167,7 @@
     <ClInclude Include="UpdatePositionCommand.h">
       <Filter>Commands</Filter>
     </ClInclude>
-    <ClInclude Include="LivesComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoresManager.h">
+    <ClInclude Include="BombermanManager.h">
       <Filter>Systems</Filter>
     </ClInclude>
     <ClInclude Include="AIComponent.h">
@@ -160,12 +175,6 @@
     </ClInclude>
     <ClInclude Include="GridMovementCommand.h">
       <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="ExplosionComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="BlockingComponent.h">
-      <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="AIWalkCommand.h">
       <Filter>AI</Filter>
@@ -182,8 +191,50 @@
     <ClInclude Include="RotatorComponent.h">
       <Filter>Components\Exercises</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyComponent.h">
+    <ClInclude Include="CameraComponent.h">
       <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraTargetComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="NextSceneCommand.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefabs.h">
+      <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadHelpers.h">
+      <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClickCommand.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelLoadComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyComponent.h">
+      <Filter>Components\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockingComponent.h">
+      <Filter>Components\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="BombComponent.h">
+      <Filter>Components\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionComponent.h">
+      <Filter>Components\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="LivesComponent.h">
+      <Filter>Components\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerComponent.h">
+      <Filter>Components\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreComponent.h">
+      <Filter>Components\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

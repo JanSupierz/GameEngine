@@ -2,15 +2,17 @@
 #include <vector>
 #include <memory>
 #include <glm/glm.hpp>
-#include "Singleton.h"
 #include "NavigationNode.h"
 
 namespace dae
 {
-	class NavigationGrid final : public Singleton<NavigationGrid>
+	class NavigationNode;
+
+	class NavigationGrid final
 	{
 	public:
-		virtual ~NavigationGrid() = default;
+		NavigationGrid();
+		virtual ~NavigationGrid();
 
 		NavigationNode* AddNode(int row, int column);
 		NavigationNode* GetNode(int row, int column) const;
@@ -18,16 +20,15 @@ namespace dae
 		NavigationNode* GetRandomNode() const;
 
 		void SetNodeDimensions(int width, int height);
-		int GetSmallerDimension() const { return std::min(m_NodeWidth, m_NodeHeight); };
+		int GetSmallerDimension() const;
+
+		void Clear();
 	private:
-		friend class Singleton<NavigationGrid>;
-		NavigationGrid() = default;
+		std::vector<std::unique_ptr<NavigationNode>> m_pNodes;
+		int m_NodeWidth;
+		int m_NodeHeight;
 
-		std::vector<std::unique_ptr<NavigationNode>> m_pNodes{};
-		int m_NodeWidth{ 32 };
-		int m_NodeHeight{ 32 };
-
-		int m_MaxRow{};
-		int m_MaxColumn{};
+		int m_MaxRow;
+		int m_MaxColumn;
 	};
 }

@@ -5,6 +5,7 @@
 #include "NavigationNode.h"
 #include <iostream>
 #include "PlayerComponent.h"
+#include "Scene.h"
 
 using namespace dae;
 
@@ -13,7 +14,7 @@ GridMovementCommand::GridMovementCommand(GameObject* pGameObject, const glm::vec
     m_Direction(glm::normalize(direction)),
     m_Speed{ glm::length(direction) },
     m_pSceneManager(&SceneManager::GetInstance()),
-    m_pGrid{ &NavigationGrid::GetInstance() },
+    m_pGrid{ m_pSceneManager->GetCurrentScene()->GetGrid() }, 
     m_pPlayer{ pPlayer },
     m_UseValue2D{ useValue2D }
 {};

@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include "Singleton.h"
+#include <glm/glm.hpp>
 
 namespace dae
 {
@@ -17,6 +18,10 @@ namespace dae
 		void Init(SDL_Window* window);
 		void Render() const;
 		void Destroy();
+
+		glm::vec2 GetWindowSize() const;
+		float GetWindowWidth() const;
+		float GetWindowHeight() const;
 
 		void RenderTexture(const Texture2D& texture, float x, float y) const;
 		void RenderTexture(const Texture2D& texture, float x, float y, float width, float height) const;

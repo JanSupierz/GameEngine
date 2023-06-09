@@ -4,22 +4,22 @@
 
 using namespace dae;
 
-void LoggingSoundSystem::Play(const int soundId, const float volume)
+void LoggingSoundSystem::Play(const int soundId, const float volume, const int nrLoops)
 {
 	m_pRealSoundSystem->Play(soundId, volume);
 
 	std::stringstream ss{};
-	ss << "Playing sound with ID " << soundId << " at volume " << volume;
+	ss << "Playing sound with ID " << soundId << " at volume " << volume << " (Nr Loops: " << nrLoops << ")";
 
 	Logger::Get().Log(ss.str());
 }
 
-void LoggingSoundSystem::AddSound(const std::string& fileName, int& soundId)
+void LoggingSoundSystem::AddSound(const std::string& fileName, int& soundId, bool isMusic)
 {
-	m_pRealSoundSystem->AddSound(fileName, soundId);
+	m_pRealSoundSystem->AddSound(fileName, soundId, isMusic);
 
 	std::stringstream ss{};
-	ss << "Sound added: " << fileName << " (ID: " << soundId << ")";
+	ss << (isMusic ? "Music" : "Sound") << " added: " << fileName << " (ID: " << soundId << ")";
 
 	Logger::Get().Log(ss.str());
 }

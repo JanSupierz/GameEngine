@@ -9,9 +9,9 @@ namespace dae
 		class NullSoundSystem final: public SoundSystem
 		{
 		public:
-			virtual void Play(const int, const float) {};
+			virtual void Play(const int, const float, const int) {};
 			virtual void Preload(const int) {};
-			virtual void AddSound(const std::string&, int& soundId) { soundId = -1; };
+			virtual void AddSound(const std::string&, int& soundId, bool) { soundId = -1; };
 		};
 
 	public:

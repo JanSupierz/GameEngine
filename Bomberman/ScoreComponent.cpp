@@ -1,15 +1,15 @@
 #include "ScoreComponent.h"
-#include "TextComponent.h"
+#include "TextureComponent.h"
 #include <iostream>
 #include "PlayerComponent.h"
 #include "GainedPointEvent.h"
 #include "EventManager.h"
+#include "Logger.h"
 
-dae::ScoreComponent::ScoreComponent(std::shared_ptr<PlayerComponent> pPlayer, std::shared_ptr<TextComponent> pTextComponent, int priority)
-	:Component(priority), m_pTextComponent(pTextComponent), m_pPlayer{ pPlayer }
+dae::ScoreComponent::ScoreComponent(const std::string& name, TextureComponent* pTextComponent, int priority)
+	:Component(priority), m_pTextComponent(pTextComponent), m_Name{ name }
 {
 	EventManager::GetInstance().AddListener(this);
-	UpdateHUD();
 }
 
 dae::ScoreComponent::~ScoreComponent()
@@ -19,25 +19,17 @@ dae::ScoreComponent::~ScoreComponent()
 
 void dae::ScoreComponent::OnEvent(const GainedPointEvent& event)
 {
-	const auto pPlayer{ event.GetPlayer() };
-	
-	//Is my player
-	if (pPlayer == m_pPlayer.get())
+	if (event.GetName() == m_Name)
 	{
-		UpdateHUD();
-	}
-}
+		std::string text{ m_Name + ": " + std::to_string(event.GetScore()) + " score" };
 
-void dae::ScoreComponent::UpdateHUD()
-{
-	std::string text{ m_pPlayer->GetName() + ": " + std::to_string(m_pPlayer->GetScore()) + " score"};
-
-	if (m_pTextComponent)
-	{
-		m_pTextComponent->SetTextToTexture(text);
-	}
-	else
-	{
-		std::cout << text << '\n';
+		if (m_pTextComponent)
+		{
+			m_pTextComponent->SetTextToTexture(text);
+		}
+		else
+		{
+			Logger::Get().Log(text);
+		}
 	}
 }

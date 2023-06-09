@@ -4,6 +4,7 @@
 #include <memory>
 #include "Controller.h"
 #include "Keyboard.h"
+#include "Mouse.h"
 
 namespace dae
 {
@@ -11,14 +12,17 @@ namespace dae
 	{
 	public:
 		InputManager();
+		void ClearCommands();
 
 		bool ProcessInput();
 		Controller* AddController();
 		Keyboard* GetKeyboard();
+		Mouse* GetMouse();
 
 	private:
 		std::vector<std::unique_ptr<Controller>> m_pControllers{};
 		Keyboard m_Keyboard;
+		Mouse m_Mouse;
 	};
 
 }

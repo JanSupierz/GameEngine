@@ -1,27 +1,28 @@
-#include "ScoresManager.h"
+#include "BombermanManager.h"
 #include "PlayerComponent.h"
 #include "GainedPointEvent.h"
 #include "DeathEvent.h"
 #include "EventManager.h"
 #include "Logger.h"
 
-dae::ScoresManager::ScoresManager()
+dae::BombermanManager::BombermanManager()
 {
 	EventManager::GetInstance().AddListener(this);
 }
 
-dae::ScoresManager::~ScoresManager()
+dae::BombermanManager::~BombermanManager()
 {
 	EventManager::GetInstance().RemoveListener(this);
 }
 
-void dae::ScoresManager::OnEvent(const DeathEvent& event)
+void dae::BombermanManager::OnEvent(const DeathEvent& event)
 {
 	const auto pKiller{ event.GetKiller() };
 	const auto pKilled{ event.GetKilled() };
 
 	//Enemy killed player -> no score
 	if (pKiller == nullptr) return;
+	std::string name{ pKiller->GetName() };
 
 	//Player killed enemy or player
 	int gainedScore{ 0 };
@@ -30,25 +31,25 @@ void dae::ScoresManager::OnEvent(const DeathEvent& event)
 	{
 		case DeathType::Balloom:
 		{
-			Logger::Get().Log("Balloom killed by " + pKiller->GetName());
+			Logger::Get().Log("Balloom killed by " + name);
 			gainedScore = 100;
 		}
 		break;
 		case DeathType::Oneal:
 		{
-			Logger::Get().Log("Oneal killed by " + pKiller->GetName());
+			Logger::Get().Log("Oneal killed by " + name);
 			gainedScore = 200;
 		}
 		break;
 		case DeathType::Doll:
 		{
-			Logger::Get().Log("Doll killed by " + pKiller->GetName());
+			Logger::Get().Log("Doll killed by " + name);
 			gainedScore = 400;
 		}
 		break;
 		case DeathType::Minvo:
 		{
-			Logger::Get().Log("Minvo killed by " + pKiller->GetName());
+			Logger::Get().Log("Minvo killed by " + name);
 			gainedScore = 800;
 		}
 		break;
@@ -56,7 +57,7 @@ void dae::ScoresManager::OnEvent(const DeathEvent& event)
 		//Player killed player
 		case DeathType::Player:
 		{
-			Logger::Get().Log(pKilled->GetName() + " killed by " + pKiller->GetName());
+			Logger::Get().Log(pKilled->GetName() + " killed by " + name);
 
 			switch (m_ScoreMode)
 			{
@@ -82,6 +83,6 @@ void dae::ScoresManager::OnEvent(const DeathEvent& event)
 			break;
 	}
 
-	pKiller->SetScore(pKiller->GetScore() + gainedScore);
-	EventManager::GetInstance().AddEvent(std::make_shared<GainedPointEvent>(pKiller));
+	m_Scores[name] += gainedScore;
+	EventManager::GetInstance().AddEvent(std::make_shared<GainedPointEvent>(name, m_Scores[name]));
 }

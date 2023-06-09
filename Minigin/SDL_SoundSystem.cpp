@@ -55,25 +55,19 @@ public:
     {
         Stop();
 
-        //Free chunks
-        for (auto& sound : m_Sounds)
-        {
-            if (sound.second.first)
-            {
-                Mix_FreeChunk(sound.second.first);
-                sound.second.first = nullptr;
-            }
-        }
+        //The sounds are RAII objects
+        m_Sounds.clear();
 
         Mix_CloseAudio();
+        Mix_Quit();
     }
 
-    void PlaySound(const int soundId, const float volume)
+    void PlaySound(const int soundId, const float volume, const int nrLoops)
     {
         //Add sound to the queue
         {
             const std::lock_guard<std::mutex> lock(m_SoundQueueMutex);
-            m_EventQueue.push(SoundEvent{ SoundEventType::Play, soundId, volume });
+            m_EventQueue.push(SoundEvent{ SoundEventType::Play, soundId, volume, nrLoops});
         }
 
         m_SoundQueueCondition.notify_one();
@@ -90,7 +84,7 @@ public:
         m_SoundQueueCondition.notify_one();
     }
 
-    void AddSound(const std::string& fileName, int& soundId)
+    void AddSound(const std::string& fileName, int& soundId, bool isMusic)
     {
         const std::string path{ ResourceManager::GetInstance().GetDataPath() + "Sounds/" + fileName };
 
@@ -100,7 +94,8 @@ public:
         //Add sound to the queue
         {
             const std::lock_guard<std::mutex> lock(m_SoundQueueMutex);
-            m_EventQueue.push(SoundEvent{ SoundEventType::Add, soundId, 0.f, path });
+
+            m_EventQueue.push(SoundEvent{ (isMusic ? SoundEventType::AddMusic : SoundEventType::Add), soundId, 0.f, 0, path });
         }
 
         m_SoundQueueCondition.notify_one();
@@ -109,7 +104,7 @@ public:
 private:
     enum class SoundEventType
     {
-        Preload, Play, Add
+        Preload, Play, Add, AddMusic
     };
 
     struct SoundEvent
@@ -117,6 +112,7 @@ private:
         SoundEventType type;
         int id;
         float volume;
+        int nrLoops;
         std::string path;
     };
 
@@ -126,28 +122,54 @@ private:
         m_SoundQueueCondition.notify_one();
     }
 
-    void Play(const int soundId, const float volume)
+    void Play(const int soundId, const float volume, const int nrLoops)
     {
         auto& sound{ m_Sounds[soundId] };
 
-        //Load chunk if null
-        if (sound.first == nullptr)
+        //Music
+        if (sound.isMusic)
         {
-            sound.first = Mix_LoadWAV(sound.second.c_str());
-
-            //Return if loading failed
-            if (sound.first == nullptr)
+            //Load chunk if null
+            if (sound.audio == nullptr)
             {
-                return;
+                sound.audio = Mix_LoadMUS(sound.path.c_str());
+
+                //Return if loading failed
+                if (sound.audio == nullptr)
+                {
+                    return;
+                }
             }
+
+            //Set volume
+            const int playVolume{ static_cast<int>(MIX_MAX_VOLUME * std::clamp(volume, 0.f, 1.f)) };
+            Mix_VolumeMusic(playVolume);
+
+            //Play sound
+            Mix_PlayMusic(static_cast<Mix_Music*>(sound.audio), nrLoops);
         }
+        //Sound effect
+        else
+        {
+            //Load chunk if null
+            if (sound.audio == nullptr)
+            {
+                sound.audio = Mix_LoadWAV(sound.path.c_str());
 
-        //Set volume
-        const int playVolume{ static_cast<int>(MIX_MAX_VOLUME * std::clamp(volume, 0.f, 1.f)) };
-        Mix_Volume(-1, playVolume);
+                //Return if loading failed
+                if (sound.audio == nullptr)
+                {
+                    return;
+                }
+            }
 
-        //Play sound
-        Mix_PlayChannel(-1, sound.first, 0);
+            //Set volume
+            const int playVolume{ static_cast<int>(MIX_MAX_VOLUME * std::clamp(volume, 0.f, 1.f)) };
+            Mix_Volume(-1, playVolume);
+
+            //Play sound
+            Mix_PlayChannel(-1, static_cast<Mix_Chunk*>(sound.audio), nrLoops);
+        }
     }
 
     void Preload(const int soundId)
@@ -155,21 +177,28 @@ private:
         auto& sound{ m_Sounds[soundId] };
 
         //Load chunk if null
-        if (sound.first == nullptr)
+        if (sound.audio == nullptr)
         {
-            sound.first = Mix_LoadWAV(sound.second.c_str());
-
+            if (sound.isMusic)
+            {
+                sound.audio = Mix_LoadMUS(sound.path.c_str());
+            }
+            else
+            {
+                sound.audio = Mix_LoadWAV(sound.path.c_str());
+            }
+              
             //Return if loading failed
-            if (sound.first == nullptr)
+            if (sound.audio == nullptr)
             {
                 return;
             }
         }
     }
 
-    void Add(const int soundId, const std::string& path)
+    void Add(const int soundId, const std::string& path, bool isMusic)
     {
-        m_Sounds[soundId] = std::make_pair(nullptr, path);
+        m_Sounds[soundId] = Sound(nullptr, path, isMusic);
     }
 
     void SoundThreadFunction()
@@ -190,13 +219,16 @@ private:
             switch (e.type)
             {
                 case SoundEventType::Play:
-                    Play(e.id, e.volume);
+                    Play(e.id, e.volume, e.nrLoops);
                 break;
                 case SoundEventType::Preload:
                     Preload(e.id);           
                 break;
                 case SoundEventType::Add:
-                    Add(e.id, e.path);
+                    Add(e.id, e.path, false);
+                    break;
+                case SoundEventType::AddMusic:
+                    Add(e.id, e.path, true);
                     break;
                 default:
                     break;
@@ -204,7 +236,27 @@ private:
         }
     }
 
-    std::unordered_map<int, std::pair<Mix_Chunk*, std::string>> m_Sounds{};
+    struct Sound
+    {
+        Sound(void* pAudio, const std::string& filePath, bool isMusicFile)
+            :audio{ pAudio }, path{ filePath }, isMusic{ isMusicFile } {};
+
+        Sound() :audio{}, path{}, isMusic{} {};
+
+        ~Sound()
+        {
+            if (audio)
+            {
+                (isMusic ? Mix_FreeMusic(static_cast<Mix_Music*>(audio)) : Mix_FreeChunk(static_cast<Mix_Chunk*>(audio)));
+            }
+        }
+
+        std::string path;
+        void* audio;
+        bool isMusic;
+    };
+
+    std::unordered_map<int, Sound> m_Sounds{};
 
     std::atomic<bool> m_Quit{ false };
     std::jthread m_SoundThread;
@@ -225,9 +277,9 @@ dae::SDL_SoundSystem::~SDL_SoundSystem()
 	delete m_pImpl;
 }
 
-void dae::SDL_SoundSystem::Play(const int soundId, const float volume)
+void dae::SDL_SoundSystem::Play(const int soundId, const float volume, const int nrLoops)
 {
-    m_pImpl->PlaySound(soundId, volume);
+    m_pImpl->PlaySound(soundId, volume, nrLoops);
 }
 
 void dae::SDL_SoundSystem::Preload(const int soundId)
@@ -235,9 +287,7 @@ void dae::SDL_SoundSystem::Preload(const int soundId)
     m_pImpl->PreloadSound(soundId);
 }
 
-void dae::SDL_SoundSystem::AddSound(const std::string& fileName, int& soundId)
+void dae::SDL_SoundSystem::AddSound(const std::string& fileName, int& soundId, bool isMusic)
 {
-    m_pImpl->AddSound(fileName, soundId);
+    m_pImpl->AddSound(fileName, soundId, isMusic);
 }
-
-

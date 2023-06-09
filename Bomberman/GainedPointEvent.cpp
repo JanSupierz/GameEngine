@@ -1,11 +1,17 @@
 #include "GainedPointEvent.h"
 
-dae::GainedPointEvent::GainedPointEvent(PlayerComponent* pPlayer)
-    :m_pPlayer{ pPlayer }
+dae::GainedPointEvent::GainedPointEvent(const std::string& name, int score)
+    :m_Name{ name }, m_Score{ score }
 {
 }
 
-dae::PlayerComponent* dae::GainedPointEvent::GetPlayer() const
+std::string dae::GainedPointEvent::GetName() const
 {
-    return m_pPlayer;
+    return m_Name;
 }
+
+int dae::GainedPointEvent::GetScore() const
+{
+    return m_Score;
+}
+

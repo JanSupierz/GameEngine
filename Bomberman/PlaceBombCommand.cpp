@@ -22,14 +22,14 @@ void PlaceBombCommand::Execute()
 
     glm::vec2 position{ m_pGameObject->GetWorldPosition() };
 
-    NavigationNode* pNode{ NavigationGrid::GetInstance().GetNode(position) };
+    NavigationNode* pNode{ SceneManager::GetInstance().GetCurrentScene()->GetGrid()->GetNode(position) };
 
     if (pNode)
     {
         //Create bomb
         const auto pBomb{ std::make_shared<GameObject>() };
 
-        const auto pBombRenderer{ std::make_shared<SpriteRenderComponent>(0,3 * 16,16,16,2.f) };
+        const auto pBombRenderer{ std::make_shared<SpriteRenderComponent>(false,0,3 * 16,16,16,2.f) };
         pBombRenderer->SetTexture("BombermanSprites.png");
         pBomb->AddComponent(pBombRenderer);
 
