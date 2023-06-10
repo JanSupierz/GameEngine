@@ -1,6 +1,7 @@
 #include "NextSceneCommand.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "BombermanManager.h"
 
 dae::NextSceneCommand::NextSceneCommand()
 {
@@ -10,8 +11,9 @@ void dae::NextSceneCommand::Execute()
 {
 	auto pCurrent{ SceneManager::GetInstance().GetCurrentScene() };
 
-	if (pCurrent->GetName() == "MenuScene")
+	if (pCurrent->GetName() == "GameScene")
 	{
-		SceneManager::GetInstance().SetCurrentScene("Demo");
+		BombermanManager::GetInstance().NextLevel();
+		pCurrent->Load(true);
 	}
 }

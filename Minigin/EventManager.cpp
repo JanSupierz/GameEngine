@@ -22,16 +22,3 @@ void dae::EventManager::HandleEvents()
 		m_IsDirty = false;
 	}
 }
-
-void dae::EventManager::Clear()
-{
-	for (auto pQueue : m_pQueues)
-	{
-		delete pQueue.second;
-	}
-
-	for (auto pQueue : m_pNewQueues)
-	{
-		delete pQueue.second;
-	}
-}

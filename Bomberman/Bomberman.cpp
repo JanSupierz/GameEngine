@@ -38,7 +38,7 @@
 #include "BombermanManager.h"
 #include "StartInfoComponent.h"
 #include "LevelLoadComponent.h"
-
+#include "PowerUp.h"
 #include "NavigationGrid.h"
 
 //Commands
@@ -93,7 +93,7 @@ void LoadLevel()
 
 	//Create level
 	std::vector<std::tuple<int, int, std::string>> reservedCubes{};
-	LoadLevelFromFile("Bomberman.json", reservedCubes, *pScene);
+	LoadLevelFromFile(manager.GetLevelPath(), reservedCubes, *pScene);
 
 	//Set Camera
 	const auto pCamera{ pScene->Add(std::make_shared<GameObject>()) };
@@ -104,7 +104,7 @@ void LoadLevel()
 	pCameraComponent->SetBounds(glm::vec2{}, glm::vec2{ size.x * 2 - 32.f,size.y });
 	pScene->SetCamera(pCamera.get());
 
-	const auto pScreen{ CreateLoadingScreen(*pScene, static_cast<int>(size.x), static_cast<int>(size.y), "Stage 1", 30, -100) };
+	const auto pScreen{ CreateLoadingScreen(*pScene, static_cast<int>(size.x), static_cast<int>(size.y), "Stage " + std::to_string(manager.GetCurrentLevelIndex()+1), 30, -100)};
 
 	//Create players
 	constexpr float speed{ 100.f };
@@ -121,6 +121,8 @@ void LoadLevel()
 	pKeyboard->MapCommandToButton(SDL_SCANCODE_DOWN, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ 0.f,speed }, pPlayer1.get()), ButtonState::Pressed);
 
 	pKeyboard->MapCommandToButton(SDL_SCANCODE_S, std::make_unique<PlaceBombCommand>(pPlayerObject1.get()), ButtonState::Down);
+
+	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_F1, std::make_unique<NextSceneCommand>(), ButtonState::Down);
 
 	if (manager.GetMode() != GameMode::SinglePlayer)
 	{
@@ -208,7 +210,6 @@ void LoadMenu()
 	const glm::vec2 imagePos{ windowSize.x / 2.f, 0.3f * windowSize.y };
 	CreateImage(*pScene, imagePos, 379, 232, 1.f);
 
-	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_F1, std::make_unique<NextSceneCommand>(), ButtonState::Down);
 	input.GetMouse()->MapCommandToButton(MouseButton::left, std::make_unique<ClickCommand>(MouseButton::left), ButtonState::Down);
 }
 
@@ -224,7 +225,6 @@ void load()
 
 	//Load sounds
 	int bombSoundId{};
-
 	audio.AddSound("Explosion.wav", bombSoundId, false);
 	audio.Preload(bombSoundId);
 	BombComponent::SetExplosionSound(bombSoundId);
@@ -233,6 +233,11 @@ void load()
 	audio.AddSound("Death.wav", deathSound, false);
 	PlayerComponent::SetDeathSound(deathSound);
 
+	int powerUpSoundId{};
+	audio.AddSound("PowerUp.wav", powerUpSoundId, false);
+	PowerUp::SetSound(powerUpSoundId);
+
+	//Music
 	int menuMusicId{};
 	audio.AddSound("Music/Menu.mp3", menuMusicId, true);
 	audio.Play(menuMusicId, 0.4f, -1);
@@ -245,7 +250,9 @@ void load()
 	LevelLoadComponent::SetSounds(loadMusicId, levelMusicId);
 
 	//Init scores manager
-	BombermanManager::GetInstance();
+	auto& manager{ BombermanManager::GetInstance() };
+	manager.AddLevelPath("Bomberman.json");
+	manager.AddLevelPath("Bomberman.json");
 
 	SceneManager::GetInstance().CreateScene("MenuScene", LoadMenu).Load(false);
 }

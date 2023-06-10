@@ -29,6 +29,7 @@ namespace dae
 		NavigationNode* GetNode() const;
 		void SetNode(NavigationNode* pNode);
 
+		int GetNrBombs() const;
 		void AddDetonateCommand();
 		void Kill(DeathType type, PlayerComponent* pOther = nullptr);
 		static void SetDeathSound(const int soundId);

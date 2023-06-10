@@ -4,6 +4,7 @@
 namespace dae
 {
     class GameObject;
+    class PlayerComponent;
 
     class PlaceBombCommand final : public Command
     {
@@ -13,6 +14,7 @@ namespace dae
 
     private:
         GameObject* m_pGameObject;
+        PlayerComponent* m_pPlayer;
     };
 }
 

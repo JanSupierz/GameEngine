@@ -36,6 +36,11 @@ PlayerComponent::~PlayerComponent()
 	 }
 }
 
+int dae::PlayerComponent::GetNrBombs() const
+{
+	return static_cast<int>(m_pBombs.size());
+}
+
 void dae::PlayerComponent::AddDetonateCommand()
 {
 	if (!m_CanDetonate)

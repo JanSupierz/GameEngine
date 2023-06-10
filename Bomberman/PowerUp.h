@@ -23,9 +23,12 @@ namespace dae
 
 		void OnNotify(const CollisionEvent& event) override;
 		void OnSubjectDestroy(Subject<CollisionEvent>*) override;
+
+		static void SetSound(int id);
 	private:
 		Subject<CollisionEvent>* m_pCollider;
 		PowerUpType m_Type;
+		static int s_PowerUpSoundId;
 	};
 }
 

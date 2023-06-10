@@ -7,6 +7,7 @@
 #include "PowerUp.h"
 
 dae::BombermanManager::BombermanManager()
+	:m_CurrentLevel{ 0 }
 {
 	EventManager::GetInstance().AddListener(this);
 }
@@ -30,6 +31,11 @@ void dae::BombermanManager::PlayerDied(int killedPlayerIdx)
 {
 	auto& pPlayerInfo{ m_pPlayerInfos[killedPlayerIdx] };
 	EventManager::GetInstance().AddEvent(std::make_shared<HUDEvent>(HUDEventType::Life, killedPlayerIdx, --pPlayerInfo->nrLives));
+
+	if (pPlayerInfo->nrLives <= 0)
+	{
+		RestartGame();
+	}
 }
 
 bool dae::BombermanManager::CanDetonate(int index) const
@@ -37,18 +43,63 @@ bool dae::BombermanManager::CanDetonate(int index) const
 	return m_pPlayerInfos[index]->canDetonate;
 }
 
-dae::BombermanManager::~BombermanManager()
+void dae::BombermanManager::NextLevel()
 {
+	++m_CurrentLevel;
+
+	if (m_CurrentLevel >= static_cast<int>(m_LevelPaths.size()))
+	{
+		m_CurrentLevel = 0;
+	}
 }
 
-void dae::BombermanManager::Clear()
+int dae::BombermanManager::GetMaxNrBombs(int index) const
+{
+	return m_pPlayerInfos[index]->maxNrBombs;
+}
+
+std::string dae::BombermanManager::GetLevelPath() const
+{
+	return m_LevelPaths[m_CurrentLevel];
+}
+
+void dae::BombermanManager::SetCurrentLevel(int levelIdx)
+{
+	m_CurrentLevel = levelIdx;
+}
+
+int dae::BombermanManager::GetCurrentLevelIndex() const
+{
+	return m_CurrentLevel;
+}
+
+void dae::BombermanManager::RestartGame()
+{
+	for(const auto& pPlayer: m_pPlayerInfos)
+	{
+		pPlayer->canDetonate = false;
+		pPlayer->explosionRange = 1;
+		pPlayer->maxNrBombs = 1;
+		pPlayer->nrLives = 4;
+		pPlayer->score = 0;
+	}
+
+	m_CurrentLevel = 0;
+}
+
+void dae::BombermanManager::AddLevelPath(const std::string& levelPath)
+{
+	m_LevelPaths.emplace_back(levelPath);
+}
+
+dae::BombermanManager::~BombermanManager()
 {
 	EventManager::GetInstance().RemoveListener(this);
 }
 
 void dae::BombermanManager::RefreshHUD()
 {
-	for (auto& pPlayer : m_pPlayerInfos)
+	for (const auto& pPlayer : m_pPlayerInfos)
 	{
 		EventManager::GetInstance().AddEvent(std::make_shared<HUDEvent>(HUDEventType::Life, pPlayer->index, pPlayer->nrLives));
 		EventManager::GetInstance().AddEvent(std::make_shared<HUDEvent>(HUDEventType::Score, pPlayer->index, pPlayer->score));
@@ -121,7 +172,7 @@ void dae::BombermanManager::AddPowerUp(dae::PowerUpType type, int index)
 {
 	if (type == PowerUpType::Flames)
 	{
-		if(m_pPlayerInfos[index]->explosionRange < 6)
+		if(m_pPlayerInfos[index]->explosionRange < 4)
 		{
 			++m_pPlayerInfos[index]->explosionRange;
 		}

@@ -13,7 +13,7 @@
 using namespace dae;
 
 dae::PlaceBombCommand::PlaceBombCommand(GameObject* pGameObject)
-    :m_pGameObject(pGameObject)
+    :m_pGameObject(pGameObject), m_pPlayer{ pGameObject->GetComponent<PlayerComponent>().get() }
 {
 }
 
@@ -21,35 +21,39 @@ void PlaceBombCommand::Execute()
 {
     if (!m_pGameObject) return;
 
-    glm::vec2 position{ m_pGameObject->GetWorldPosition() };
+    auto& manager{ BombermanManager::GetInstance() };
+    const int maxNrBombs{ manager.GetMaxNrBombs(m_pPlayer->GetIndex()) };
+    const int nrBombs{ m_pPlayer->GetNrBombs() };
 
-    NavigationNode* pNode{ SceneManager::GetInstance().GetCurrentScene()->GetGrid()->GetNode(position) };
-
-    if (pNode)
+    if (nrBombs < maxNrBombs)
     {
-        //Create bomb
-        const auto pBomb{ std::make_shared<GameObject>() };
+        glm::vec2 position{ m_pGameObject->GetWorldPosition() };
 
-        const auto pBombRenderer{ std::make_shared<SpriteRenderComponent>(false,0,3 * 16,16,16,2.f) };
-        pBombRenderer->SetTexture("BombermanSprites.png");
-        pBomb->AddComponent(pBombRenderer);
+        NavigationNode* pNode{ SceneManager::GetInstance().GetCurrentScene()->GetGrid()->GetNode(position) };
 
-        const glm::vec2& nodePosition{ pNode->GetWorldPosition() };
-        pBomb->SetPosition(nodePosition.x, nodePosition.y);
+        if (pNode)
+        {
+            //Create bomb
+            const auto pBomb{ std::make_shared<GameObject>() };
 
-        constexpr float detonationTime{ 2.5f };
-        auto& manager{ BombermanManager::GetInstance() };
+            const auto pBombRenderer{ std::make_shared<SpriteRenderComponent>(false,0,3 * 16,16,16,2.f) };
+            pBombRenderer->SetTexture("BombermanSprites.png");
+            pBomb->AddComponent(pBombRenderer);
 
-        const auto pBombComponent
-        { 
-            std::make_shared<BombComponent>(detonationTime,pNode, 
-            m_pGameObject->GetComponent<PlayerComponent>().get(),
-            manager.GetExplosionRange(m_pGameObject->GetComponent<PlayerComponent>()->GetIndex())) 
-        };
+            const glm::vec2& nodePosition{ pNode->GetWorldPosition() };
+            pBomb->SetPosition(nodePosition.x, nodePosition.y);
 
-        pBomb->AddComponent(pBombComponent);
+            constexpr float detonationTime{ 2.5f };
 
-        SceneManager::GetInstance().GetCurrentScene()->Add(pBomb);
+            const auto pBombComponent
+            {
+                std::make_shared<BombComponent>(detonationTime,pNode, m_pPlayer,manager.GetExplosionRange(m_pPlayer->GetIndex()))
+            };
+
+            pBomb->AddComponent(pBombComponent);
+
+            SceneManager::GetInstance().GetCurrentScene()->Add(pBomb);
+        }
     }
 }
 

@@ -30,7 +30,8 @@ void dae::BlockingComponent::OnEvent(const BombExplodedEvent& event)
 	{
 		GetOwner()->Destroy();
 
-		constexpr int discard{ 0 }, total{ 100 };
+		//10% chance
+		constexpr int discard{ 90 }, total{ 100 };
 		int chance{ rand() % total };
 		if (chance < discard) return;
 
