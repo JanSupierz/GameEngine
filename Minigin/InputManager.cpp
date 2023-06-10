@@ -61,6 +61,13 @@ Controller* dae::InputManager::AddController()
 	return m_pControllers.back().get();
 }
 
+Controller* dae::InputManager::GetController(int index)
+{
+	assert(static_cast<int>(m_pControllers.size()) > index);
+
+	return m_pControllers[index].get();
+}
+
 Keyboard* dae::InputManager::GetKeyboard()
 {
 	return &m_Keyboard;

@@ -35,7 +35,7 @@ void dae::Scene::Load(bool cleanUp)
 	{
 		DestroyAll();
 	}
-	
+
 	m_ShouldLoad = true;
 }
 
@@ -97,7 +97,7 @@ void Scene::Update()
 		}
 	}
 
-	//Just added
+	//New objects
 	if (!m_pNewObjects.empty())
 	{
 		//Add new objects
@@ -147,7 +147,10 @@ void dae::Scene::CleanUp()
 
 	if (m_ShouldLoad)
 	{
+		m_pNewObjects.clear();
+		m_pObjects.clear();
 		m_pGrid->Clear();
+		
 		m_LoadFunction();
 		
 		m_ShouldLoad = false;

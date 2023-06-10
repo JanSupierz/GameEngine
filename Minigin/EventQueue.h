@@ -18,6 +18,12 @@ namespace dae
         ~EventQueue()
         {
             m_pListeners.clear();
+
+            while (!isEmpty())
+            {
+                m_pEvents[m_Head] = nullptr;
+                m_Head = (m_Head + 1) % m_Size;
+            }
         }
 
         void AddListener(EventListener<EventType>* pListener)

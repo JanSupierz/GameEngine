@@ -4,6 +4,7 @@
 #include "Singleton.h"
 #include <typeindex>
 #include <unordered_map>
+#include <vector>
 
 namespace dae
 {
@@ -39,6 +40,7 @@ namespace dae
 
          void HandleEvents();
 
+         void Clear();
 	 private:
          template<class EventType>
          EventQueue<EventType>* GetQueue()
@@ -52,14 +54,26 @@ namespace dae
              {
                  static_assert(std::is_base_of<QueueEvent, EventType>::value, "EventType must be derived from QueueEvent");
 
-                 auto pQueue{ new EventQueue<EventType>() };
-                 m_pQueues[typeid(EventQueue<EventType>)] = reinterpret_cast<EventQueue<QueueEvent>*>(pQueue);
+                 found = m_pNewQueues.find(typeid(EventQueue<EventType>));
 
-                 return pQueue;
+                 m_IsDirty = true;
+
+                 if (found != m_pNewQueues.end())
+                 {
+                     auto pQueue{ reinterpret_cast<EventQueue<EventType>*>(found->second) };
+                     return pQueue;
+                 }
+                 else
+                 {
+                     auto pQueue{ new EventQueue<EventType>() };
+                     m_pNewQueues[typeid(EventQueue<EventType>)] = reinterpret_cast<EventQueue<QueueEvent>*>(pQueue);
+                     return pQueue;
+                 }
              }
          }
 
-		 std::unordered_map<std::type_index, EventQueue<QueueEvent>*> m_pQueues{};
+         std::unordered_map<std::type_index, EventQueue<QueueEvent>*> m_pQueues{};
+         std::unordered_map<std::type_index, EventQueue<QueueEvent>*> m_pNewQueues{};
          bool m_IsDirty{ false };
 	 };
 }

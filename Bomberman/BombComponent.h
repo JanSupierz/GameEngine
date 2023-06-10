@@ -22,11 +22,11 @@ namespace dae
 
 		virtual void Update() override;
 		void CreateExplosion(Scene* pScene, NavigationNode* pCurrentNode, Direction direction, bool shouldStop) const;
-		void OnEvent(const BombExplodedEvent& event) override;
+		virtual void OnEvent(const BombExplodedEvent& event) override;
 		
 		static void SetExplosionSound(const int soundId);
-	private:
 		void Explode();
+	private:
 		float m_TimeLeft;
 		PlayerComponent* m_pPlayer;
 		NavigationNode* m_pNode;

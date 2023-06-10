@@ -8,6 +8,7 @@
 #include "NavigationGrid.h"
 #include "NavigationNode.h"
 #include "Scene.h"
+#include "BombermanManager.h"
 
 using namespace dae;
 
@@ -37,7 +38,15 @@ void PlaceBombCommand::Execute()
         pBomb->SetPosition(nodePosition.x, nodePosition.y);
 
         constexpr float detonationTime{ 2.5f };
-        const auto pBombComponent{ std::make_shared<BombComponent>(detonationTime,pNode, m_pGameObject->GetComponent<PlayerComponent>().get(),2) };
+        auto& manager{ BombermanManager::GetInstance() };
+
+        const auto pBombComponent
+        { 
+            std::make_shared<BombComponent>(detonationTime,pNode, 
+            m_pGameObject->GetComponent<PlayerComponent>().get(),
+            manager.GetExplosionRange(m_pGameObject->GetComponent<PlayerComponent>()->GetIndex())) 
+        };
+
         pBomb->AddComponent(pBombComponent);
 
         SceneManager::GetInstance().GetCurrentScene()->Add(pBomb);

@@ -20,6 +20,8 @@ dae::BombComponent::BombComponent(float time, NavigationNode* pNode, PlayerCompo
 {
 	pNode->IsBlocked(true);
 	EventManager::GetInstance().AddListener(this);
+
+	m_pPlayer->AddBomb(this);
 }
 
 dae::BombComponent::~BombComponent()
@@ -129,6 +131,9 @@ void dae::BombComponent::Explode()
 	}
 
 	Audio::Get().Play(s_ExplosionSoundId, 0.5f);
+
+	m_pPlayer->RemoveBomb(this);
+
 	GetOwner()->Destroy();
 }
 

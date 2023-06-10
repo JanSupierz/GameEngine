@@ -63,7 +63,7 @@
     <ClCompile Include="BombExplodedEvent.cpp">
       <Filter>Events</Filter>
     </ClCompile>
-    <ClCompile Include="GainedPointEvent.cpp">
+    <ClCompile Include="HUDEvent.cpp">
       <Filter>Events</Filter>
     </ClCompile>
     <ClCompile Include="DeathEvent.cpp">
@@ -138,6 +138,12 @@
     <ClCompile Include="ScoreComponent.cpp">
       <Filter>Components\Game</Filter>
     </ClCompile>
+    <ClCompile Include="PowerUp.cpp">
+      <Filter>Components\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="DetonateBombCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StartInfoComponent.h">
@@ -146,7 +152,7 @@
     <ClInclude Include="BombExplodedEvent.h">
       <Filter>Events</Filter>
     </ClInclude>
-    <ClInclude Include="GainedPointEvent.h">
+    <ClInclude Include="HUDEvent.h">
       <Filter>Events</Filter>
     </ClInclude>
     <ClInclude Include="DeathEvent.h">
@@ -235,6 +241,12 @@
     </ClInclude>
     <ClInclude Include="ScoreComponent.h">
       <Filter>Components\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerUp.h">
+      <Filter>Components\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="DetonateBombCommand.h">
+      <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

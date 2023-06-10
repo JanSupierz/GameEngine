@@ -1,6 +1,7 @@
 #include "Prefabs.h"
 #include "GameObject.h"
 #include "InputManager.h"
+#include "BombermanManager.h"
 
 //Navigation
 #include "NavigationGrid.h"
@@ -40,17 +41,21 @@
 
 using namespace dae;
 
-std::shared_ptr<GameObject> dae::CreatePlayer(const NavigationNode* const pNode, const std::string& name, const float playerSpeed, Scene& scene, 
+std::shared_ptr<GameObject> dae::CreatePlayer(int index, const NavigationNode* const pNode, const float playerSpeed, Scene& scene, 
 	const int spritePosX, const int spritePosY, const float infoDisplayOffsetX, const float infoDisplayOffsetY, 
 	const float infoDisplaySpacing, const int spriteCellDimensions, const float spriteCellScale)
 {
+	auto& input = InputManager::GetInstance();
+	const auto pController{ input.AddController() };
+	bool canDetonate{ BombermanManager::GetInstance().CanDetonate(index) };
+
 	//Player
 	const auto pPlayerObject{ scene.Add(std::make_shared<GameObject>(-10)) };
 
 	const auto pCollider{ std::make_shared<ColliderComponent>(glm::vec2{32.f,32.f}) };
 	pPlayerObject->AddComponent(pCollider);
 
-	const auto pPlayer{ std::make_shared<PlayerComponent>(name, pCollider->GetCollisionEvent()) };
+	const auto pPlayer{ std::make_shared<PlayerComponent>(index,canDetonate, pCollider->GetCollisionEvent()) };
 	pPlayerObject->AddComponent(pPlayer);
 	pPlayerObject->SetPosition(pNode->GetWorldPosition());
 
@@ -69,7 +74,7 @@ std::shared_ptr<GameObject> dae::CreatePlayer(const NavigationNode* const pNode,
 	pHealthText->SetFont(ResourceManager::GetInstance().LoadFont("Lingua.otf", fontSize));
 	pHealthDisplay->AddComponent(pHealthText);
 
-	const auto pLives{ std::make_shared<LivesComponent>(pPlayer.get(), pHealthText) };
+	const auto pLives{ std::make_shared<LivesComponent>(pPlayer->GetIndex(), pHealthText.get()) };
 	pHealthDisplay->AddComponent(pLives);
 
 	//Score Display 1
@@ -82,13 +87,10 @@ std::shared_ptr<GameObject> dae::CreatePlayer(const NavigationNode* const pNode,
 	pScoreText->SetFont(ResourceManager::GetInstance().LoadFont("Lingua.otf", fontSize));
 	pScoreDisplay->AddComponent(pScoreText);
 
-	const auto pScore{ std::make_shared<ScoreComponent>(pPlayer->GetName(), pScoreText.get()) };
+	const auto pScore{ std::make_shared<ScoreComponent>(pPlayer->GetIndex(), pScoreText.get()) };
 	pScoreDisplay->AddComponent(pScore);
 
 	//Controller
-	auto& input = InputManager::GetInstance();
-
-	const auto pController{ input.AddController() };
 	pController->MapCommandToButton(Controller::ControllerButtons::ButtonA, std::make_unique<PlaceBombCommand>(pPlayerObject.get()), ButtonState::Down);
 
 	pController->MapCommandToButton(Controller::ControllerButtons::DPadLeft, std::make_unique<GridMovementCommand>(pPlayerObject.get(), glm::vec2{ -playerSpeed,0.f }, pPlayer.get()), ButtonState::Pressed);

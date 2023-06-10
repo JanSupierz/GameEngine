@@ -4,19 +4,28 @@
 #include "EventManager.h"
 #include "CollisionEvent.h"
 #include "ColliderComponent.h"
-#include "ExplosionComponent.h"
 #include "Audio.h"
 #include "SceneManager.h"
 #include "Scene.h"
-#include "CameraComponent.h"
+#include "BombComponent.h"
+#include <algorithm>
+#include "InputManager.h"
+#include "SDL.h"
+#include "DetonateBombCommand.h"
+#include "Controller.h"
 
 using namespace dae;
 int dae::PlayerComponent::s_PlayerDeathSound = -1;
 
-PlayerComponent::PlayerComponent(const std::string& name, Subject<CollisionEvent>* pCollider, int priority)
-	: Component(priority), m_Name{ name }, m_pCollider{ pCollider }, m_Killed{ false }
+PlayerComponent::PlayerComponent(int index, bool canDetonate, Subject<CollisionEvent>* pCollider, int priority)
+	: Component(priority), m_Index{ index }, m_pCollider{ pCollider }, m_Killed{ false }, m_CanDetonate{ canDetonate }
 {
 	m_pCollider->AddObserver(this);
+
+	if (m_CanDetonate)
+	{
+		CreateDetonateCommands();
+	}
 }
 
 PlayerComponent::~PlayerComponent()
@@ -27,15 +36,19 @@ PlayerComponent::~PlayerComponent()
 	 }
 }
 
-std::string PlayerComponent::GetName() const
+void dae::PlayerComponent::AddDetonateCommand()
 {
-	return m_Name;
+	if (!m_CanDetonate)
+	{
+		m_CanDetonate = true;
+
+		CreateDetonateCommands();
+	}
 }
 
 void dae::PlayerComponent::Kill(DeathType type, PlayerComponent* pOther)
 {
 	if (m_Killed) return;
-
 	m_Killed = true;
 	
 	EventManager::GetInstance().AddEvent(std::make_shared<DeathEvent>(type, pOther, this));
@@ -48,6 +61,32 @@ void dae::PlayerComponent::Kill(DeathType type, PlayerComponent* pOther)
 void dae::PlayerComponent::SetDeathSound(const int soundId)
 {
 	s_PlayerDeathSound = soundId;
+}
+
+void dae::PlayerComponent::DetonateOldestBomb()
+{
+	if (m_pBombs.size() > 0)
+	{
+		m_pBombs[0]->Explode();
+	}
+}
+
+void dae::PlayerComponent::AddBomb(BombComponent* pBomb)
+{
+	m_pBombs.emplace_back(pBomb);
+}
+
+void dae::PlayerComponent::RemoveBomb(BombComponent* pBomb)
+{
+	m_pBombs.erase(std::remove(m_pBombs.begin(), m_pBombs.end(), pBomb), m_pBombs.end());
+}
+
+void dae::PlayerComponent::CreateDetonateCommands()
+{
+	auto& input{ InputManager::GetInstance() };
+
+	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_E, std::make_unique<DetonateBombCommand>(this), ButtonState::Down);
+	input.GetController(m_Index)->MapCommandToButton(Controller::ControllerButtons::ButtonB, std::make_unique<DetonateBombCommand>(this), ButtonState::Down);
 }
 
 dae::NavigationNode* dae::PlayerComponent::GetNode() const
@@ -69,3 +108,9 @@ void dae::PlayerComponent::OnSubjectDestroy(Subject<CollisionEvent>*)
 {
 	m_pCollider = nullptr;
 }
+
+int dae::PlayerComponent::GetIndex() const
+{
+	return m_Index;
+}
+

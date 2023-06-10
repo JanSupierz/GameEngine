@@ -89,5 +89,9 @@ void GridMovementCommand::Execute()
             m_pGameObject->SetPosition(newPosition.x, newPosition.y);
             m_pPlayer->SetNode(pNode);
         }
+        else if (m_pGrid->GetNode(oldPosition) == pNode)
+        {
+            m_pGameObject->SetPosition(newPosition.x, newPosition.y);
+        }
     }
 }

@@ -174,11 +174,12 @@
     <ClCompile Include="CameraTargetComponent.cpp" />
     <ClCompile Include="ClickCommand.cpp" />
     <ClCompile Include="CombinedGraphComponent.cpp" />
+    <ClCompile Include="DetonateBombCommand.cpp" />
     <ClCompile Include="EnemyComponent.cpp" />
     <ClCompile Include="Exercises.cpp" />
     <ClCompile Include="ExplosionComponent.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
-    <ClCompile Include="GainedPointEvent.cpp" />
+    <ClCompile Include="HUDEvent.cpp" />
     <ClCompile Include="GraphComponent.cpp" />
     <ClCompile Include="GridMovementCommand.cpp" />
     <ClCompile Include="LevelLoadComponent.cpp" />
@@ -188,6 +189,7 @@
     <ClCompile Include="PlaceBombCommand.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="DeathEvent.cpp" />
+    <ClCompile Include="PowerUp.cpp" />
     <ClCompile Include="Prefabs.cpp" />
     <ClCompile Include="RotatorComponent.cpp" />
     <ClCompile Include="ScoreComponent.cpp" />
@@ -209,10 +211,11 @@
     <ClInclude Include="CameraTargetComponent.h" />
     <ClInclude Include="ClickCommand.h" />
     <ClInclude Include="CombinedGraphComponent.h" />
+    <ClInclude Include="DetonateBombCommand.h" />
     <ClInclude Include="EnemyComponent.h" />
     <ClInclude Include="ExplosionComponent.h" />
     <ClInclude Include="FPSComponent.h" />
-    <ClInclude Include="GainedPointEvent.h" />
+    <ClInclude Include="HUDEvent.h" />
     <ClInclude Include="GraphComponent.h" />
     <ClInclude Include="GridMovementCommand.h" />
     <ClInclude Include="LevelLoadComponent.h" />
@@ -222,6 +225,7 @@
     <ClInclude Include="PlaceBombCommand.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="DeathEvent.h" />
+    <ClInclude Include="PowerUp.h" />
     <ClInclude Include="Prefabs.h" />
     <ClInclude Include="RotatorComponent.h" />
     <ClInclude Include="ScoreComponent.h" />

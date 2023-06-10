@@ -16,6 +16,7 @@ namespace dae
 
 		bool ProcessInput();
 		Controller* AddController();
+		Controller* GetController(int index);
 		Keyboard* GetKeyboard();
 		Mouse* GetMouse();
 

@@ -6,23 +6,23 @@
 namespace dae
 {
 	class TextureComponent;
-	class GainedPointEvent;
+	class HUDEvent;
 
-	class ScoreComponent final : public Component, public EventListener<GainedPointEvent>
+	class ScoreComponent final : public Component, public EventListener<HUDEvent>
 	{
 	public:
-		ScoreComponent(const std::string& name, TextureComponent* pTextComponent = nullptr, int priority = 0);
+		ScoreComponent(int index, TextureComponent* pTextComponent = nullptr, int priority = 0);
 		virtual ~ScoreComponent();
 		ScoreComponent(const ScoreComponent& other) = default;
 		ScoreComponent(ScoreComponent&& other) = default;
 		ScoreComponent& operator=(const ScoreComponent& other) = default;
 		ScoreComponent& operator=(ScoreComponent&& other) = default;
 
-		virtual void OnEvent(const GainedPointEvent& event) override;
+		virtual void OnEvent(const HUDEvent& event) override;
 
 	private:
 		TextureComponent* m_pTextComponent;
-		std::string m_Name;
+		const int m_Index;
 	};
 }
 

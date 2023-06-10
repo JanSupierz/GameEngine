@@ -10,8 +10,8 @@ namespace dae
 	class NavigationNode;
 	enum class DeathType;
 	
-	std::shared_ptr<GameObject> CreatePlayer(const NavigationNode* const pNode,
-		const std::string& name, const float playerSpeed, Scene& scene, const int spritePosX,
+	std::shared_ptr<GameObject> CreatePlayer(int index, const NavigationNode* const pNode,
+		const float playerSpeed, Scene& scene, const int spritePosX,
 		const int spritePosY, const float infoDisplayOffsetX = 10.f, const float infoDisplayOffsetY = 20.f,
 		const float infoDisplaySpacing = 20.f, const int spriteCellDimensions = 16, const float spriteCellScale = 2.f);
 

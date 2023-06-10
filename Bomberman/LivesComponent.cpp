@@ -1,14 +1,11 @@
 #include "LivesComponent.h"
-
-#include "GameObject.h"
 #include "TextureComponent.h"
 #include <iostream>
-#include "PlayerComponent.h"
-#include "DeathEvent.h"
+#include "HUDEvent.h"
 #include "EventManager.h"
 
-dae::LivesComponent::LivesComponent(PlayerComponent* pPlayer, std::shared_ptr<TextureComponent> pTextComponent, int priority)
-	:Component(priority), m_pTextComponent(pTextComponent), m_pPlayer(pPlayer)
+dae::LivesComponent::LivesComponent(int index, TextureComponent* pTextComponent, int priority)
+	:Component(priority), m_pTextComponent(pTextComponent), m_Index(index)
 {
 	EventManager::GetInstance().AddListener(this);
 }
@@ -18,19 +15,15 @@ dae::LivesComponent::~LivesComponent()
 	EventManager::GetInstance().RemoveListener(this);
 }
 
-void dae::LivesComponent::OnEvent(const DeathEvent& )
+void dae::LivesComponent::OnEvent(const HUDEvent& event)
 {
-	//if (m_Name == event.GetKilled()->GetName())
-	//{
-	//	std::string text{ m_Name + ": " + std::to_string(nrLives) + " lives" };
-	//
-	//	if (m_pTextComponent)
-	//	{
-	//		m_pTextComponent->SetTextToTexture(text);
-	//	}
-	//	else
-	//	{
-	//		std::cout << text << '\n';
-	//	}
-	//}
+	if (event.GetType() == HUDEventType::Life && m_Index == event.GetIndex())
+	{
+		std::string text{ "Lives: " + std::to_string(event.GetValue())};
+	
+		if (m_pTextComponent)
+		{
+			m_pTextComponent->SetTextToTexture(text);
+		}
+	}
 }
