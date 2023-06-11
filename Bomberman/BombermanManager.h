@@ -46,11 +46,19 @@ namespace dae
         int GetExplosionRange(int index) const;
         int GetMaxNrBombs(int index) const;
         void AddLevelPath(const std::string& levelPath);
+        void SetSound(int doorSoundId);
         std::string GetLevelPath() const;
 
         void SetCurrentLevel(int levelIdx);
         int GetCurrentLevelIndex() const;
         void RestartGame();
+
+        void AddEnemy();
+        void RemoveEnemy();
+        int GetNrEnemies() const;
+
+        void AddScore(const std::string& name, int score);
+        std::vector<std::pair<std::string, int>>  GetTopScores(int maxNrScores);
     private:
         friend class Singleton<BombermanManager>;
         BombermanManager();
@@ -62,6 +70,9 @@ namespace dae
         std::vector<std::unique_ptr<PlayerInfo>> m_pPlayerInfos;
 
         int m_CurrentLevel;
+        int m_NrEnemies;
+
+        std::vector<std::pair<std::string, int>> m_Scores;
     };
 }
 

@@ -34,7 +34,7 @@ namespace dae
 		NavigationGrid* GetGrid() const;
 		std::string GetName() const;
 
-		void Load(bool cleanUp);
+		void Load();
 		bool NeedsCleanUp() const;
 	private: 
 		explicit Scene(const std::string& name, const std::function<void()>& loadFunction);

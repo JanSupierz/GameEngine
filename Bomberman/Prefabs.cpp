@@ -24,6 +24,7 @@
 
 //Cubes
 #include "BlockingComponent.h"
+#include "Door.h"
 
 //Commands
 #include "PlaceBombCommand.h"
@@ -166,11 +167,32 @@ void dae::CreateDoor(Scene& scene, NavigationNode* pNode)
 {
 	const auto pDoorObject{ scene.Add(std::make_shared<GameObject>(-7)) };
 
+	const auto pCollider{ std::make_shared<ColliderComponent>(glm::vec2{5.f,5.f}) };
+	pDoorObject->AddComponent(pCollider);
+
+	const auto pDoor{ std::make_shared<Door>() };
+	pDoorObject->AddComponent(pDoor);
+
 	const auto pDoorRenderer{ std::make_shared<SpriteRenderComponent>(false, 11 * 16,3 * 16,16,16,2.f) };
 	pDoorRenderer->SetTexture("BombermanSprites.png");
 	pDoorObject->AddComponent(pDoorRenderer);
 
 	pDoorObject->SetPosition(pNode->GetWorldPosition());
+}
+
+void dae::CreateText(Scene& scene, const glm::vec2& position, const std::string& text, int fontSize)
+{
+	const auto pTextObject{ scene.Add(std::make_shared<GameObject>()) };
+
+	const auto pTextRenderer{ std::make_shared<RenderComponent>(true) };
+	pTextObject->AddComponent(pTextRenderer);
+
+	const auto pText{ std::make_shared<TextureComponent>(pTextRenderer) };
+	pText->SetFont(ResourceManager::GetInstance().LoadFont("Lingua.otf", fontSize));
+	pText->SetTextToTexture(text);
+
+	pTextObject->AddComponent(pText);
+	pTextObject->SetPosition({ position.x, position.y });
 }
 
 void dae::CreateButton(Scene& scene, const glm::vec2& position, const std::string& text, int fontSize, const std::function<void()>& callBack)

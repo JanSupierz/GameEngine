@@ -15,6 +15,7 @@
 #include "EnemyComponent.h"
 
 #include <rapidjson.h>
+#include "Logger.h"
 
 void LoadCells(const rapidjson::Value& cells, float cellSizeX, float cellSizeY, bool createNavigation)
 {
@@ -150,17 +151,36 @@ void dae::PlaceGameObjects(int maxNrBlocks, Scene& scene, const std::vector<std:
 
 	for (auto& tuple : reservedCubes)
 	{
-		std::string name{ std::get<2>(tuple) };
+		pNode = navigation.GetNode(std::get<1>(tuple), std::get<0>(tuple));
 
-		if (name == "Balloom")
+		if (pNode)
 		{
-			pNode = navigation.GetNode(std::get<0>(tuple), std::get<1>(tuple));
+			std::string name{ std::get<2>(tuple) };
 
-			if (pNode)
+			if (name == "Balloom")
 			{
-				constexpr float balloomSpeed{ 100.f };
+				constexpr float balloomSpeed{ 50.f };
 				CreateEnemy(pNode, DeathType::Balloom, balloomSpeed, scene, 0, 15 * 16);
 			}
+			else if (name == "Oneal")
+			{
+				constexpr float speed{ 80.f };
+				CreateEnemy(pNode, DeathType::Oneal, speed, scene, 0, 16 * 16);
+			}
+			else if (name == "Doll")
+			{
+				constexpr float speed{ 80.f };
+				CreateEnemy(pNode, DeathType::Doll, speed, scene, 0, 17 * 16);
+			}
+			else if (name == "Minvo")
+			{
+				constexpr float speed{ 100.f };
+				CreateEnemy(pNode, DeathType::Minvo, speed, scene, 0, 18 * 16);
+			}
+		}
+		else
+		{
+			Logger::Get().Log("Node: " + std::to_string(std::get<0>(tuple)) + ' ' + std::to_string(std::get<1>(tuple)) + " doesn't exist");
 		}
 	}
 }

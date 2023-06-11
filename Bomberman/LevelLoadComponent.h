@@ -16,13 +16,12 @@ namespace dae
 
 		virtual void Update() override;
 
-		static void SetSounds(int startId, int endId);
+		static void SetSound(int startId);
 	private:
 		float m_TimeLeft;
 		bool m_IsInit;
 
 		static int s_StartSoundId;
-		static int s_EndSoundId;
 	};
 }
 

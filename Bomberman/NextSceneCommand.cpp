@@ -14,6 +14,5 @@ void dae::NextSceneCommand::Execute()
 	if (pCurrent->GetName() == "GameScene")
 	{
 		BombermanManager::GetInstance().NextLevel();
-		pCurrent->Load(true);
 	}
 }

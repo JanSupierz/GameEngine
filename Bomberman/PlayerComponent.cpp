@@ -4,15 +4,14 @@
 #include "EventManager.h"
 #include "CollisionEvent.h"
 #include "ColliderComponent.h"
-#include "Audio.h"
-#include "SceneManager.h"
-#include "Scene.h"
 #include "BombComponent.h"
 #include <algorithm>
 #include "InputManager.h"
 #include "SDL.h"
 #include "DetonateBombCommand.h"
 #include "Controller.h"
+#include "Door.h"
+#include "BombermanManager.h"
 
 using namespace dae;
 int dae::PlayerComponent::s_PlayerDeathSound = -1;
@@ -57,10 +56,6 @@ void dae::PlayerComponent::Kill(DeathType type, PlayerComponent* pOther)
 	m_Killed = true;
 	
 	EventManager::GetInstance().AddEvent(std::make_shared<DeathEvent>(type, pOther, this));
-
-	Audio::Get().Play(s_PlayerDeathSound, 0.5f);
-
-	SceneManager::GetInstance().GetCurrentScene()->Load(true);
 }
 
 void dae::PlayerComponent::SetDeathSound(const int soundId)
@@ -104,9 +99,16 @@ void dae::PlayerComponent::SetNode(NavigationNode* pNode)
 	m_pCurrentNode = pNode;
 }
 
-void dae::PlayerComponent::OnNotify(const CollisionEvent&)
+void dae::PlayerComponent::OnNotify(const CollisionEvent& event)
 {
-	//Listen for collision with doors
+	auto& manager{ BombermanManager::GetInstance() };
+	if (manager.GetNrEnemies() <= 0)
+	{
+		if (event.GetOtherCollider()->GetOwner()->GetComponent<Door>())
+		{
+			manager.NextLevel();
+		}
+	}
 }
 
 void dae::PlayerComponent::OnSubjectDestroy(Subject<CollisionEvent>*)

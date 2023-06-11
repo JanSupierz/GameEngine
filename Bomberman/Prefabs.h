@@ -23,6 +23,6 @@ namespace dae
 	void CreateDoor(Scene& scene, NavigationNode* pNode);
 	void CreateButton(Scene& scene, const glm::vec2& position, const std::string& text, int fontSize, const std::function<void()>& callBack);
 	void CreateImage(Scene& scene, const glm::vec2& position, int width, int height, float scale);
-
+	void CreateText(Scene& scene, const glm::vec2& pos, const std::string& text, int fontSize);
 	std::shared_ptr<GameObject> CreateLoadingScreen(Scene& scene, int width, int height, const std::string& text, int fontSize, int priority);
 }

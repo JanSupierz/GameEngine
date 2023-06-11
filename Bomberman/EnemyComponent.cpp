@@ -4,6 +4,7 @@
 #include "EventManager.h"
 #include "PlayerComponent.h"
 #include "ColliderComponent.h"
+#include "BombermanManager.h"
 
 using namespace dae;
 
@@ -12,6 +13,7 @@ EnemyComponent::EnemyComponent(DeathType enemyType, Subject<CollisionEvent>* pCo
 	:Component{ priority }, m_pCollider{ pCollider }, m_EnemyType{ enemyType }
 {
 	m_pCollider->AddObserver(this);
+	BombermanManager::GetInstance().AddEnemy();
 }
 
 EnemyComponent::~EnemyComponent()
@@ -20,6 +22,8 @@ EnemyComponent::~EnemyComponent()
 	{
 		m_pCollider->RemoveObserver(this);
 	}
+
+	BombermanManager::GetInstance().RemoveEnemy();
 }
 
 void EnemyComponent::EnemyComponent::OnNotify(const CollisionEvent& event)

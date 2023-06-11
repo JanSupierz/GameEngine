@@ -5,6 +5,8 @@
 #include "EventManager.h"
 #include "Logger.h"
 #include "PowerUp.h"
+#include "SceneManager.h"
+#include "Scene.h"
 
 dae::BombermanManager::BombermanManager()
 	:m_CurrentLevel{ 0 }
@@ -36,6 +38,8 @@ void dae::BombermanManager::PlayerDied(int killedPlayerIdx)
 	{
 		RestartGame();
 	}
+
+	SceneManager::GetInstance().GetScene("LoadingScene")->Load();
 }
 
 bool dae::BombermanManager::CanDetonate(int index) const
@@ -49,7 +53,11 @@ void dae::BombermanManager::NextLevel()
 
 	if (m_CurrentLevel >= static_cast<int>(m_LevelPaths.size()))
 	{
-		m_CurrentLevel = 0;
+		SceneManager::GetInstance().GetScene("ScoreScene")->Load();
+	}
+	else
+	{
+		SceneManager::GetInstance().GetScene("LoadingScene")->Load();
 	}
 }
 
@@ -77,6 +85,8 @@ void dae::BombermanManager::RestartGame()
 {
 	for(const auto& pPlayer: m_pPlayerInfos)
 	{
+		AddScore(pPlayer->name, pPlayer->score);
+
 		pPlayer->canDetonate = false;
 		pPlayer->explosionRange = 1;
 		pPlayer->maxNrBombs = 1;
@@ -85,6 +95,39 @@ void dae::BombermanManager::RestartGame()
 	}
 
 	m_CurrentLevel = 0;
+}
+
+void dae::BombermanManager::AddEnemy()
+{
+	++m_NrEnemies;
+}
+
+void dae::BombermanManager::RemoveEnemy()
+{
+	--m_NrEnemies;
+}
+
+void dae::BombermanManager::AddScore(const std::string& name, int score)
+{
+	m_Scores.emplace_back(std::make_pair(name, score));
+}
+
+std::vector<std::pair<std::string, int>> dae::BombermanManager::GetTopScores(int maxNrScores)
+{
+	std::sort(m_Scores.begin(), m_Scores.end(), [](auto p1, auto p2) {return p1.second > p2.second; });
+
+	std::vector<std::pair<std::string, int>> scores{};
+	for (int index{ 0 }; index < std::min(static_cast<int>(m_Scores.size()), maxNrScores); ++index)
+	{
+		scores.emplace_back(m_Scores[index]);
+	}
+
+	return scores;
+}
+
+int dae::BombermanManager::GetNrEnemies() const
+{
+	return m_NrEnemies;
 }
 
 void dae::BombermanManager::AddLevelPath(const std::string& levelPath)

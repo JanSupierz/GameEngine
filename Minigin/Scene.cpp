@@ -29,13 +29,8 @@ std::string dae::Scene::GetName() const
 	return m_name;
 }
 
-void dae::Scene::Load(bool cleanUp)
+void dae::Scene::Load()
 {
-	if (cleanUp)
-	{
-		DestroyAll();
-	}
-
 	m_ShouldLoad = true;
 }
 
@@ -77,6 +72,8 @@ void Scene::DestroyAll()
 	{
 		pObject->Destroy();
 	}
+
+	m_pNewObjects.clear();
 
 	m_NeedsCleanUp = true;
 }
@@ -147,6 +144,8 @@ void dae::Scene::CleanUp()
 
 	if (m_ShouldLoad)
 	{
+		SceneManager::GetInstance().SetCurrentScene(m_name);
+
 		m_pNewObjects.clear();
 		m_pObjects.clear();
 		m_pGrid->Clear();
@@ -155,4 +154,8 @@ void dae::Scene::CleanUp()
 		
 		m_ShouldLoad = false;
 	}
+
+	std::cout << "--- " << m_name << " ---\n";
+	std::cout << "OldObjects: " << m_pObjects.size() << '\n';
+	std::cout << "NewObjects: " << m_pNewObjects.size() << '\n' << '\n';
 }

@@ -71,6 +71,10 @@
 //Scene switch
 #include "NextSceneCommand.h"
 
+//HighScores
+#include <iostream>
+#include <fstream>
+
 using namespace dae;
 
 namespace Exercises
@@ -80,11 +84,15 @@ namespace Exercises
 	void TrashTheCache(Scene& scene);
 }
 
+static int s_GameSoundId{};
+
 void LoadLevel()
 {
 	//Clear inputs
 	auto& input = InputManager::GetInstance();
 	input.ClearCommands();
+
+	Audio::Get().Play(s_GameSoundId, 1.f, -1);
 
 	auto pScene{ SceneManager::GetInstance().GetCurrentScene() };
 	auto& navigation = *pScene->GetGrid();
@@ -103,8 +111,6 @@ void LoadLevel()
 	glm::vec2 size{ Renderer::GetInstance().GetWindowSize() };
 	pCameraComponent->SetBounds(glm::vec2{}, glm::vec2{ size.x * 2 - 32.f,size.y });
 	pScene->SetCamera(pCamera.get());
-
-	const auto pScreen{ CreateLoadingScreen(*pScene, static_cast<int>(size.x), static_cast<int>(size.y), "Stage " + std::to_string(manager.GetCurrentLevelIndex()+1), 30, -100)};
 
 	//Create players
 	constexpr float speed{ 100.f };
@@ -127,27 +133,92 @@ void LoadLevel()
 	if (manager.GetMode() != GameMode::SinglePlayer)
 	{
 		int spriteOffsetY{ manager.GetMode() == GameMode::Versus ? 15 * 16 : 0 };
-		const auto pPlayerObject2{ CreatePlayer(1,navigation.GetNode(3, 1), speed, *pScene, 0, spriteOffsetY, 440.f) };
+		const auto pPlayerObject2{ CreatePlayer(1,navigation.GetNode(13, 1), speed, *pScene, 0, spriteOffsetY, 440.f) };
 	}
 
 	BombermanManager::GetInstance().RefreshHUD();
 }
 
+void LoadLoadingScene()
+{
+	//Clear inputs
+	auto& input = InputManager::GetInstance();
+	input.ClearCommands();
+
+	auto pScene{ SceneManager::GetInstance().GetCurrentScene() };
+	auto& manager{ BombermanManager::GetInstance() };
+
+	//Set Camera
+	const auto pCamera{ pScene->Add(std::make_shared<GameObject>()) };
+	const auto pCameraComponent{ std::make_shared<CameraComponent>(300.f) };
+	pCamera->AddComponent(pCameraComponent);
+
+	glm::vec2 size{ Renderer::GetInstance().GetWindowSize() };
+	pCameraComponent->SetBounds(glm::vec2{}, glm::vec2{ size.x * 2 - 32.f,size.y });
+	pScene->SetCamera(pCamera.get());
+
+	const auto pScreen{ CreateLoadingScreen(*pScene, static_cast<int>(size.x), static_cast<int>(size.y), "Stage " + std::to_string(manager.GetCurrentLevelIndex() + 1), 30, -100) };
+}
+
 Scene& InitGameScene()
 {
 	//Create a new scene
-	auto& scene = SceneManager::GetInstance().CreateScene("GameScene", LoadLevel);
-
-	//Start Info
-	const auto pStartInfoDisplay{ std::make_shared<GameObject>() };
-	const auto pStartInfo{ std::make_shared<StartInfoComponent>() };
-	pStartInfoDisplay->AddComponent(pStartInfo);
-	scene.Add(pStartInfoDisplay);
+	auto pScene = SceneManager::GetInstance().GetScene("LoadingScene");
 
 	//Destroy old scene
 	SceneManager::GetInstance().GetScene("MenuScene")->DestroyAll();
 
-	return scene;
+	return *pScene;
+}
+
+void LoadScoreScene()
+{
+	auto& input = InputManager::GetInstance();
+	input.ClearCommands();
+
+	auto pCurrent{ SceneManager::GetInstance().GetCurrentScene() };
+	auto& manager{ BombermanManager::GetInstance() };
+
+	const glm::vec2 size{ Renderer::GetInstance().GetWindowSize() };
+	constexpr int titleFontSize{ 50 };
+	CreateText(*pCurrent, glm::vec2{ size.x / 2 - 120.f, size.y / 5.f }, "High Scores", titleFontSize);
+
+	//Load scores from file
+	std::ifstream scoresFile{ "Scores.txt" };
+	std::string line{};
+	glm::vec2 position{ size.x / 2.f, size.y / 3.f };
+
+	if (scoresFile.is_open())
+	{
+		while (std::getline(scoresFile, line))
+		{
+			//Read the name and the score
+			std::istringstream buffer(line);
+
+			std::string name;
+			int score;
+
+			if (std::getline(buffer, name, '-'))
+			{
+				if (std::getline(buffer, line))
+				{
+					score = std::stoi(line);
+
+					manager.AddScore(name, score);
+				}
+			}
+		}
+	}
+
+	auto scores{ manager.GetTopScores(5) };
+	
+	for (auto& scorePair : scores)
+	{
+		constexpr int fontSize{ 30 };
+		CreateText(*pCurrent, position, scorePair.first + " - " + std::to_string(scorePair.second), fontSize);
+	}
+
+	input.
 }
 
 void LoadMenu()
@@ -162,18 +233,18 @@ void LoadMenu()
 	glm::vec2 buttonPos{ 2.f * windowSize.x / 5.f, 0.6f * windowSize.y };
 	constexpr float offsetY{ 50.f };
 	
-	CreateButton(*pScene, buttonPos, "Play", fontSize, []()
+	dae::CreateButton(*pScene, buttonPos, "Play", fontSize, []()
 		{
 			auto& scene{ InitGameScene() };
 
 			BombermanManager::GetInstance().AddPlayer("Player 1");
 
-			scene.Load(false);
+			scene.Load();
 		});
 
 	buttonPos.y += offsetY;
 
-	CreateButton(*pScene, buttonPos, "Play Co-op", fontSize, []()
+	dae::CreateButton(*pScene, buttonPos, "Play Co-op", fontSize, []()
 		{
 			auto& scene{ InitGameScene() };
 
@@ -182,11 +253,11 @@ void LoadMenu()
 			manager.AddPlayer("Player 2");
 			manager.SetGameMode(GameMode::Coop);
 
-			scene.Load(false);
+			scene.Load();
 		});
 
 	buttonPos.y += offsetY;
-	CreateButton(*pScene, buttonPos, "Play Versus", fontSize, []()
+	dae::CreateButton(*pScene, buttonPos, "Play Versus", fontSize, []()
 		{
 			auto& scene{ InitGameScene() };
 
@@ -195,22 +266,26 @@ void LoadMenu()
 			manager.AddPlayer("Player 2");
 			manager.SetGameMode(GameMode::Versus);
 
-			scene.Load(false);
+			scene.Load();
 		});
 
 	buttonPos.y += offsetY;
-	CreateButton(*pScene, buttonPos, "Score Board", fontSize, []()
+	dae::CreateButton(*pScene, buttonPos, "Score Board", fontSize, []()
 		{
-			auto& scene = SceneManager::GetInstance().CreateScene("ScoreBoard", []() {});
+			SceneManager::GetInstance().GetScene("ScoreScene")->Load();
 			SceneManager::GetInstance().GetScene("MenuScene")->DestroyAll();
-
-			scene.Load(false);
 		});
 	
 	const glm::vec2 imagePos{ windowSize.x / 2.f, 0.3f * windowSize.y };
-	CreateImage(*pScene, imagePos, 379, 232, 1.f);
+	dae::CreateImage(*pScene, imagePos, 379, 232, 1.f);
 
 	input.GetMouse()->MapCommandToButton(MouseButton::left, std::make_unique<ClickCommand>(MouseButton::left), ButtonState::Down);
+
+	//Start Info
+	const auto pStartInfoDisplay{ std::make_shared<GameObject>() };
+	const auto pStartInfo{ std::make_shared<StartInfoComponent>() };
+	pStartInfoDisplay->AddComponent(pStartInfo);
+	pScene->Add(pStartInfoDisplay);
 }
 
 void load()
@@ -220,7 +295,7 @@ void load()
 #else
 	Audio::RegisterService(std::make_unique<SDL_SoundSystem>());
 #endif
-
+	SceneManager::GetInstance().CreateScene("ScoreScene", LoadScoreScene);
 	SoundSystem& audio{ Audio::Get() };
 
 	//Load sounds
@@ -228,10 +303,6 @@ void load()
 	audio.AddSound("Explosion.wav", bombSoundId, false);
 	audio.Preload(bombSoundId);
 	BombComponent::SetExplosionSound(bombSoundId);
-
-	int deathSound{};
-	audio.AddSound("Death.wav", deathSound, false);
-	PlayerComponent::SetDeathSound(deathSound);
 
 	int powerUpSoundId{};
 	audio.AddSound("PowerUp.wav", powerUpSoundId, false);
@@ -244,17 +315,18 @@ void load()
 
 	int loadMusicId{};
 	audio.AddSound("Music/Loading.mp3", loadMusicId, true);
+	LevelLoadComponent::SetSound(loadMusicId);
 
-	int levelMusicId{};
-	audio.AddSound("Music/Level.mp3", levelMusicId, true);
-	LevelLoadComponent::SetSounds(loadMusicId, levelMusicId);
+	audio.AddSound("Music/Level.mp3", s_GameSoundId, true);
+
 
 	//Init scores manager
 	auto& manager{ BombermanManager::GetInstance() };
-	manager.AddLevelPath("Bomberman.json");
-	manager.AddLevelPath("Bomberman.json");
+	manager.AddLevelPath("Bomberman_0.json");
+	manager.AddLevelPath("Bomberman_1.json");
+	manager.AddLevelPath("Bomberman_2.json");
 
-	SceneManager::GetInstance().CreateScene("MenuScene", LoadMenu).Load(false);
+	SceneManager::GetInstance().CreateScene("MenuScene", LoadMenu).Load();
 }
 
 int main(int, char* [])

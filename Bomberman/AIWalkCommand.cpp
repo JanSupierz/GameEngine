@@ -37,7 +37,7 @@ void dae::AIWalkCommand::Execute()
 	if (m_pCurrentNode)
 	{
 		NavigationNode* pNeighbor{ nullptr };
-
+		
 		//Seek target
 		if (m_pTarget)
 		{

@@ -1,10 +1,10 @@
 #include "LevelLoadComponent.h"
 #include "SceneManager.h"
+#include "Scene.h"
 #include "GameObject.h"
 #include "Audio.h"
 
 int dae::LevelLoadComponent::s_StartSoundId{ -1 };
-int dae::LevelLoadComponent::s_EndSoundId{ -1 };
 
 dae::LevelLoadComponent::LevelLoadComponent()
 	:m_TimeLeft{ 3.f }, m_IsInit{ false }
@@ -24,18 +24,20 @@ void dae::LevelLoadComponent::Update()
 	}
 	else
 	{
-		m_TimeLeft -= SceneManager::GetInstance().GetDeltaTime();
-
-		if (m_TimeLeft < 0.f)
+		if (m_TimeLeft >= 0.f)
 		{
-			Audio::Get().Play(s_EndSoundId, 1.f, -1);
-			GetOwner()->Destroy();
+			m_TimeLeft -= SceneManager::GetInstance().GetDeltaTime();
+
+			if (m_TimeLeft < 0.f)
+			{
+				auto& manager{ SceneManager::GetInstance() };
+				manager.GetScene("GameScene")->Load();
+			}
 		}
 	}
 }
 
-void dae::LevelLoadComponent::SetSounds(int startId, int endId)
+void dae::LevelLoadComponent::SetSound(int startId)
 {
 	s_StartSoundId = startId;
-	s_EndSoundId = endId;
 }
