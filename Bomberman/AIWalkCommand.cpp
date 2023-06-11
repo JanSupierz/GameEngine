@@ -72,7 +72,6 @@ void dae::AIWalkCommand::Execute()
 
 				if (abs(columnDiff) > abs(rowDiff))
 				{
-					Logger::Get().Log("horizon");
 					pNeighbor = m_pCurrentNode->GetNeighbor(columnDiff > 0 ? Direction::left : Direction::right);
 				}
 				else
