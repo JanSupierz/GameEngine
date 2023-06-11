@@ -14,7 +14,7 @@ namespace dae
     class AIWalkCommand final : public Command
     {
     public:
-        AIWalkCommand(GameObject* pGameObject, float speed);
+        AIWalkCommand(GameObject* pGameObject, float speed, bool isSmart);
 
         void SetTarget(GameObject* pTarget);
         void Execute() override;
@@ -28,6 +28,7 @@ namespace dae
         float m_Speed;
         GameObject* m_pTarget{ nullptr };
         std::vector<Direction> m_DirectionsToCheck{};
+        bool m_IsSmart;
     };
 }
 

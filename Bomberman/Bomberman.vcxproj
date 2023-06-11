@@ -197,6 +197,7 @@
     <ClCompile Include="BombermanManager.cpp" />
     <ClCompile Include="SetPositionCommand.cpp" />
     <ClCompile Include="StartInfoComponent.cpp" />
+    <ClCompile Include="ToggleMuteCommand.cpp" />
     <ClCompile Include="UpdatePosition1DCommand.cpp" />
     <ClCompile Include="UpdatePosition2DCommand.cpp" />
     <ClCompile Include="UpdatePositionCommand.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="BombermanManager.h" />
     <ClInclude Include="SetPositionCommand.h" />
     <ClInclude Include="StartInfoComponent.h" />
+    <ClInclude Include="ToggleMuteCommand.h" />
     <ClInclude Include="UpdatePosition1DCommand.h" />
     <ClInclude Include="UpdatePosition2DCommand.h" />
     <ClInclude Include="UpdatePositionCommand.h" />

@@ -147,6 +147,9 @@
     <ClCompile Include="Door.cpp">
       <Filter>Components\Game</Filter>
     </ClCompile>
+    <ClCompile Include="ToggleMuteCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StartInfoComponent.h">
@@ -253,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="Door.h">
       <Filter>Components\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="ToggleMuteCommand.h">
+      <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

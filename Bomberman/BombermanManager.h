@@ -8,7 +8,8 @@
 namespace dae
 {
     class DeathEvent;
-    
+    class GameObject;
+
     enum class PowerUpType;
 
     enum class GameMode
@@ -59,6 +60,11 @@ namespace dae
 
         void AddScore(const std::string& name, int score);
         std::vector<std::pair<std::string, int>>  GetTopScores(int maxNrScores);
+
+        void SetPlayerObject(GameObject* pObject);
+        std::vector<GameObject*> GetPlayerObjects() const;
+
+        void ClearPlayerInfos();
     private:
         friend class Singleton<BombermanManager>;
         BombermanManager();
@@ -73,6 +79,7 @@ namespace dae
         int m_NrEnemies;
 
         std::vector<std::pair<std::string, int>> m_Scores;
+        std::vector<GameObject*> m_pPlayerObjects;
     };
 }
 

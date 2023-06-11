@@ -15,4 +15,8 @@ void dae::NextSceneCommand::Execute()
 	{
 		BombermanManager::GetInstance().NextLevel();
 	}
+	else if (pCurrent->GetName() == "ScoreScene")
+	{
+		SceneManager::GetInstance().GetScene("MenuScene")->Load();
+	}
 }

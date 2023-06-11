@@ -42,13 +42,12 @@
 
 using namespace dae;
 
-std::shared_ptr<GameObject> dae::CreatePlayer(int index, const NavigationNode* const pNode, const float playerSpeed, Scene& scene, 
+std::shared_ptr<GameObject> dae::CreatePlayer(bool isEnemy, int index, const NavigationNode* const pNode, Scene& scene, 
 	const int spritePosX, const int spritePosY, const float infoDisplayOffsetX, const float infoDisplayOffsetY, 
 	const float infoDisplaySpacing, const int spriteCellDimensions, const float spriteCellScale)
 {
-	auto& input = InputManager::GetInstance();
-	const auto pController{ input.AddController() };
-	bool canDetonate{ BombermanManager::GetInstance().CanDetonate(index) };
+	auto& manager{ BombermanManager::GetInstance() };
+	bool canDetonate{ manager.CanDetonate(index) };
 
 	//Player
 	const auto pPlayerObject{ scene.Add(std::make_shared<GameObject>(-10)) };
@@ -91,21 +90,19 @@ std::shared_ptr<GameObject> dae::CreatePlayer(int index, const NavigationNode* c
 	const auto pScore{ std::make_shared<ScoreComponent>(pPlayer->GetIndex(), pScoreText.get()) };
 	pScoreDisplay->AddComponent(pScore);
 
-	//Controller
-	pController->MapCommandToButton(Controller::ControllerButtons::ButtonA, std::make_unique<PlaceBombCommand>(pPlayerObject.get()), ButtonState::Down);
-
-	pController->MapCommandToButton(Controller::ControllerButtons::DPadLeft, std::make_unique<GridMovementCommand>(pPlayerObject.get(), glm::vec2{ -playerSpeed,0.f }, pPlayer.get()), ButtonState::Pressed);
-	pController->MapCommandToButton(Controller::ControllerButtons::DPadRight, std::make_unique<GridMovementCommand>(pPlayerObject.get(), glm::vec2{ playerSpeed,0.f }, pPlayer.get()), ButtonState::Pressed);
-	pController->MapCommandToButton(Controller::ControllerButtons::DPadUp, std::make_unique<GridMovementCommand>(pPlayerObject.get(), glm::vec2{ 0.f,-playerSpeed }, pPlayer.get()), ButtonState::Pressed);
-	pController->MapCommandToButton(Controller::ControllerButtons::DPadDown, std::make_unique<GridMovementCommand>(pPlayerObject.get(), glm::vec2{ 0.f,playerSpeed }, pPlayer.get()), ButtonState::Pressed);
-
-	pController->MapCommandToThumbstick(Controller::ControllerThumbsticks::LeftThumbstick, std::make_unique<GridMovementCommand>(pPlayerObject.get(), glm::vec2{ playerSpeed,0.f }, pPlayer.get(), true));
+	if (isEnemy)
+	{
+		const auto pEnemy{ std::make_shared<EnemyComponent>(DeathType::BalloomPlayer, pCollider->GetCollisionEvent()) };
+		pPlayerObject->AddComponent(pEnemy);
+	}
 
 	//Camera Target
 	auto pCameraTarget{ std::make_shared<CameraTargetComponent>() };
 	pPlayerObject->AddComponent(pCameraTarget);
 
 	pCameraTarget->SetCamera(scene.GetCamera()->GetComponent<CameraComponent>().get());
+
+	manager.SetPlayerObject(pPlayerObject.get());
 
 	return pPlayerObject;
 }
@@ -130,7 +127,9 @@ std::shared_ptr<GameObject> dae::CreateEnemy(const NavigationNode* const pNode, 
 	pEnemyRenderer->SetTexture("BombermanSprites.png");
 	pEnemyObject->AddComponent(pEnemyRenderer);
 
-	auto pAIWalkCommand{ std::make_unique<AIWalkCommand>(pEnemyObject.get(),speed) };
+	bool isSmart{ enemyType == DeathType::Oneal || enemyType == DeathType::Minvo };
+
+	auto pAIWalkCommand{ std::make_unique<AIWalkCommand>(pEnemyObject.get(),speed, isSmart) };
 
 	const auto pAI{ std::make_shared<AIComponent>(std::move(pAIWalkCommand)) };
 	pEnemyObject->AddComponent(pAI);

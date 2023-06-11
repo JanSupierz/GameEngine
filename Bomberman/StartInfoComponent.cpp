@@ -21,9 +21,8 @@ void dae::StartInfoComponent::Render()
     ImGui::Spacing();
 
     ImGui::Text("Goal:");
-    ImGui::Text("Kill enemies");
+    ImGui::Text("Kill all enemies");
     ImGui::Text("Find the door");
-    ImGui::Text("(Door isn't working)");
 
     if (ImGui::Button("OK"))
     {

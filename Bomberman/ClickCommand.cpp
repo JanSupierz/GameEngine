@@ -1,7 +1,6 @@
 #include "ClickCommand.h"
 #include "EventManager.h"
 #include "MouseClickEvent.h"
-#include "Logger.h"
 #include "Mouse.h"
 
 dae::ClickCommand::ClickCommand(MouseButton button)

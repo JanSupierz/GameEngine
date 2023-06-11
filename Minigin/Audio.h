@@ -12,6 +12,7 @@ namespace dae
 			virtual void Play(const int, const float, const int) {};
 			virtual void Preload(const int) {};
 			virtual void AddSound(const std::string&, int& soundId, bool) { soundId = -1; };
+			virtual void ToggleMute() {};
 		};
 
 	public:

@@ -8,6 +8,7 @@ namespace dae
 	enum class DeathType
 	{
 		Player,
+		BalloomPlayer,
 		Balloom,
 		Oneal,
 		Doll,

@@ -5,15 +5,18 @@
 #include "NavigationNode.h"
 #include <Algorithm>
 #include <random>
+#include "BombermanManager.h"
 #include "Scene.h"
+#include "Logger.h"
 
 using namespace dae;
 
-AIWalkCommand::AIWalkCommand(GameObject* pGameObject, float speed)
+AIWalkCommand::AIWalkCommand(GameObject* pGameObject, float speed, bool isSmart)
 	: m_pGameObject(pGameObject),
 	m_Speed{ speed },
 	m_pSceneManager(&SceneManager::GetInstance()),
-	m_pGrid{ m_pSceneManager->GetCurrentScene()->GetGrid() }
+	m_pGrid{ m_pSceneManager->GetCurrentScene()->GetGrid() },
+	m_IsSmart{ isSmart }
 {
 	m_DirectionsToCheck.resize(4);
 	m_DirectionsToCheck[0] = Direction::up;
@@ -37,61 +40,44 @@ void dae::AIWalkCommand::Execute()
 	if (m_pCurrentNode)
 	{
 		NavigationNode* pNeighbor{ nullptr };
-		
-		//Seek target
-		if (m_pTarget)
+
+		if (m_IsSmart)
 		{
-			glm::vec2 targetPos{ m_pTarget->GetWorldPosition() };
-			glm::vec2 targetDirection{ targetPos - worldPos };
+			auto pObjects{ BombermanManager::GetInstance().GetPlayerObjects() };
 
-			bool horizontal{ abs(targetDirection.x) > abs(targetDirection.y) };
+			auto pOldTarget{ m_pTarget };
+			m_pTarget = nullptr;
 
-			if (horizontal)
+			for (const auto& pObject : pObjects)
 			{
-				if (targetDirection.x > 0.f)
+				if (glm::length(pObject->GetWorldPosition() - worldPos) < 100)
 				{
-					pNeighbor = m_pCurrentNode->GetNeighbor(Direction::right);
-				}
-				else
-				{
-					pNeighbor = m_pCurrentNode->GetNeighbor(Direction::left);
-				}
-			}
-			else
-			{
-				if (targetDirection.y > 0.f)
-				{
-					pNeighbor = m_pCurrentNode->GetNeighbor(Direction::up);
-				}
-				else
-				{
-					pNeighbor = m_pCurrentNode->GetNeighbor(Direction::down);
+					m_pTarget = pObject;
+
+					if (m_pTarget == pOldTarget)
+					{
+						break;
+					}
 				}
 			}
 
-			if (!pNeighbor || (pNeighbor && pNeighbor->IsBlocked()))
+			//Seek target
+			if (m_pTarget)
 			{
-				if (!horizontal)
+				glm::vec2 targetPos{ m_pTarget->GetWorldPosition() };
+				NavigationNode* pTargetNode{ m_pGrid->GetNode(targetPos) };
+
+				const int columnDiff{ m_pCurrentNode->GetColumn() - pTargetNode->GetColumn() };
+				const int rowDiff{ m_pCurrentNode->GetRow() - pTargetNode->GetRow() };
+
+				if (abs(columnDiff) > abs(rowDiff))
 				{
-					if (targetDirection.x > 0.f)
-					{
-						pNeighbor = m_pCurrentNode->GetNeighbor(Direction::right);
-					}
-					else
-					{
-						pNeighbor = m_pCurrentNode->GetNeighbor(Direction::left);
-					}
+					Logger::Get().Log("horizon");
+					pNeighbor = m_pCurrentNode->GetNeighbor(columnDiff > 0 ? Direction::left : Direction::right);
 				}
 				else
 				{
-					if (targetDirection.y > 0.f)
-					{
-						pNeighbor = m_pCurrentNode->GetNeighbor(Direction::up);
-					}
-					else
-					{
-						pNeighbor = m_pCurrentNode->GetNeighbor(Direction::down);
-					}
+					pNeighbor = m_pCurrentNode->GetNeighbor(rowDiff < 0 ? Direction::up : Direction::down);
 				}
 			}
 		}
@@ -125,7 +111,7 @@ void dae::AIWalkCommand::Execute()
 		{
 			glm::vec2 vector{ pNeighbor->GetWorldPosition() - worldPos };
 
-			if (glm::length(vector) < 5.f)
+			if (glm::length(vector) < 2.f)
 			{
 				m_pCurrentNode = pNeighbor;
 			}

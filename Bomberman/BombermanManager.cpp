@@ -7,9 +7,10 @@
 #include "PowerUp.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "GameObject.h"
 
 dae::BombermanManager::BombermanManager()
-	:m_CurrentLevel{ 0 }
+	:m_CurrentLevel{ 0 }, m_pPlayerObjects{}, m_NrEnemies{}
 {
 	EventManager::GetInstance().AddListener(this);
 }
@@ -40,6 +41,8 @@ void dae::BombermanManager::PlayerDied(int killedPlayerIdx)
 	}
 
 	SceneManager::GetInstance().GetScene("LoadingScene")->Load();
+
+	m_pPlayerObjects.clear();
 }
 
 bool dae::BombermanManager::CanDetonate(int index) const
@@ -51,8 +54,11 @@ void dae::BombermanManager::NextLevel()
 {
 	++m_CurrentLevel;
 
+	m_pPlayerObjects.clear();
+
 	if (m_CurrentLevel >= static_cast<int>(m_LevelPaths.size()))
 	{
+		RestartGame();
 		SceneManager::GetInstance().GetScene("ScoreScene")->Load();
 	}
 	else
@@ -109,7 +115,13 @@ void dae::BombermanManager::RemoveEnemy()
 
 void dae::BombermanManager::AddScore(const std::string& name, int score)
 {
-	m_Scores.emplace_back(std::make_pair(name, score));
+	auto found{ std::find_if(m_Scores.begin(), m_Scores.end(), [&](const auto& p1)
+		{return p1.first == name && p1.second == score; }) };
+
+	if (found == m_Scores.end())
+	{
+		m_Scores.emplace_back(std::make_pair(name, score));
+	}
 }
 
 std::vector<std::pair<std::string, int>> dae::BombermanManager::GetTopScores(int maxNrScores)
@@ -123,6 +135,22 @@ std::vector<std::pair<std::string, int>> dae::BombermanManager::GetTopScores(int
 	}
 
 	return scores;
+}
+
+void dae::BombermanManager::SetPlayerObject(dae::GameObject* pObject)
+{
+	m_pPlayerObjects.emplace_back(pObject);
+}
+
+std::vector<dae::GameObject*> dae::BombermanManager::GetPlayerObjects() const
+{
+	return m_pPlayerObjects;
+}
+
+void dae::BombermanManager::ClearPlayerInfos()
+{
+	m_pPlayerInfos.clear();
+	m_pPlayerObjects.clear();
 }
 
 int dae::BombermanManager::GetNrEnemies() const
@@ -157,6 +185,11 @@ void dae::BombermanManager::OnEvent(const DeathEvent& event)
 	//Enemy killed player -> no score
 	if (pKiller == nullptr)
 	{
+		if (event.GetDeathType() == DeathType::BalloomPlayer)
+		{
+			m_pPlayerInfos[1]->score += 1000;
+		}
+
 		PlayerDied(pKilled->GetIndex());
 	}
 	else
@@ -197,7 +230,6 @@ void dae::BombermanManager::OnEvent(const DeathEvent& event)
 			PlayerDied(pKilled->GetIndex());
 		}
 		break;
-
 		default:
 			break;
 		}

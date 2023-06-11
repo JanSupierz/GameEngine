@@ -67,7 +67,7 @@ public:
         //Add sound to the queue
         {
             const std::lock_guard<std::mutex> lock(m_SoundQueueMutex);
-            m_EventQueue.push(SoundEvent{ SoundEventType::Play, soundId, volume, nrLoops});
+            m_EventQueue.push(SoundEvent{ SoundEventType::Play, soundId, (m_IsMuted ? 0.f : volume), nrLoops});
         }
 
         m_SoundQueueCondition.notify_one();
@@ -94,8 +94,20 @@ public:
         //Add sound to the queue
         {
             const std::lock_guard<std::mutex> lock(m_SoundQueueMutex);
-
             m_EventQueue.push(SoundEvent{ (isMusic ? SoundEventType::AddMusic : SoundEventType::Add), soundId, 0.f, 0, path });
+        }
+
+        m_SoundQueueCondition.notify_one();
+    }
+
+    void MuteSound()
+    {
+        m_IsMuted = !m_IsMuted;
+
+        //Add sound to the queue
+        {
+            const std::lock_guard<std::mutex> lock(m_SoundQueueMutex);
+            m_EventQueue.push(SoundEvent{ SoundEventType::Mute, -1, (m_IsMuted ? 0 : 0.8f) });
         }
 
         m_SoundQueueCondition.notify_one();
@@ -104,7 +116,7 @@ public:
 private:
     enum class SoundEventType
     {
-        Preload, Play, Add, AddMusic
+        Preload, Play, Add, AddMusic, Mute, UnMute
     };
 
     struct SoundEvent
@@ -172,6 +184,13 @@ private:
         }
     }
 
+    void Mute(const float volume)
+    {
+        const int playVolume{ static_cast<int>(MIX_MAX_VOLUME * std::clamp(volume, 0.f, 1.f)) };
+        Mix_Volume(-1, playVolume);
+        Mix_VolumeMusic(playVolume);
+    }
+
     void Preload(const int soundId)
     {
         auto& sound{ m_Sounds[soundId] };
@@ -230,6 +249,8 @@ private:
                 case SoundEventType::AddMusic:
                     Add(e.id, e.path, true);
                     break;
+                case SoundEventType::Mute:
+                    Mute(e.volume);
                 default:
                     break;
             }
@@ -264,7 +285,10 @@ private:
     std::condition_variable m_SoundQueueCondition;
     std::queue<SoundEvent> m_EventQueue;
 
+
+    //Main thread
     int m_NextId{};
+    bool m_IsMuted{};
 };
 
 SDL_SoundSystem::SDL_SoundSystem()
@@ -290,4 +314,9 @@ void dae::SDL_SoundSystem::Preload(const int soundId)
 void dae::SDL_SoundSystem::AddSound(const std::string& fileName, int& soundId, bool isMusic)
 {
     m_pImpl->AddSound(fileName, soundId, isMusic);
+}
+
+void dae::SDL_SoundSystem::ToggleMute()
+{
+    m_pImpl->MuteSound();
 }

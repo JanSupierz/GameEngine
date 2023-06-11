@@ -68,12 +68,15 @@ void Scene::ForceRemoveAll()
 
 void Scene::DestroyAll()
 {
-	for (auto& pObject : m_pObjects)
+	for (const auto& pObject : m_pObjects)
 	{
 		pObject->Destroy();
 	}
 
-	m_pNewObjects.clear();
+	for (const auto& pObject : m_pNewObjects)
+	{
+		pObject->Destroy();
+	}
 
 	m_NeedsCleanUp = true;
 }
@@ -142,6 +145,12 @@ void dae::Scene::CleanUp()
 		return pGameObject->IsDestroyed(); 
 	}), m_pObjects.end());
 
+	m_pNewObjects.erase(std::remove_if(m_pNewObjects.begin(), m_pNewObjects.end(),
+		[&](std::shared_ptr<GameObject> pGameObject)
+		{
+			return pGameObject->IsDestroyed();
+		}), m_pNewObjects.end());
+
 	if (m_ShouldLoad)
 	{
 		SceneManager::GetInstance().SetCurrentScene(m_name);
@@ -155,7 +164,7 @@ void dae::Scene::CleanUp()
 		m_ShouldLoad = false;
 	}
 
-	std::cout << "--- " << m_name << " ---\n";
-	std::cout << "OldObjects: " << m_pObjects.size() << '\n';
-	std::cout << "NewObjects: " << m_pNewObjects.size() << '\n' << '\n';
+	//std::cout << "--- " << m_name << " ---\n";
+	//std::cout << "OldObjects: " << m_pObjects.size() << '\n';
+	//std::cout << "NewObjects: " << m_pNewObjects.size() << '\n' << '\n';
 }

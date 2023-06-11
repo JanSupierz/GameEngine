@@ -58,6 +58,7 @@
 #include "SDL_SoundSystem.h"
 #include "LoggingSoundSystem.h"
 #include "BombComponent.h"
+#include "ToggleMuteCommand.h"
 
 //Collision
 #include "ColliderComponent.h"
@@ -74,6 +75,8 @@
 //HighScores
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+
 
 using namespace dae;
 
@@ -85,6 +88,26 @@ namespace Exercises
 }
 
 static int s_GameSoundId{};
+static int s_MenuMusicId{};
+static int s_EndMusicId{};
+
+void AddController(InputManager& input, GameObject* pObject, PlayerComponent* pPlayer, bool isEnemy, float speed)
+{
+	//Controller
+	const auto pController{ input.AddController() };
+
+	if (!isEnemy)
+	{
+		pController->MapCommandToButton(Controller::ControllerButtons::ButtonA, std::make_unique<PlaceBombCommand>(pObject), ButtonState::Down);
+	}
+
+	pController->MapCommandToButton(Controller::ControllerButtons::DPadLeft, std::make_unique<GridMovementCommand>(pObject, glm::vec2{ -speed,0.f }, pPlayer), ButtonState::Pressed);
+	pController->MapCommandToButton(Controller::ControllerButtons::DPadRight, std::make_unique<GridMovementCommand>(pObject, glm::vec2{ speed,0.f }, pPlayer), ButtonState::Pressed);
+	pController->MapCommandToButton(Controller::ControllerButtons::DPadUp, std::make_unique<GridMovementCommand>(pObject, glm::vec2{ 0.f,-speed }, pPlayer), ButtonState::Pressed);
+	pController->MapCommandToButton(Controller::ControllerButtons::DPadDown, std::make_unique<GridMovementCommand>(pObject, glm::vec2{ 0.f,speed }, pPlayer), ButtonState::Pressed);
+
+	pController->MapCommandToThumbstick(Controller::ControllerThumbsticks::LeftThumbstick, std::make_unique<GridMovementCommand>(pObject, glm::vec2{ speed,0.f }, pPlayer, true));
+}
 
 void LoadLevel()
 {
@@ -114,7 +137,7 @@ void LoadLevel()
 
 	//Create players
 	constexpr float speed{ 100.f };
-	const auto pPlayerObject1{ CreatePlayer(0,navigation.GetNode(3, 1), speed, *pScene, 0, 0) };
+	const auto pPlayerObject1{ CreatePlayer(false, 0,navigation.GetNode(3, 1), *pScene, 0, 0) };
 
 	const auto pPlayer1{ pPlayerObject1->GetComponent<PlayerComponent>() };
 
@@ -129,12 +152,19 @@ void LoadLevel()
 	pKeyboard->MapCommandToButton(SDL_SCANCODE_S, std::make_unique<PlaceBombCommand>(pPlayerObject1.get()), ButtonState::Down);
 
 	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_F1, std::make_unique<NextSceneCommand>(), ButtonState::Down);
+	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_F2, std::make_unique<ToggleMuteCommand>(), ButtonState::Down);
 
 	if (manager.GetMode() != GameMode::SinglePlayer)
 	{
-		int spriteOffsetY{ manager.GetMode() == GameMode::Versus ? 15 * 16 : 0 };
-		const auto pPlayerObject2{ CreatePlayer(1,navigation.GetNode(13, 1), speed, *pScene, 0, spriteOffsetY, 440.f) };
+		const bool isVersus{ manager.GetMode() == GameMode::Versus };
+		const int spriteOffsetY{ isVersus ? 15 * 16 : 0 };
+		const auto pPlayerObject2{ CreatePlayer(isVersus, 1,navigation.GetNode(13, 1), *pScene, 0, spriteOffsetY, 440.f) };
+		const auto pPlayer2{ pPlayerObject2->GetComponent<PlayerComponent>() };
+
+		AddController(input, pPlayerObject2.get(), pPlayer2.get(), isVersus, speed);
 	}
+
+	AddController(input, pPlayerObject1.get(), pPlayer1.get(), false, speed);
 
 	BombermanManager::GetInstance().RefreshHUD();
 }
@@ -144,6 +174,7 @@ void LoadLoadingScene()
 	//Clear inputs
 	auto& input = InputManager::GetInstance();
 	input.ClearCommands();
+	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_F2, std::make_unique<ToggleMuteCommand>(), ButtonState::Down);
 
 	auto pScene{ SceneManager::GetInstance().GetCurrentScene() };
 	auto& manager{ BombermanManager::GetInstance() };
@@ -162,6 +193,8 @@ void LoadLoadingScene()
 
 Scene& InitGameScene()
 {
+	BombermanManager::GetInstance().ClearPlayerInfos();
+
 	//Create a new scene
 	auto pScene = SceneManager::GetInstance().GetScene("LoadingScene");
 
@@ -173,6 +206,8 @@ Scene& InitGameScene()
 
 void LoadScoreScene()
 {
+	Audio::Get().Play(s_EndMusicId, 0.4f, -1);
+
 	auto& input = InputManager::GetInstance();
 	input.ClearCommands();
 
@@ -186,7 +221,7 @@ void LoadScoreScene()
 	//Load scores from file
 	std::ifstream scoresFile{ "Scores.txt" };
 	std::string line{};
-	glm::vec2 position{ size.x / 2.f, size.y / 3.f };
+	glm::vec2 position{ size.x / 2.f - 100.f, size.y / 3.f };
 
 	if (scoresFile.is_open())
 	{
@@ -195,11 +230,20 @@ void LoadScoreScene()
 			//Read the name and the score
 			std::istringstream buffer(line);
 
-			std::string name;
-			int score;
+			std::string name{};
+			int score{};
 
 			if (std::getline(buffer, name, '-'))
 			{
+				//Chat gpt
+				// Find the position of the last non-space character
+				size_t lastNonSpace{ name.find_last_not_of(' ') };
+
+				// Erase the spaces after the name
+				if (lastNonSpace != std::string::npos) {
+					name.erase(lastNonSpace + 1);
+				}
+
 				if (std::getline(buffer, line))
 				{
 					score = std::stoi(line);
@@ -210,19 +254,35 @@ void LoadScoreScene()
 		}
 	}
 
+	scoresFile.close();
+
 	auto scores{ manager.GetTopScores(5) };
 	
+	std::ofstream outputFile{ "Scores.txt", std::ios::trunc };
+
 	for (auto& scorePair : scores)
 	{
 		constexpr int fontSize{ 30 };
-		CreateText(*pCurrent, position, scorePair.first + " - " + std::to_string(scorePair.second), fontSize);
+
+		line = scorePair.first + " - " + std::to_string(scorePair.second);
+		outputFile << line << '\n';
+
+		CreateText(*pCurrent, position, line, fontSize);
+
+		position.y += 2.f * fontSize;
 	}
 
-	input.
+	outputFile.close();
+
+
+	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_ESCAPE, std::make_unique<NextSceneCommand>(), ButtonState::Down);
+	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_F2, std::make_unique<ToggleMuteCommand>(), ButtonState::Down);
 }
 
 void LoadMenu()
 {
+	Audio::Get().Play(s_MenuMusicId, 0.4f, -1);
+
 	auto& input = InputManager::GetInstance();
 	input.ClearCommands();
 
@@ -238,6 +298,7 @@ void LoadMenu()
 			auto& scene{ InitGameScene() };
 
 			BombermanManager::GetInstance().AddPlayer("Player 1");
+			BombermanManager::GetInstance().SetGameMode(GameMode::SinglePlayer);
 
 			scene.Load();
 		});
@@ -280,7 +341,7 @@ void LoadMenu()
 	dae::CreateImage(*pScene, imagePos, 379, 232, 1.f);
 
 	input.GetMouse()->MapCommandToButton(MouseButton::left, std::make_unique<ClickCommand>(MouseButton::left), ButtonState::Down);
-
+	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_F2, std::make_unique<ToggleMuteCommand>(), ButtonState::Down);
 	//Start Info
 	const auto pStartInfoDisplay{ std::make_shared<GameObject>() };
 	const auto pStartInfo{ std::make_shared<StartInfoComponent>() };
@@ -296,6 +357,9 @@ void load()
 	Audio::RegisterService(std::make_unique<SDL_SoundSystem>());
 #endif
 	SceneManager::GetInstance().CreateScene("ScoreScene", LoadScoreScene);
+	SceneManager::GetInstance().CreateScene("GameScene", LoadLevel);
+	SceneManager::GetInstance().CreateScene("LoadingScene", LoadLoadingScene);
+
 	SoundSystem& audio{ Audio::Get() };
 
 	//Load sounds
@@ -309,9 +373,8 @@ void load()
 	PowerUp::SetSound(powerUpSoundId);
 
 	//Music
-	int menuMusicId{};
-	audio.AddSound("Music/Menu.mp3", menuMusicId, true);
-	audio.Play(menuMusicId, 0.4f, -1);
+	audio.AddSound("Music/Menu.mp3", s_MenuMusicId, true);
+	audio.AddSound("Music/End.mp3", s_EndMusicId, true);
 
 	int loadMusicId{};
 	audio.AddSound("Music/Loading.mp3", loadMusicId, true);
