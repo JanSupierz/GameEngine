@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "NavigationGrid.h"
 #include <iostream>
+#include "InputManager.h"
 
 using namespace dae;
 
@@ -32,6 +33,8 @@ std::string dae::Scene::GetName() const
 void dae::Scene::Load()
 {
 	m_ShouldLoad = true;
+	auto& input = InputManager::GetInstance();
+	input.ClearCommands();
 }
 
 bool dae::Scene::NeedsCleanUp() const

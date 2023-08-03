@@ -111,10 +111,6 @@ void AddController(InputManager& input, GameObject* pObject, PlayerComponent* pP
 
 void LoadLevel()
 {
-	//Clear inputs
-	auto& input = InputManager::GetInstance();
-	input.ClearCommands();
-
 	Audio::Get().Play(s_GameSoundId, 1.f, -1);
 
 	auto pScene{ SceneManager::GetInstance().GetCurrentScene() };
@@ -141,7 +137,8 @@ void LoadLevel()
 
 	const auto pPlayer1{ pPlayerObject1->GetComponent<PlayerComponent>() };
 
-	//Input
+	//Input	
+	auto& input = InputManager::GetInstance();
 	const auto pKeyboard{ input.GetKeyboard() };
 
 	pKeyboard->MapCommandToButton(SDL_SCANCODE_LEFT, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ -speed,0.f }, pPlayer1.get()), ButtonState::Pressed);
@@ -171,9 +168,8 @@ void LoadLevel()
 
 void LoadLoadingScene()
 {
-	//Clear inputs
+	//Add inputs
 	auto& input = InputManager::GetInstance();
-	input.ClearCommands();
 	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_F2, std::make_unique<ToggleMuteCommand>(), ButtonState::Down);
 
 	auto pScene{ SceneManager::GetInstance().GetCurrentScene() };
@@ -209,7 +205,6 @@ void LoadScoreScene()
 	Audio::Get().Play(s_EndMusicId, 0.4f, -1);
 
 	auto& input = InputManager::GetInstance();
-	input.ClearCommands();
 
 	auto pCurrent{ SceneManager::GetInstance().GetCurrentScene() };
 	auto& manager{ BombermanManager::GetInstance() };
@@ -274,7 +269,6 @@ void LoadScoreScene()
 
 	outputFile.close();
 
-
 	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_ESCAPE, std::make_unique<NextSceneCommand>(), ButtonState::Down);
 	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_F2, std::make_unique<ToggleMuteCommand>(), ButtonState::Down);
 }
@@ -284,7 +278,6 @@ void LoadMenu()
 	Audio::Get().Play(s_MenuMusicId, 0.4f, -1);
 
 	auto& input = InputManager::GetInstance();
-	input.ClearCommands();
 
 	auto pScene{ SceneManager::GetInstance().GetCurrentScene() };
 	auto windowSize{ Renderer::GetInstance().GetWindowSize() };
