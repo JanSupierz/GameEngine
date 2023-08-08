@@ -52,7 +52,7 @@ void dae::ExplosionComponent::OnNotify(const CollisionEvent& event)
         {
             pEnemy->GetOwner()->Destroy();
 
-            EventManager::GetInstance().AddEvent(std::make_shared<DeathEvent>(pEnemy->GetType(), m_pPlayer));
+            EventManager::GetInstance().AddEvent(std::make_unique<DeathEvent>(pEnemy->GetType(), m_pPlayer));
             return;
         }
     }

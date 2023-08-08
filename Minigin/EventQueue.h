@@ -36,14 +36,14 @@ namespace dae
             m_pListeners.erase(std::remove(m_pListeners.begin(), m_pListeners.end(), pListener), m_pListeners.end());
         }
 
-        void AddEvent(std::shared_ptr<EventType> pEvent)
+        void AddEvent(std::unique_ptr<EventType>&& pEvent)
         {
             if (isFull())
             {
                 Resize(m_Size * 2);
             }
 
-            m_pEvents[m_Tail] = pEvent;
+            m_pEvents[m_Tail] = std::move(pEvent);
             m_Tail = (m_Tail + 1) % m_Size;
         }
 
@@ -75,7 +75,7 @@ namespace dae
 
                 for (int index{}; index < nrNumbersToCopy; ++index)
                 {
-                    m_pEvents[newSize - nrNumbersToCopy + index] = m_pEvents[m_Head + index];
+                    m_pEvents[newSize - nrNumbersToCopy + index] = std::move(m_pEvents[m_Head + index]);
                     m_pEvents[m_Head + index] = nullptr;
                 }
 
@@ -98,7 +98,7 @@ namespace dae
 
         int m_Size;
         std::vector<EventListener<EventType>*> m_pListeners;
-        std::vector<std::shared_ptr<EventType>> m_pEvents;
+        std::vector<std::unique_ptr<EventType>> m_pEvents;
 
         int m_Head;
         int m_Tail;

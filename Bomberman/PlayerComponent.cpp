@@ -55,7 +55,7 @@ void dae::PlayerComponent::Kill(DeathType type, PlayerComponent* pOther)
 	if (m_Killed) return;
 	m_Killed = true;
 	
-	EventManager::GetInstance().AddEvent(std::make_shared<DeathEvent>(type, pOther, this));
+	EventManager::GetInstance().AddEvent(std::make_unique<DeathEvent>(type, pOther, this));
 }
 
 void dae::PlayerComponent::SetDeathSound(const int soundId)

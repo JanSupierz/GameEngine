@@ -33,7 +33,7 @@ int dae::BombermanManager::GetExplosionRange(int index) const
 void dae::BombermanManager::PlayerDied(int killedPlayerIdx)
 {
 	auto& pPlayerInfo{ m_pPlayerInfos[killedPlayerIdx] };
-	EventManager::GetInstance().AddEvent(std::make_shared<HUDEvent>(HUDEventType::Life, killedPlayerIdx, --pPlayerInfo->nrLives));
+	EventManager::GetInstance().AddEvent(std::make_unique<HUDEvent>(HUDEventType::Life, killedPlayerIdx, --pPlayerInfo->nrLives));
 
 	if (pPlayerInfo->nrLives <= 0)
 	{
@@ -172,8 +172,8 @@ void dae::BombermanManager::RefreshHUD()
 {
 	for (const auto& pPlayer : m_pPlayerInfos)
 	{
-		EventManager::GetInstance().AddEvent(std::make_shared<HUDEvent>(HUDEventType::Life, pPlayer->index, pPlayer->nrLives));
-		EventManager::GetInstance().AddEvent(std::make_shared<HUDEvent>(HUDEventType::Score, pPlayer->index, pPlayer->score));
+		EventManager::GetInstance().AddEvent(std::make_unique<HUDEvent>(HUDEventType::Life, pPlayer->index, pPlayer->nrLives));
+		EventManager::GetInstance().AddEvent(std::make_unique<HUDEvent>(HUDEventType::Score, pPlayer->index, pPlayer->score));
 	}
 }
 
@@ -234,7 +234,7 @@ void dae::BombermanManager::OnEvent(const DeathEvent& event)
 			break;
 		}
 
-		EventManager::GetInstance().AddEvent(std::make_shared<HUDEvent>(HUDEventType::Score, pPlayerInfo->index, pPlayerInfo->score));
+		EventManager::GetInstance().AddEvent(std::make_unique<HUDEvent>(HUDEventType::Score, pPlayerInfo->index, pPlayerInfo->score));
 	}
 }
 

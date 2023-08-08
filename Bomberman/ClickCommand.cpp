@@ -10,5 +10,5 @@ dae::ClickCommand::ClickCommand(MouseButton button)
 
 void dae::ClickCommand::Execute()
 {
-	EventManager::GetInstance().AddEvent(std::make_shared<MouseClickEvent>(m_Value, m_Button));
+	EventManager::GetInstance().AddEvent(std::make_unique<MouseClickEvent>(m_Value, m_Button));
 }

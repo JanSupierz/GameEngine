@@ -91,11 +91,9 @@ static int s_GameSoundId{};
 static int s_MenuMusicId{};
 static int s_EndMusicId{};
 
-void AddController(InputManager& input, GameObject* pObject, PlayerComponent* pPlayer, bool isEnemy, float speed)
+void AddController(dae::Controller* pController, GameObject* pObject, PlayerComponent* pPlayer, bool isEnemy, float speed)
 {
 	//Controller
-	const auto pController{ input.AddController() };
-
 	if (!isEnemy)
 	{
 		pController->MapCommandToButton(Controller::ControllerButtons::ButtonA, std::make_unique<PlaceBombCommand>(pObject), ButtonState::Down);
@@ -133,12 +131,26 @@ void LoadLevel()
 
 	//Create players
 	constexpr float speed{ 100.f };
+	auto& input = InputManager::GetInstance();
+
+	if (manager.GetMode() != GameMode::SinglePlayer)
+	{
+		const auto pController2{ input.AddController() };
+		const bool isVersus{ manager.GetMode() == GameMode::Versus };
+		const int spriteOffsetY{ isVersus ? 15 * 16 : 0 };
+		const auto pPlayerObject2{ CreatePlayer(isVersus, 1,navigation.GetNode(13, 1), *pScene, 0, spriteOffsetY, 440.f) };
+		const auto pPlayer2{ pPlayerObject2->GetComponent<PlayerComponent>() };
+
+		AddController(pController2, pPlayerObject2.get(), pPlayer2.get(), isVersus, speed);
+	}
+
+	const auto pController1{ input.AddController() };
+
 	const auto pPlayerObject1{ CreatePlayer(false, 0,navigation.GetNode(3, 1), *pScene, 0, 0) };
 
 	const auto pPlayer1{ pPlayerObject1->GetComponent<PlayerComponent>() };
 
 	//Input	
-	auto& input = InputManager::GetInstance();
 	const auto pKeyboard{ input.GetKeyboard() };
 
 	pKeyboard->MapCommandToButton(SDL_SCANCODE_LEFT, std::make_unique<GridMovementCommand>(pPlayerObject1.get(), glm::vec2{ -speed,0.f }, pPlayer1.get()), ButtonState::Pressed);
@@ -151,17 +163,7 @@ void LoadLevel()
 	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_F1, std::make_unique<NextSceneCommand>(), ButtonState::Down);
 	input.GetKeyboard()->MapCommandToButton(SDL_SCANCODE_F2, std::make_unique<ToggleMuteCommand>(), ButtonState::Down);
 
-	if (manager.GetMode() != GameMode::SinglePlayer)
-	{
-		const bool isVersus{ manager.GetMode() == GameMode::Versus };
-		const int spriteOffsetY{ isVersus ? 15 * 16 : 0 };
-		const auto pPlayerObject2{ CreatePlayer(isVersus, 1,navigation.GetNode(13, 1), *pScene, 0, spriteOffsetY, 440.f) };
-		const auto pPlayer2{ pPlayerObject2->GetComponent<PlayerComponent>() };
-
-		AddController(input, pPlayerObject2.get(), pPlayer2.get(), isVersus, speed);
-	}
-
-	AddController(input, pPlayerObject1.get(), pPlayer1.get(), false, speed);
+	AddController(pController1, pPlayerObject1.get(), pPlayer1.get(), false, speed);
 
 	BombermanManager::GetInstance().RefreshHUD();
 }

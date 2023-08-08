@@ -81,7 +81,7 @@ void dae::BombComponent::CreateExplosion(Scene* pScene, NavigationNode* pNode, D
 	pExplosion->SetPosition(pNode->GetWorldPosition());
 	pScene->Add(pExplosion);
 
-	EventManager::GetInstance().AddEvent(std::make_shared<BombExplodedEvent>(pNode, m_pPlayer));
+	EventManager::GetInstance().AddEvent(std::make_unique<BombExplodedEvent>(pNode, m_pPlayer));
 }
 
 void dae::BombComponent::OnEvent(const BombExplodedEvent& event)

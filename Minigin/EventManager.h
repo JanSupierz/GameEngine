@@ -20,9 +20,9 @@ namespace dae
          }
 
          template<class EventType>
-         void AddEvent(std::shared_ptr<EventType> pEvent)
+         void AddEvent(std::unique_ptr<EventType>&& pEvent)
          {
-             GetQueue<EventType>()->AddEvent(pEvent);
+             GetQueue<EventType>()->AddEvent(std::move(pEvent));
              m_IsDirty = true;
          }
 
@@ -40,7 +40,6 @@ namespace dae
 
          void HandleEvents();
 
-         void Clear();
 	 private:
          template<class EventType>
          EventQueue<EventType>* GetQueue()
